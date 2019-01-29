@@ -7,7 +7,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public enum Rank {
-			Ace = 1, _2, _3, _4, _5, _6, _7, _8, _9, _10, Jack, Queen, King
+			Ace = 0, _2, _3, _4, _5, _6, _7, _8, _9, _10, Jack, Queen, King
 		}
 
 		public readonly Suit suit;
@@ -28,6 +28,28 @@ namespace Summoner.FreeCell {
 				foreach ( var rank in ranks ) {
 					yield return new Card( suit, rank );
 				}
+			}
+		}
+
+		public static bool operator ==( Card left, Card right ) {
+			return (left.suit == right.suit)
+				&& (left.rank == right.rank);
+		}
+
+		public static bool operator !=( Card left, Card right ) {
+			return !(left == right);
+		}
+
+		public override int GetHashCode() {
+			return (int)suit * 13 + (int)rank;
+		}
+
+		public override bool Equals( object obj ) {
+			if ( obj is Card ) {
+				return this == (Card)obj;
+			}
+			else {
+				return false;
 			}
 		}
 

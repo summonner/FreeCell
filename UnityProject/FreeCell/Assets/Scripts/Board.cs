@@ -4,20 +4,18 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public class Board {
 
-		private const int numHomeCells = 4;
+		public const int numHomeCells = 4;
 		private IList<Card?> home;
-		private const int numFreeCells = 4;
+		public const int numFreeCells = 4;
 		private IList<Card?> free;
 
-		private const int numPiles = 8;
-		private IList<List<Card>> piles;
+		public const int numPiles = 8;
+		public IList<List<Card>> piles;
 
 		public Board() {
 			home = Init<Card?>( numHomeCells );
 			free = Init<Card?>( numFreeCells );
 			piles = Init<List<Card>>( numPiles );
-
-			Reset();
 		}
 
 		private static IList<T> Init<T>( int num ) where T : new() {
@@ -33,11 +31,6 @@ namespace Summoner.FreeCell {
 			Clear( free );
 			foreach ( var pile in piles ) {
 				pile.Clear();
-			}
-
-			var deck = Util.Random.FisherYatesShuffle.Shuffle( Card.NewDeck() );
-			for( int i=0; i < deck.Count; ++i ) {
-				piles[i % piles.Count].Add( deck[i] );
 			}
 		}
 
