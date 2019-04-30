@@ -4,18 +4,14 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public class Board {
 
-		public const int numHomeCells = 4;
 		private IList<Card?> home;
-		public const int numFreeCells = 4;
 		private IList<Card?> free;
+		public IList<Pile> piles;
 
-		public const int numPiles = 8;
-		public IList<List<Card>> piles;
-
-		public Board() {
-			home = Init<Card?>( numHomeCells );
-			free = Init<Card?>( numFreeCells );
-			piles = Init<List<Card>>( numPiles );
+		public Board( BoardLayout layout ) {
+			home = Init<Card?>( layout.homeCells.Length );
+			free = Init<Card?>( layout.freeCells.Length );
+			piles = Init<Pile>( layout.piles.Length );
 		}
 
 		private static IList<T> Init<T>( int num ) where T : new() {
@@ -27,6 +23,10 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Reset() {
+			Clear();
+		}
+
+		public void Clear() {
 			Clear( home );
 			Clear( free );
 			foreach ( var pile in piles ) {
@@ -43,10 +43,7 @@ namespace Summoner.FreeCell {
 		public override string ToString() {
 			var str = new System.Text.StringBuilder();
 			foreach ( var pile in piles ) {
-				foreach ( var card in pile ) {
-					str.Append( card.ToString() + " " );
-				}
-				str.AppendLine();
+				str.AppendLine( pile.ToString() );
 			}
 			return str.ToString();
 		}

@@ -6,26 +6,31 @@ namespace Summoner.FreeCell {
 	public class Game : MonoBehaviour {
 
 		[SerializeField] private CardSpriteSheet sheet;
+		[SerializeField] private BoardLayout layout;
+
 		private readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
 
 		private Board board;
-		public Vector3 spacing = new Vector3( 1.2f, 0.25f, 0.01f );
+		public Vector3 spacing = new Vector3( 1.1f, 0.25f, 0.01f );
 		public Vector3 offset = new Vector3( -4f, 5f, 0f );
 
 		void Start () {
-			board = new Board();
-			
+			board = new Board( layout );
 			Initialize();
 		}
 
+		void Reset() {
+			layout = FindObjectOfType<BoardLayout>();
+		}
+
 		private void Initialize() {
-			board.Reset();
+			board.Clear();
 
 			var i = 0;
 			var cards = Util.Random.FisherYatesShuffle.Draw( deck );
 			foreach ( var card in cards ) {
-				var column = i % Board.numPiles;
-				board.piles[column].Add( card );
+				var column = i % board.piles.Count;
+				board.piles[column].Push( card );
 				var row = board.piles[column].Count - 1;
 				
 				var cardObject = new GameObject( card.ToString() );
