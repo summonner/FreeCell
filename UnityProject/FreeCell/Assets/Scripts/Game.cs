@@ -6,6 +6,7 @@ namespace Summoner.FreeCell {
 	public class Game : MonoBehaviour {
 
 		[SerializeField] private CardSpriteSheet sheet;
+		[SerializeField] private CardPlacer placer;
 		[SerializeField] private BoardLayout layout;
 
 		private readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
@@ -16,6 +17,7 @@ namespace Summoner.FreeCell {
 
 		void Start () {
 			board = new Board( layout );
+			placer.Init( sheet, deck );
 			Initialize();
 		}
 
@@ -31,20 +33,9 @@ namespace Summoner.FreeCell {
 			foreach ( var card in cards ) {
 				var column = i % board.piles.Count;
 				board.piles[column].Push( card );
-				var row = board.piles[column].Count - 1;
-				
-				var cardObject = new GameObject( card.ToString() );
-				var renderer = cardObject.AddComponent<SpriteRenderer>();
-				renderer.sprite = sheet[card];
 
-				var cardTransform = cardObject.transform;
-				cardTransform.parent = transform;
-				var pos = new Vector3();
-				pos.x = (column + offset.x) * spacing.x;
-				pos.y = row * spacing.y + offset.y;
-				pos.z = row * spacing.z + offset.z;
-				cardTransform.position = pos;
-
+				var destination = new PileId( PileId.Type.Table, column );
+				InGameEvents.MoveACard( card, destination );
 				++i;
 			}
 		}

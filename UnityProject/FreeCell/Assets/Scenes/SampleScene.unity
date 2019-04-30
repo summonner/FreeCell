@@ -371,6 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sheet: {fileID: 11400000, guid: e9ea22f1b62f8e047ae210b235c8b6a7, type: 2}
+  placer: {fileID: 2042625289}
   layout: {fileID: 2042625287}
   spacing: {x: 1.1, y: -0.4, z: -0.01}
   offset: {x: -3.5, y: 5, z: 0}
@@ -439,6 +440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2042625288}
   - component: {fileID: 2042625287}
+  - component: {fileID: 2042625289}
   m_Layer: 0
   m_Name: BoardLayout
   m_TagString: Untagged
@@ -469,7 +471,7 @@ MonoBehaviour:
   - {fileID: 1907309282}
   - {fileID: 2065211011}
   numPiles: 8
-  spacing: {x: 1.1, y: 0.25, z: 0.01}
+  spacing: {x: 1.1, y: -0.4, z: -0.01}
   offset: {x: 0, y: 5, z: 0}
 --- !u!4 &2042625288
 Transform:
@@ -492,6 +494,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2042625289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2042625286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6289ec3e9b6095b49a1729204270b125, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 2042625287}
 --- !u!1 &2065211010
 GameObject:
   m_ObjectHideFlags: 0
