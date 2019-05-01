@@ -13,12 +13,6 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public bool isEmpty {
-			get {
-				return stack.Count <= 0;
-			}
-		}
-
 		public void Push( IEnumerable<Card> card ) {
 			stack.AddRange( card );
 		}
@@ -35,6 +29,11 @@ namespace Summoner.FreeCell {
 			stack.RemoveRange( index, popCount );
 
 			return poped;
+		}
+
+		public Card Peek( int index ) {
+			Debug.Assert( stack.IsOutOfRange( index ) == false, "tried to access the invalid index" );
+			return stack[index];
 		}
 
 		public void Clear() {

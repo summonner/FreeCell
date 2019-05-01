@@ -5,8 +5,8 @@ namespace Summoner.FreeCell {
 	public static class InGameEvents {
 		public delegate void MoveEvent( IEnumerable<Card> targets, PileId destination );
 		public static event MoveEvent OnMoveCards = delegate { };
-		public static void MoveACard( Card target, PileId destination ) {
-			OnMoveCards( new [] { target }, destination );
+		public static void MoveCards( IEnumerable<Card> targets, PileId destination ) {
+			OnMoveCards( targets, destination );
 		}
 
 		public delegate void ClickEvent( PileId pile, int row );

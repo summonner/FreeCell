@@ -41,18 +41,28 @@ namespace Summoner.FreeCell {
 
 			var i = 0;
 			foreach ( var card in cards ) {
+				var subject = new [] { card };
 				var column = i % tables.Count;
-				tables[column].Push( new[] { card } );
+				tables[column].Push( subject );
 
 				var destination = new PileId( PileId.Type.Table, column );
-				InGameEvents.MoveACard( card, destination );
+				InGameEvents.MoveCards( subject, destination );
 				++i;
 			}
 		}
 
 		private void OnClickCard( PileId pile, int row ) {
+			if ( pile.type != PileId.Type.Table ) {
+				return;
+			}
 
+			var target = tables[pile.index].Peek( row );
+			var poped = tables[pile.index].Pop( row );
+			var next = (pile.index + 1) % tables.Count;
+			tables[next].Push( poped );
+			InGameEvents.MoveCards( poped, new PileId( PileId.Type.Table, next ) );
 		}
+
 
 
 		public override string ToString() {
