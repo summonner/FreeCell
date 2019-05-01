@@ -4,45 +4,60 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public class Board {
 
-		private IList<Card?> home;
-		private IList<Card?> free;
-		public IList<Pile> piles;
+		private IList<IPile> homes;
+		private IList<IPile> frees;
+		public IList<IPile> tables;
 
 		public Board( BoardLayout layout ) {
-			home = Init<Card?>( layout.homeCells.Length );
-			free = Init<Card?>( layout.freeCells.Length );
-			piles = Init<Pile>( layout.piles.Length );
+			homes = Init<TablePile>( layout.homeCells.Length );
+			frees = Init<TablePile>( layout.freeCells.Length );
+			tables = Init<TablePile>( layout.piles.Length );
+
+			InGameEvents.OnClickCard += OnClickCard;
 		}
 
-		private static IList<T> Init<T>( int num ) where T : new() {
-			var list = new T[num];
+		private static IList<IPile> Init<T>( int num ) where T : IPile, new() {
+			var list = new IPile[num];
 			for ( int i=0; i < list.Length; ++i ) {
 				list[i] = new T();
 			}
 			return list;
 		}
 
-		public void Reset() {
-			Clear();
+		public void Clear() {
+			Clear( homes );
+			Clear( frees );
+			Clear( tables );
 		}
 
-		public void Clear() {
-			Clear( home );
-			Clear( free );
+		private static void Clear( IList<IPile> piles ) {
 			foreach ( var pile in piles ) {
 				pile.Clear();
 			}
 		}
 
-		private static void Clear( IList<Card?> cells ) {
-			for( int i=0; i < cells.Count; ++i ) {
-				cells[i] = null;
+		public void Reset( IEnumerable<Card> cards ) {
+			Clear();
+
+			var i = 0;
+			foreach ( var card in cards ) {
+				var column = i % tables.Count;
+				tables[column].Push( new[] { card } );
+
+				var destination = new PileId( PileId.Type.Table, column );
+				InGameEvents.MoveACard( card, destination );
+				++i;
 			}
 		}
 
+		private void OnClickCard( PileId pile, int row ) {
+
+		}
+
+
 		public override string ToString() {
 			var str = new System.Text.StringBuilder();
-			foreach ( var pile in piles ) {
+			foreach ( var pile in tables ) {
 				str.AppendLine( pile.ToString() );
 			}
 			return str.ToString();

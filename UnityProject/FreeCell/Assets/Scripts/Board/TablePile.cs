@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class Pile {
+	public class TablePile : IPile {
 
 		private List<Card> stack = new List<Card>( 20 );
 
@@ -18,24 +19,20 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void Push( params Card[] cards ) {
-			Push( (IEnumerable<Card>)cards );
-		}
-
 		public void Push( IEnumerable<Card> card ) {
 			stack.AddRange( card );
 		}
 
-		public IList<Card> Pop( int count ) {
-			if ( count > stack.Count ) {
+		public IEnumerable<Card> Pop( int index ) {
+			if ( stack.IsOutOfRange( index ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
 				return null;
 			}
 
-			var popIndex = stack.Count - count;
-			var poped = new Card[count];
-			stack.CopyTo( popIndex, poped, 0, count );
-			stack.RemoveRange( popIndex, count );
+			var popCount = stack.Count - index;
+			var poped = new Card[popCount];
+			stack.CopyTo( index, poped, 0, popCount );
+			stack.RemoveRange( index, popCount );
 
 			return poped;
 		}

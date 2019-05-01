@@ -64,3 +64,4 @@ MonoBehaviour:
   - {fileID: 21300032, guid: 2c113caa4c9334d4f9c8ff0dc46e5b60, type: 3}
   - {fileID: 21300008, guid: 2c113caa4c9334d4f9c8ff0dc46e5b60, type: 3}
   - {fileID: 21300020, guid: 2c113caa4c9334d4f9c8ff0dc46e5b60, type: 3}
+  template: {fileID: 114655643775235682, guid: 1bb8882a115382f428be2c39a5a4707e, type: 2}

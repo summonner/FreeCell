@@ -13,5 +13,26 @@ namespace Summoner.FreeCell {
 			this.type = type;
 			this.index = index;
 		}
+
+		public static bool operator ==( PileId left, PileId right ) {
+			return left.type == right.type
+				&& left.index == right.index;
+		}
+
+		public static bool operator !=( PileId left, PileId right ) {
+			return !(left == right);
+		}
+
+		public override bool Equals( object obj ) {
+			if ( obj is PileId ) {
+				return this == (PileId)obj;
+			}
+
+			return base.Equals( obj );
+		}
+
+		public override int GetHashCode() {
+			return (int)type + index;
+		}
 	}
 }

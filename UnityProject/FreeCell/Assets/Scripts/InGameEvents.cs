@@ -4,9 +4,20 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public static class InGameEvents {
 		public delegate void MoveEvent( IEnumerable<Card> targets, PileId destination );
-		public static MoveEvent OnMoveCards = delegate { };
+		public static event MoveEvent OnMoveCards = delegate { };
 		public static void MoveACard( Card target, PileId destination ) {
 			OnMoveCards( new [] { target }, destination );
+		}
+
+		public delegate void ClickEvent( PileId pile, int row );
+		public static event ClickEvent OnClickCard = delegate { };
+		public static void ClickCard( PileId pile, int row ) {
+			OnClickCard( pile, row );
+		}
+
+		public static void Flush() {
+			OnMoveCards = delegate { };
+			OnClickCard = delegate { };
 		}
 	}
 }

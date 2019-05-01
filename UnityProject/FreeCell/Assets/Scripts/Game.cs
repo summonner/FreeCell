@@ -8,6 +8,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardPlacer placer;
 		[SerializeField] private BoardLayout layout;
+		private System.Random random = new System.Random( 0 );
 
 		private readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
 
@@ -26,18 +27,8 @@ namespace Summoner.FreeCell {
 		}
 
 		private void Initialize() {
-			board.Clear();
-
-			var i = 0;
-			var cards = Util.Random.FisherYatesShuffle.Draw( deck );
-			foreach ( var card in cards ) {
-				var column = i % board.piles.Count;
-				board.piles[column].Push( card );
-
-				var destination = new PileId( PileId.Type.Table, column );
-				InGameEvents.MoveACard( card, destination );
-				++i;
-			}
+			var cards = Util.Random.FisherYatesShuffle.Draw( deck, random.Next );
+			board.Reset( cards );
 		}
 	}
 }
