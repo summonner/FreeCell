@@ -1,0 +1,51 @@
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Summoner.FreeCell {
+	public class HomeCell : IPile {
+
+		private readonly List<Card> stack = new List<Card>( 13 );
+
+		public int Count
+		{
+			get
+			{
+				return stack.Count;
+			}
+		}
+
+		public void Push( IList<Card> cards ) {
+			if ( cards.Count > 1 ) {
+				return;
+			}
+
+			stack.AddRange( cards );
+		}
+
+		public IList<Card> Pop( int index ) {
+			return null;
+		}
+
+		public bool IsAcceptable( Card card ) {
+			if ( stack.Count <= 0 ) {
+				return card.rank == Card.Rank.Ace;
+			}
+
+			var top = stack.Last();
+			if ( card.suit != top.suit ) {
+				return false;
+			}
+
+			return card.rank == (top.rank + 1);
+		}
+
+		public void Clear() {
+			stack.Clear();
+		}
+
+		public IList<Card> GetReadOnly() {
+			return stack.AsReadOnly();
+		}
+	}
+}

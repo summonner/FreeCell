@@ -18,11 +18,13 @@ namespace Summoner.FreeCell {
 
 		void Start () {
 			board = new Board( layout );
-			placer.Init( sheet, deck );
+			placer.Init( board, sheet, deck );
 			Initialize();
 		}
 
 		void Reset() {
+			sheet = null;
+			placer = null;
 			layout = FindObjectOfType<BoardLayout>();
 		}
 

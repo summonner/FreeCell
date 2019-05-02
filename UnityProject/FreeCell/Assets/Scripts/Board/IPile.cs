@@ -5,9 +5,11 @@ namespace Summoner.FreeCell {
 	public interface IPile {
 		int Count { get; }
 
-		void Push( IEnumerable<Card> cards );
-		IEnumerable<Card> Pop( int index );
-		Card Peek( int index );
+		void Push( IList<Card> cards );
+		IList<Card> Pop( int index );
+		bool IsAcceptable( Card card );
 		void Clear();
+
+		IList<Card> GetReadOnly();
 	}
 }

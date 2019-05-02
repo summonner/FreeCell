@@ -4,12 +4,13 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class CardPlacer : MonoBehaviour {
-		[SerializeField] private BoardLayout board;
+		[SerializeField] private BoardLayout layout;
+		private IBoardLookup board;
 
 		private Dictionary<Card, CardObject> cards = new Dictionary<Card, CardObject>( 52 );
 
 		void Reset() {
-			board = GetComponent<BoardLayout>();
+			layout = GetComponent<BoardLayout>();
 		}
 
 		void Awake() {
@@ -20,27 +21,39 @@ namespace Summoner.FreeCell {
 			InGameEvents.OnMoveCards -= OnMoveCards;
 		}
 
-		public void Init( CardSpriteSheet sheet, IEnumerable<Card> deck ) {
+		public void Init( IBoardLookup board, CardSpriteSheet sheet, IEnumerable<Card> deck ) {
+			this.board = board;
+
 			foreach ( var card in deck ) {
 				var obj = sheet.NewObject( card );
 				obj.name = card.ToString();
+				obj.transform.parent = transform;
 				cards.Add( card, obj );
 			}
 		}
 
 		private void OnMoveCards( IEnumerable<Card> targets, PileId destination ) {
+			var pile = board.GetPile( destination );
+			var spacing = CalculateSpacing( destination.type );
+
 			foreach ( var target in targets ) {
 				var card = cards[target];
-				var pile = board[destination];
-				var row = pile.childCount;
-				var position = new Vector3() {
-					y = row * board.spacing.y,
-					z = row * board.spacing.z,
-				};
+				var pilePosition = layout[destination];
+				var row = pile.IndexOf( target );
+				var position = pilePosition.position + row * spacing;
 
 				card.onClick = () => { InGameEvents.ClickCard( destination, row ); };
-				card.SetPosition( pile, position );
+				card.SetPosition( position );
 			}
+		}
+
+		private Vector3 CalculateSpacing( PileId.Type type ) {
+			var spacing = layout.spacing;
+			spacing.x = 0f;
+			if ( type != PileId.Type.Table ) {
+				spacing.y = 0f;
+			}
+			return spacing;
 		}
 	}
 }

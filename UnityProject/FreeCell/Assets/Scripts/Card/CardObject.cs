@@ -24,23 +24,22 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void SetPosition( Transform pile, Vector3 position ) {
+		public void SetPosition( Vector3 worldPosition ) {
 			if ( transform == null ) {
 				transform = base.transform;
 			}
 
-			transform.parent = pile;
 			StopAllCoroutines();
-			StartCoroutine( MoveAnim( position ) );
+			StartCoroutine( MoveAnim( worldPosition ) );
 		}
 
 		private IEnumerator MoveAnim( Vector3 destination ) {
-			var start = transform.localPosition;
+			var start = transform.position;
 			enableCollider = false;
 			renderer.sortingOrder = 1;
 
 			foreach ( var t in curve.EvaluateWithTime() ) {
-				transform.localPosition = Vector3.Lerp( start, destination, t );
+				transform.position = Vector3.Lerp( start, destination, t );
 				yield return null;
 			}
 

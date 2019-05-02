@@ -5,7 +5,7 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class TablePile : IPile {
 
-		private List<Card> stack = new List<Card>( 20 );
+		private readonly List<Card> stack = new List<Card>( 20 );
 
 		public int Count {
 			get {
@@ -13,13 +13,17 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void Push( IEnumerable<Card> card ) {
+		public void Push( IList<Card> card ) {
 			stack.AddRange( card );
 		}
 
-		public IEnumerable<Card> Pop( int index ) {
+		public IList<Card> Pop( int index ) {
 			if ( stack.IsOutOfRange( index ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
+				return null;
+			}
+
+			if ( DoesLinked( index ) == false ) {
 				return null;
 			}
 
@@ -31,13 +35,57 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
-		public Card Peek( int index ) {
-			Debug.Assert( stack.IsOutOfRange( index ) == false, "tried to access the invalid index" );
-			return stack[index];
+		private bool DoesLinked( int index ) {
+			for ( int i = stack.Count - 2; i >= index; --i ) {
+				if ( DoesLink( stack[i + 1], stack[i] ) == false ) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private bool DoesLink( Card top, Card under ) {
+
+			if ( IsRed( top ) == IsRed( under ) ) {
+				return false;
+			}
+
+			if ( under.rank - top.rank != 1 ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		public bool IsAcceptable( Card target ) {
+			if ( stack.Count == 0 ) {
+				return true;
+			}
+
+			var top = stack[stack.Count - 1];
+			return DoesLink( target, top );
+		}
+
+		private static bool IsRed( Card card ) {
+			switch ( card.suit ) {
+				case Card.Suit.Diamonds:
+				case Card.Suit.Hearts:
+					return true;
+
+				case Card.Suit.Spades:
+				case Card.Suit.Clubs:
+				default:
+					return false;
+			}
 		}
 
 		public void Clear() {
 			stack.Clear();
+		}
+
+		public IList<Card> GetReadOnly() {
+			return stack.AsReadOnly();
 		}
 
 		public override string ToString() {

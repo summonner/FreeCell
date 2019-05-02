@@ -1,19 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class Board {
+	public interface IBoardLookup {
+		IList<Card> GetPile( PileId id );
+	}
+
+	public class Board : IBoardLookup {
 
 		private IList<IPile> homes;
 		private IList<IPile> frees;
-		public IList<IPile> tables;
+		private IList<IPile> tables;
 
 		public Board( BoardLayout layout ) {
-			homes = Init<TablePile>( layout.homeCells.Length );
-			frees = Init<TablePile>( layout.freeCells.Length );
-			tables = Init<TablePile>( layout.piles.Length );
+			homes = Init<HomeCell>( layout.homeCells.Length );
+			frees = Init<FreeCell>( layout.freeCells.Length );
+			tables = Init<TablePile>( layout.tablePiles.Length );
 
 			InGameEvents.OnClickCard += OnClickCard;
+		}
+
+		public IList<Card> GetPile( PileId id ) {
+			var piles = GetPiles( id.type );
+			if ( piles.IsOutOfRange( id.index ) == true ) {
+				return null;
+			}
+
+			return piles[id.index].GetReadOnly();
+		}
+
+		private IList<IPile> GetPiles( PileId.Type type ) {
+			switch ( type ) {
+				case PileId.Type.Free:
+					return frees;
+				case PileId.Type.Home:
+					return homes;
+				case PileId.Type.Table:
+					return tables;
+				default:
+					return null;
+			}
 		}
 
 		private static IList<IPile> Init<T>( int num ) where T : IPile, new() {
@@ -52,18 +79,55 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnClickCard( PileId pile, int row ) {
-			if ( pile.type != PileId.Type.Table ) {
+			if ( pile.type == PileId.Type.Home ) {
 				return;
 			}
 
-			var target = tables[pile.index].Peek( row );
-			var poped = tables[pile.index].Pop( row );
-			var next = (pile.index + 1) % tables.Count;
-			tables[next].Push( poped );
-			InGameEvents.MoveCards( poped, new PileId( PileId.Type.Table, next ) );
+			var selected = GetPiles( pile.type )[pile.index];
+			var poped = selected.Pop( row );
+			if ( poped == null ) {
+				return;
+			}
+
+			var target = poped[0];
+			foreach ( var nextPileType in SelectNextPile( poped.Count, pile ) ) {
+				var piles = GetPiles( nextPileType );
+				for ( int i=0; i < piles.Count; ++i ) {
+					var next = piles[i];
+					if ( next == selected ) {
+						continue;
+					}
+
+					if ( next.IsAcceptable( target ) == false ) {
+						continue;
+					}
+
+					next.Push( poped );
+					InGameEvents.MoveCards( poped, new PileId( nextPileType, i ) );
+					return;
+				}
+			}
+
+			selected.Push( poped );
 		}
 
+		private IEnumerable<PileId.Type> SelectNextPile( int popedCount, PileId selected ) {
+			if ( popedCount == 1 ) {
+				yield return PileId.Type.Home;
+			}
 
+			yield return PileId.Type.Table;
+
+			if ( popedCount != 1 ) {
+				yield break;
+			}
+
+			if ( selected.type == PileId.Type.Free ) {
+				yield break;
+			}
+
+			yield return PileId.Type.Free;
+		}
 
 		public override string ToString() {
 			var str = new System.Text.StringBuilder();

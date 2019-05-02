@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Summoner.FreeCell {
 	public class CardSpriteSheet : ScriptableObject {
-		[SerializeField] private Sprite[] cards;
-		[SerializeField] private CardObject template;
+		[SerializeField] private Sprite[] cards = null;
+		[SerializeField] private CardObject template = null;
 
 		public Sprite this[Card card] {
 			get {
