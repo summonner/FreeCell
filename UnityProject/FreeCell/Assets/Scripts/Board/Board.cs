@@ -16,7 +16,7 @@ namespace Summoner.FreeCell {
 		public Board( BoardLayout layout ) {
 			homes = Init<HomeCell>( layout.homeCells.Length );
 			frees = Init<FreeCell>( layout.freeCells.Length );
-			tables = Init<TablePile>( layout.tablePiles.Length );
+			tables = Init<Tableau>( layout.tablePiles.Length );
 
 			InGameEvents.OnClickCard += OnClickCard;
 		}

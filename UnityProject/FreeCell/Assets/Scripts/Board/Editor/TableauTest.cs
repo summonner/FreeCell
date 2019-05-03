@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class TablePileTest {
+	public class TableauTest {
 		#region testCases
 		public static IList<Card>[] unorderedCases = new [] {
 			new [] {
@@ -49,33 +49,33 @@ namespace Summoner.FreeCell {
 
 		[TestCaseSource( "wholeCases" )]
 		public void SinglePushPop( IList<Card> cards ) {
-			var pile = new TablePile();
+			var pile = new Tableau();
 			SinglePush( pile, cards );
 			SinglePop( pile, cards );
 		}
 
 		[TestCaseSource( "orderedCases" )]
 		public void MultiplePushPop( IList<Card> cards ) {
-			var pile = new TablePile();
+			var pile = new Tableau();
 			MultiplePush( pile, cards );
 			MultiplePop( pile, cards );
 		}
 
 		[TestCaseSource( "wholeCases" )]
 		public void MultiplePushSinglePop( IList<Card> cards ) {
-			var pile = new TablePile();
+			var pile = new Tableau();
 			MultiplePush( pile, cards );
 			SinglePop( pile, cards );
 		}
 
 		[TestCaseSource( "orderedCases" )]
 		public void SinglePushMultiplePop( IList<Card> cards ) {
-			var pile = new TablePile();
+			var pile = new Tableau();
 			SinglePush( pile, cards );
 			MultiplePop( pile, cards );
 		}
 
-		private void SinglePush( TablePile pile, IList<Card> cards ) {
+		private void SinglePush( Tableau pile, IList<Card> cards ) {
 			pile.Clear();
 			Assert.AreEqual( 0, pile.Count, "have to initialized as empty" );
 
@@ -86,14 +86,14 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void MultiplePush( TablePile pile, IList<Card> cards ) {
+		private void MultiplePush( Tableau pile, IList<Card> cards ) {
 			pile.Clear();
 			Assert.AreEqual( 0, pile.Count, "have to initialized as empty" );
 			pile.Push( cards );
 			Assert.AreEqual( cards.Count, pile.Count, "failed to push cards" );
 		}
 
-		private void SinglePop( TablePile pile, IList<Card> cards ) {
+		private void SinglePop( Tableau pile, IList<Card> cards ) {
 			for ( var i = pile.Count - 1; i >= 0; --i ) {
 				var poped = pile.Pop( i );
 				Assert.IsNotNull( poped, "failed to pop a card" );
@@ -103,7 +103,7 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void MultiplePop( TablePile pile, IList<Card> cards ) {
+		private void MultiplePop( Tableau pile, IList<Card> cards ) {
 			var poped = pile.Pop( 0 );
 			Assert.IsNotNull( poped, "failed to pop cards" );
 			Assert.AreEqual( cards.Count, poped.Count, "tried pop all cards from pile" );
@@ -112,29 +112,48 @@ namespace Summoner.FreeCell {
 			CollectionAssert.AreEqual( cards, poped, "poped cards have to have same order with source" );
 		}
 
+		private readonly static IEnumerable<Card> deck = Card.NewDeck();
+		[TestCaseSource( "deck" )]
+		public void AcceptableTest( Card selected ) {
+			var pile = new Tableau();
+
+			pile.Push( new [] { selected } );
+			int countAcceptables = 0;
+			foreach ( var card in deck ) {
+				if ( IsSameColor( card.suit, selected.suit ) ) {
+					Assert.IsFalse( pile.IsAcceptable( card ), "same colored suit must not acceptable - " + card );
+					continue;
+				}
+
+				if ( selected.rank - 1 != card.rank ) {
+					Assert.IsFalse( pile.IsAcceptable( card ), "can only acceptable the rank is 1 smaller than top of pile - " + card );
+					continue;
+				}
+
+				Assert.IsTrue( pile.IsAcceptable( card ), "valid card have to acceptable - " + card );
+				countAcceptables += 1;
+			}
+
+			if ( selected.rank == Card.Rank.Ace ) {
+				Assert.AreEqual( 0, countAcceptables, "no cards are acceptable on the next of ace" );
+			}
+			else {
+				Assert.AreEqual( 2, countAcceptables, "must be 2 acceptable cards exist" );
+			}
+		}
+
+		private static bool IsSameColor( Card.Suit left, Card.Suit right ) {
+			IList<Card.Suit> reds = new [] { Card.Suit.Diamonds, Card.Suit.Hearts };
+			return reds.Contains( left ) == reds.Contains( right );
+		}
+
 		[Test]
-		public void RuleTest() {
-			var pile = new TablePile();
+		public void AcceptableTestForEmpty() {
+			var pile = new Tableau();
 
-			var diamond10 = new Card( Card.Suit.Diamonds, Card.Rank._10 );
-			var club9 = new Card( Card.Suit.Clubs, Card.Rank._9 );
-			var spade9 = new Card( Card.Suit.Spades, Card.Rank._9 );
-			var diamond9 = new Card( Card.Suit.Diamonds, Card.Rank._9 );
-			var heart9 = new Card( Card.Suit.Hearts, Card.Rank._9 );
-			var club8 = new Card( Card.Suit.Clubs, Card.Rank._8 );
-			var spade8 = new Card( Card.Suit.Spades, Card.Rank._8 );
-			var diamond8 = new Card( Card.Suit.Diamonds, Card.Rank._8 );
-			var heart8 = new Card( Card.Suit.Hearts, Card.Rank._8 );
-
-			pile.Push( new [] { diamond10 } );
-			Assert.IsTrue( pile.IsAcceptable( club9 ), club9 + " have to acceptable" );
-			Assert.IsTrue( pile.IsAcceptable( spade9 ), spade9 + " have to acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( diamond9 ), diamond9 + " must not acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( heart9 ), heart9 + " must not acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( club8 ), club8 + " must not acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( spade8 ), spade8 + " must not acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( diamond8 ), diamond8 + " must not acceptable" );
-			Assert.IsFalse( pile.IsAcceptable( heart8 ), heart8 + " must not acceptable" );
+			foreach ( var card in deck ) {
+				Assert.IsTrue( pile.IsAcceptable( card ), "empty tableau have to accept any cards" );
+			}
 		}
 	}
 }

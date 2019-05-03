@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class TablePile : IPile {
+	public class Tableau : IPile {
 
 		private readonly List<Card> stack = new List<Card>( 20 );
 
