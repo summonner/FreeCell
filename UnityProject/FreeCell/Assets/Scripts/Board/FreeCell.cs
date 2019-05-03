@@ -21,11 +21,11 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Push( IList<Card> cards ) {
-			if ( cards.Count > 1 ) {
+			if ( stack.Count > 0 ) {
 				return;
 			}
 
-			stack.AddRange( cards );
+			stack.Add( cards[0] );
 		}
 
 		public IList<Card> Pop( int index ) {

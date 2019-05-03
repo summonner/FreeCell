@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class HomeCell : IPile {
@@ -23,8 +24,18 @@ namespace Summoner.FreeCell {
 			stack.AddRange( cards );
 		}
 
-		public IList<Card> Pop( int index ) {
-			return null;
+		public IList<Card> Pop( int startIndex ) {
+			if ( stack.IsOutOfRange( startIndex ) == true ) {
+				Debug.Assert( false, "tried to pop too many from pile." );
+				return null;
+			}
+
+			var popCount = stack.Count - startIndex;
+			var poped = new Card[popCount];
+			stack.CopyTo( startIndex, poped, 0, popCount );
+			stack.RemoveRange( startIndex, popCount );
+
+			return poped;
 		}
 
 		public bool IsAcceptable( Card card ) {

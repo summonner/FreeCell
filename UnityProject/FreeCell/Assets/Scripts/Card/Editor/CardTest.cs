@@ -18,5 +18,22 @@ namespace Summoner.FreeCell {
 
 			Assert.AreEqual( (1ul << 52) - 1, check, check.ToString( "x" ) );
 		}
+
+		[Test]
+		public void EqualTest() {
+			var spadeAce = new Card( Card.Suit.Spades, Card.Rank.Ace );
+			var anotherSpadeAce = new Card( Card.Suit.Spades, Card.Rank.Ace );
+
+			Assert.AreEqual( spadeAce, spadeAce, "failed to equal test between same object" );
+			Assert.AreEqual( spadeAce, anotherSpadeAce, "failed to equal test between other object" );
+		}
+
+		[Test]
+		public void NotEqualTest() {
+			var spadeAce = new Card( Card.Suit.Spades, Card.Rank.Ace );
+			var spade2 = new Card( Card.Suit.Spades, Card.Rank._2 );
+
+			Assert.AreNotEqual( spadeAce, spade2, "failed to not equal test" );
+		}
 	}
 }

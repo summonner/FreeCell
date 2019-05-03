@@ -17,20 +17,20 @@ namespace Summoner.FreeCell {
 			stack.AddRange( card );
 		}
 
-		public IList<Card> Pop( int index ) {
-			if ( stack.IsOutOfRange( index ) == true ) {
+		public IList<Card> Pop( int startIndex ) {
+			if ( stack.IsOutOfRange( startIndex ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
 				return null;
 			}
 
-			if ( DoesLinked( index ) == false ) {
+			if ( DoesLinked( startIndex ) == false ) {
 				return null;
 			}
 
-			var popCount = stack.Count - index;
+			var popCount = stack.Count - startIndex;
 			var poped = new Card[popCount];
-			stack.CopyTo( index, poped, 0, popCount );
-			stack.RemoveRange( index, popCount );
+			stack.CopyTo( startIndex, poped, 0, popCount );
+			stack.RemoveRange( startIndex, popCount );
 
 			return poped;
 		}
