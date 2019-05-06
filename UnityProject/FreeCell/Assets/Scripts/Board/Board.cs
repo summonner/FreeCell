@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
@@ -83,6 +84,7 @@ namespace Summoner.FreeCell {
 				return;
 			}
 
+			var numMovable = CountMaxMovableCards();
 			var selected = GetPiles( pile.type )[pile.index];
 			var poped = selected.Pop( row );
 			if ( poped == null ) {
@@ -95,6 +97,13 @@ namespace Summoner.FreeCell {
 				for ( int i=0; i < piles.Count; ++i ) {
 					var next = piles[i];
 					if ( next == selected ) {
+						continue;
+					}
+
+					var IsEmptyTableau = (next is Tableau)
+									  && (next.Count == 0);
+					var adjustment = IsEmptyTableau ? 2 : 1;
+					if ( poped.Count > numMovable / adjustment ) {
 						continue;
 					}
 
@@ -128,6 +137,12 @@ namespace Summoner.FreeCell {
 			}
 
 			yield return PileId.Type.Free;
+		}
+
+		private int CountMaxMovableCards() {
+			var numEmptyFrees =	frees.Count( ( cell ) => (cell.Count == 0) );
+			var numEmptyTableau = tables.Count( ( pile ) => (pile.Count == 0) );
+			return (1 + numEmptyFrees) * (int)Mathf.Pow( 2f, numEmptyTableau );
 		}
 
 		public override string ToString() {
