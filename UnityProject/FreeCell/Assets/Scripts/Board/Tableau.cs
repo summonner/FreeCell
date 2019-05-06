@@ -75,7 +75,10 @@ namespace Summoner.FreeCell {
 
 				case Card.Suit.Spades:
 				case Card.Suit.Clubs:
+					return false;
+
 				default:
+					Debug.Assert( false, "Unknown suit type : " + card );
 					return false;
 			}
 		}

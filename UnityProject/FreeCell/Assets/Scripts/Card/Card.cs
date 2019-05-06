@@ -3,12 +3,15 @@
 namespace Summoner.FreeCell {
 	public struct Card {
 		public enum Suit {
-			Spades = 0, Hearts, Diamonds, Clubs
+			NONE = 0, Spades = 1, Hearts, Diamonds, Clubs,
 		}
 
 		public enum Rank {
-			Ace = 0, _2, _3, _4, _5, _6, _7, _8, _9, _10, Jack, Queen, King
+			NONE = 0,
+			Ace = 1, _2, _3, _4, _5, _6, _7, _8, _9, _10, Jack, Queen, King
 		}
+
+		public static readonly Card Blank = new Card( Suit.NONE, Rank.NONE );
 
 		public readonly Suit suit;
 		public readonly Rank rank;
@@ -41,7 +44,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public override int GetHashCode() {
-			return (int)suit * 13 + (int)rank;
+			return ((int)suit - 1) * 13 + ((int)rank - 1);
 		}
 
 		public override bool Equals( object obj ) {

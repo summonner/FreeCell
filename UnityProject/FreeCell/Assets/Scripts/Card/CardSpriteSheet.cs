@@ -15,7 +15,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private int FindIndex( Card card ) {
-			return (int)card.suit * 13 + (int)card.rank;
+			return card.GetHashCode();
 		}
 
 		public CardObject NewObject( Card card ) {

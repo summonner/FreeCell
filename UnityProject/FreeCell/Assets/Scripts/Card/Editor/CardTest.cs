@@ -12,7 +12,7 @@ namespace Summoner.FreeCell {
 
 			ulong check = 0ul;
 			foreach ( var card in deck ) {
-				var index = (int)card.suit * 13 + (int)card.rank;
+				var index = ((int)card.suit - 1) * 13 + ((int)card.rank - 1);
 				check |= 1ul << index;
 			}
 

@@ -62,7 +62,7 @@ namespace Summoner.FreeCell {
 				var suit = cards[0].suit;
 				for ( int i=0; i < cards.Count; ++i ) {
 					Assert.AreEqual( suit, cards[i].suit, "all cards of each cells must be same suit" );
-					Assert.AreEqual( i, (int)cards[i].rank, "cards must be sorted in ascending order" );
+					Assert.AreEqual( (Card.Rank)(i + 1), cards[i].rank, "cards must be sorted in ascending order" );
 				}
 			}
 		}
