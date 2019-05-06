@@ -15,10 +15,12 @@ namespace Summoner.FreeCell {
 
 		void Awake() {
 			InGameEvents.OnMoveCards += OnMoveCards;
+			InGameEvents.OnCannotMove += OnCannotMove;
 		}
 
 		void OnDestroy() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+			InGameEvents.OnCannotMove -= OnCannotMove;
 		}
 
 		public void Init( IBoardLookup board, CardSpriteSheet sheet, IEnumerable<Card> deck ) {
@@ -44,6 +46,13 @@ namespace Summoner.FreeCell {
 
 				card.onClick = () => { InGameEvents.ClickCard( destination, row ); };
 				card.SetPosition( position );
+			}
+		}
+
+		private void OnCannotMove( IEnumerable<Card> subjects ) {
+			foreach ( var subject in subjects ) {
+				var card = cards[subject];
+				card.Vibrate();
 			}
 		}
 

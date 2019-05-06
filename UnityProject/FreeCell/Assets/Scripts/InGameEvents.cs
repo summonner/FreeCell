@@ -15,9 +15,16 @@ namespace Summoner.FreeCell {
 			OnClickCard( pile, row );
 		}
 
+		public delegate void CannotMoveEvent( IEnumerable<Card> subjects );
+		public static event CannotMoveEvent OnCannotMove = delegate { };
+		public static void CannotMove( IEnumerable<Card> subjects ) {
+			OnCannotMove( subjects );
+		}
+
 		public static void Flush() {
 			OnMoveCards = delegate { };
 			OnClickCard = delegate { };
+			OnCannotMove = delegate { };
 		}
 	}
 }

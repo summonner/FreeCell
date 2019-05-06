@@ -109,6 +109,7 @@ namespace Summoner.FreeCell {
 			}
 
 			selected.Push( poped );
+			InGameEvents.CannotMove( poped );
 		}
 
 		private IEnumerable<PileId.Type> SelectNextPile( int popedCount, PileId selected ) {

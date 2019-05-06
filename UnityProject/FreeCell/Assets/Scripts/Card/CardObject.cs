@@ -8,6 +8,8 @@ namespace Summoner.FreeCell {
 	[RequireComponent( typeof( BoxCollider2D ) )]
 	public class CardObject : MonoBehaviour, IPointerDownHandler {
 		[SerializeField] private new SpriteRenderer renderer;
+		[SerializeField] private VibrateAnim anim;
+
 		private new Transform transform;
 		private new Collider2D collider;
 		public System.Action onClick = delegate { };
@@ -58,10 +60,15 @@ namespace Summoner.FreeCell {
 
 		void Reset() {
 			renderer = GetComponentInChildren<SpriteRenderer>();
+			anim = GetComponentInChildren<VibrateAnim>();
 		}
 
 		public void OnPointerDown( PointerEventData eventData ) {
 			onClick();
+		}
+
+		public void Vibrate() {
+			anim.StartAnim();
 		}
 	}
 }
