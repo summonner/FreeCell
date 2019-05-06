@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Summoner.FreeCell {
+namespace Summoner.FreeCell.Test {
 	public class CardTest {
 
 		[Test]

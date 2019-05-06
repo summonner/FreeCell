@@ -3,7 +3,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-namespace Summoner.FreeCell {
+namespace Summoner.FreeCell.Test {
 	public class HomeCellTest {
 
 		[Test]

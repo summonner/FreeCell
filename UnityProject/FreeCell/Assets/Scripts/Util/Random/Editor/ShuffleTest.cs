@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Summoner.Util.Random {
+namespace Summoner.Util.Random.Test {
 	public class ShuffleTest {
 
 		public static int[] testCases = new [] { 1, 10, 100 };

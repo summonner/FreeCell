@@ -2,7 +2,7 @@ using UnityEngine;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Summoner.FreeCell {
+namespace Summoner.FreeCell.Test {
 	public class TableauTest {
 		#region testCases
 		public static IList<Card>[] unorderedCases = new [] {

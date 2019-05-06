@@ -2,7 +2,7 @@ using UnityEngine;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Summoner.FreeCell {
+namespace Summoner.FreeCell.Test {
 	public class FreeCellTest {
 		private static readonly Card spadeAce = new Card( Card.Suit.Spades, Card.Rank.Ace );
 		private static readonly Card spade2 = new Card( Card.Suit.Spades, Card.Rank._2 );
