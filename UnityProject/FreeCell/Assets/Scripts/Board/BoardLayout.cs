@@ -3,7 +3,19 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class BoardLayout : MonoBehaviour {
+	public interface IBoardLayout {
+		int numHomes { get; }
+		int numFrees { get; }
+		int numPiles { get; }
+	}
+
+	public interface IBoardPreset : IBoardLayout {
+		IEnumerable<Card> homes { get; }
+		IEnumerable<Card> frees { get; }
+		IEnumerable<Card> tableau { get; }
+	}
+
+	public class BoardLayout : MonoBehaviour, IBoardLayout {
 		public Transform[] homeCells;
 		public Transform[] freeCells;
 		public Transform[] tablePiles;
@@ -64,6 +76,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private static readonly Vector3 size = new Vector3( 1f, 1.357f, 1f );
+
 		private static void DrawGizmos( Transform[] transforms, Color color ) {
 			Gizmos.color = color;
 			foreach ( var t in transforms ) {
@@ -96,5 +109,23 @@ namespace Summoner.FreeCell {
 			}
 		}
 
+
+		int IBoardLayout.numHomes {
+			get {
+				return homeCells.Length;
+			}
+		}
+
+		int IBoardLayout.numFrees {
+			get {
+				return freeCells.Length;
+			}
+		}
+
+		int IBoardLayout.numPiles {
+			get {
+				return tablePiles.Length;
+			}
+		}
 	}
 }

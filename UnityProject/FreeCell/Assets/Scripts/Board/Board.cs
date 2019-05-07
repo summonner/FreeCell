@@ -5,24 +5,42 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public interface IBoardLookup {
-		IList<Card> GetPile( PileId id );
+		IList<Card> Look( PileId id );
 	}
 
 	public class Board : IBoardLookup {
-
 		private IList<IPile> homes;
 		private IList<IPile> frees;
 		private IList<IPile> tables;
 
-		public Board( BoardLayout layout ) {
-			homes = Init<HomeCell>( layout.homeCells.Length );
-			frees = Init<FreeCell>( layout.freeCells.Length );
-			tables = Init<Tableau>( layout.tablePiles.Length );
+		public Board( IBoardLayout layout ) {
+			homes = Init<HomeCell>( layout.numHomes );
+			frees = Init<FreeCell>( layout.numFrees );
+			tables = Init<Tableau>( layout.numPiles );
 
 			InGameEvents.OnClickCard += OnClickCard;
 		}
 
-		public IList<Card> GetPile( PileId id ) {
+		public Board( IBoardPreset preset ) 
+			: this( (IBoardLayout)preset ) 
+		{
+			Reset( preset.tableau );
+			ApplyPreset( homes, preset.homes );
+			ApplyPreset( frees, preset.frees );
+		}
+
+		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
+			int i=0;
+			foreach ( var card in preset ) {
+				if ( card != Card.Blank ) {
+					target[i].Push( card );
+				}
+
+				++i;
+			}
+		}
+
+		IList<Card> IBoardLookup.Look( PileId id ) {
 			var piles = GetPiles( id.type );
 			if ( piles.IsOutOfRange( id.index ) == true ) {
 				return null;

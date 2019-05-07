@@ -3,10 +3,14 @@ using System.Collections.Generic;
 
 namespace Summoner.Util.Extension {
 	public static class IListExtension {
-		public static bool IsOutOfRange<T>( this IList<T> target, int index ) {
-			return target == null
+		public static bool IsOutOfRange<T>( this IList<T> list, int index ) {
+			return list == null
 				|| index < 0
-				|| index >= target.Count;
+				|| index >= list.Count;
+		}
+
+		public static System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly<T>( this T[] list ) {
+			return System.Array.AsReadOnly( list );
 		}
 	}
 }

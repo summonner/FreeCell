@@ -35,7 +35,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnMoveCards( IEnumerable<Card> targets, PileId destination ) {
-			var pile = board.GetPile( destination );
+			var pile = board.Look( destination );
 			var spacing = CalculateSpacing( destination.type );
 
 			foreach ( var target in targets ) {
