@@ -9,10 +9,10 @@ namespace Summoner.FreeCell {
 			OnMoveCards( targets, destination );
 		}
 
-		public delegate void ClickEvent( PileId pile, int row );
+		public delegate void ClickEvent( SelectPosition selected );
 		public static event ClickEvent OnClickCard = delegate { };
-		public static void ClickCard( PileId pile, int row ) {
-			OnClickCard( pile, row );
+		public static void ClickCard( SelectPosition selected ) {
+			OnClickCard( selected );
 		}
 
 		public delegate void CannotMoveEvent( IEnumerable<Card> subjects );

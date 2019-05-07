@@ -79,24 +79,24 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void OnClickCard( PileId pile, int row ) {
-			if ( pile.type == PileId.Type.Home ) {
+		private void OnClickCard( SelectPosition selected ) {
+			if ( selected.type == PileId.Type.Home ) {
 				return;
 			}
 
 			var numMovable = CountMaxMovableCards();
-			var selected = GetPiles( pile.type )[pile.index];
-			var poped = selected.Pop( row );
+			var selectedPile = GetPiles( selected.type )[selected.column];
+			var poped = selectedPile.Pop( selected.row );
 			if ( poped == null ) {
 				return;
 			}
 
 			var target = poped[0];
-			foreach ( var nextPileType in SelectNextPile( poped.Count, pile ) ) {
+			foreach ( var nextPileType in SelectNextPile( poped.Count, selected.pile ) ) {
 				var piles = GetPiles( nextPileType );
 				for ( int i=0; i < piles.Count; ++i ) {
 					var next = piles[i];
-					if ( next == selected ) {
+					if ( next == selectedPile ) {
 						continue;
 					}
 
@@ -117,7 +117,7 @@ namespace Summoner.FreeCell {
 				}
 			}
 
-			selected.Push( poped );
+			selectedPile.Push( poped );
 			InGameEvents.CannotMove( poped );
 		}
 

@@ -44,7 +44,7 @@ namespace Summoner.FreeCell {
 				var row = pile.IndexOf( target );
 				var position = pilePosition.position + row * spacing;
 
-				card.onClick = () => { InGameEvents.ClickCard( destination, row ); };
+				card.onClick = () => { InGameEvents.ClickCard( new SelectPosition( destination, row ) ); };
 				card.SetPosition( position );
 			}
 		}
