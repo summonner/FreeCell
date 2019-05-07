@@ -6,6 +6,7 @@ namespace Summoner.FreeCell {
 		int Count { get; }
 
 		void Push( IList<Card> cards );
+		void Push( params Card[] cards );
 		IList<Card> Pop( int startIndex );
 		bool IsAcceptable( Card card );
 		void Clear();

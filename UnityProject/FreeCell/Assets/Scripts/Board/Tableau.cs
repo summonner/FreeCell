@@ -13,6 +13,10 @@ namespace Summoner.FreeCell {
 			}
 		}
 
+		public void Push( params Card[] cards ) {
+			Push( (IList<Card>)cards );
+		}
+
 		public void Push( IList<Card> card ) {
 			stack.AddRange( card );
 		}

@@ -81,7 +81,7 @@ namespace Summoner.FreeCell.Test {
 
 			for ( var i = 0; i < cards.Count; ++i ) {
 				var card = cards[i];
-				pile.Push( new[] { card } );
+				pile.Push( card );
 				Assert.AreEqual( i + 1, pile.Count, "failed to push a card - " + card );
 			}
 		}
@@ -117,7 +117,7 @@ namespace Summoner.FreeCell.Test {
 		public void AcceptableTest( Card selected ) {
 			var pile = new Tableau();
 
-			pile.Push( new [] { selected } );
+			pile.Push( selected );
 			int countAcceptables = 0;
 			foreach ( var card in deck ) {
 				if ( IsSameColor( card.suit, selected.suit ) ) {

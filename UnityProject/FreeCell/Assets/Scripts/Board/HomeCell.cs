@@ -16,6 +16,10 @@ namespace Summoner.FreeCell {
 			}
 		}
 
+		public void Push( params Card[] cards ) {
+			Push( (IList<Card>)cards );
+		}
+
 		public void Push( IList<Card> cards ) {
 			if ( cards.Count > 1 ) {
 				return;

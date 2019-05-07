@@ -14,12 +14,12 @@ namespace Summoner.FreeCell.Test {
 
 			Assert.IsTrue( cell.IsAcceptable( spadeAce ), "empty free cell have to accept any card" );
 			Assert.IsTrue( cell.IsAcceptable( spade2 ), "empty free cell have to accept any card" );
-			cell.Push( new [] { spade2 } );
+			cell.Push( spade2 );
 			Assert.AreEqual( 1, cell.Count, "failed to push a card" );
 
 			Assert.IsFalse( cell.IsAcceptable( spadeAce ), "filled cell must not accept any cards" );
 			Assert.IsFalse( cell.IsAcceptable( spade2 ), "filled cell must not accept any cards" );
-			cell.Push( new [] { spadeAce } );
+			cell.Push( spadeAce );
 			Assert.AreEqual( 1, cell.Count, "must fail to push a card to filled cell" );
 
 			var poped = cell.Pop( 0 );
@@ -37,13 +37,13 @@ namespace Summoner.FreeCell.Test {
 			foreach ( var card in shuffledDeck ) {
 				Assert.IsTrue( cell.IsAcceptable( card ), card + " have discard from emtpy free cell" );
 
-				cell.Push( new [] { card } );
+				cell.Push( card );
 				Assert.AreEqual( 1, cell.Count, "failed to push a card - " + card );
 
 				cell.Pop( 0 );
 			}
 
-			cell.Push( new [] { shuffledDeck[0] } );
+			cell.Push( shuffledDeck[0] );
 			foreach ( var card in shuffledDeck ) {
 				Assert.IsFalse( cell.IsAcceptable( card ), card + " have accepted from filled free cell" );
 			}
