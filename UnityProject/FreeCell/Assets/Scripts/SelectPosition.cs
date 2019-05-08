@@ -29,5 +29,9 @@ namespace Summoner.FreeCell {
 			this.pile = pile;
 			this.row = row;
 		}
+
+		public override string ToString() {
+			return pile.type + "[" + pile.index + ", " + row + "]";
+		}
 	}
 }

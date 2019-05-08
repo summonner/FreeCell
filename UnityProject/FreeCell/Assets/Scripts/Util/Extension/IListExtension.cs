@@ -9,6 +9,11 @@ namespace Summoner.Util.Extension {
 				|| index >= list.Count;
 		}
 
+		public static bool IsNullOrEmpty<T>( this IList<T> list ) {
+			return list == null
+				|| list.Count == 0;
+		}
+
 		public static System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly<T>( this T[] list ) {
 			return System.Array.AsReadOnly( list );
 		}

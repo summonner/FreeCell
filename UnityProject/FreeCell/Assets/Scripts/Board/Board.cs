@@ -24,9 +24,10 @@ namespace Summoner.FreeCell {
 		public Board( IBoardPreset preset ) 
 			: this( (IBoardLayout)preset ) 
 		{
-			Reset( preset.tableau );
+			Clear();
 			ApplyPreset( homes, preset.homes );
 			ApplyPreset( frees, preset.frees );
+			ApplyPreset( tables, preset.tableau );
 		}
 
 		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
@@ -36,7 +37,7 @@ namespace Summoner.FreeCell {
 					target[i].Push( card );
 				}
 
-				++i;
+				i = (i + 1) % target.Count;
 			}
 		}
 
@@ -165,8 +166,35 @@ namespace Summoner.FreeCell {
 
 		public override string ToString() {
 			var str = new System.Text.StringBuilder();
-			foreach ( var pile in tables ) {
-				str.AppendLine( pile.ToString() );
+			str.Append( "F[" );
+			foreach ( var pile in frees ) {
+				var cards = pile.GetReadOnly();
+				str.Append( cards.LastOrDefault() );
+				str.Append( " " );
+			}
+			str.Append( "][" );
+			foreach ( var pile in homes ) {
+				var cards = pile.GetReadOnly();
+				str.Append( cards.LastOrDefault() );
+				str.Append( " " );
+			}
+			str.Append( "]H" );
+			str.AppendLine();
+
+			var maxRow = 0;
+			IList<IList<Card>> piles = new IList<Card>[tables.Count];
+			for ( int i=0; i < tables.Count; ++i ) {
+				piles[i] = tables[i].GetReadOnly();
+				maxRow = Mathf.Max( maxRow, piles[i].Count );
+			}
+			for ( int row = 0; row < maxRow; ++row ) {
+				for ( int column = 0; column < piles.Count; ++column ) {
+					var current = piles[column];
+					var card = current.IsOutOfRange( row ) ? Card.Blank : current[row];
+					str.Append( card );
+					str.Append( " " );
+				}
+				str.AppendLine();
 			}
 			return str.ToString();
 		}

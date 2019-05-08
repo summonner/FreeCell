@@ -62,11 +62,11 @@ namespace Summoner.FreeCell {
 
 		private static string ToString( Suit suit ) {
 			switch ( suit ) {
-				case Suit.Spades:	return "♠";
-				case Suit.Hearts:	return "♡";
-				case Suit.Diamonds:	return "◇";
-				case Suit.Clubs:	return "♣";
-				default:			return " ";
+				case Suit.Spades:	return "♤";
+				case Suit.Hearts:	return "♥";
+				case Suit.Diamonds:	return "◆";
+				case Suit.Clubs:	return "♧";
+				default:			return "·";
 			}
 		}
 
