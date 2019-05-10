@@ -13,12 +13,12 @@ namespace Summoner.FreeCell {
 		IPile this[PileId pile] { get; }
 	}
 
-	public class Board : IBoardLookup, IBoardController {
+	public class Board : IBoardLookup, IBoardController, System.IDisposable {
 		private readonly IList<IPile> homes;
 		private readonly IList<IPile> frees;
 		private readonly IList<IPile> tables;
 
-		private readonly MoveRule move;
+		private readonly IList<System.IDisposable> ruleComponents = new List<System.IDisposable>();
 
 		public Board( IBoardLayout layout ) {
 			homes = Init<HomeCell>( layout.numHomes );
@@ -28,8 +28,8 @@ namespace Summoner.FreeCell {
 			Debug.Assert( frees != null );
 			Debug.Assert( tables != null );
 
-			move = new MoveRule( this );
-			InGameEvents.OnClickCard += move.AutoMove;
+			ruleComponents.Add( new MoveRule( this ) );
+			ruleComponents.Add( new CommandStack( this ) );
 		}
 
 		public Board( IBoardPreset preset ) 
@@ -39,6 +39,12 @@ namespace Summoner.FreeCell {
 			ApplyPreset( homes, preset.homes );
 			ApplyPreset( frees, preset.frees );
 			ApplyPreset( tables, preset.tableau );
+		}
+
+		public void Dispose() {
+			foreach ( var component in ruleComponents ) {
+				component.Dispose();
+			}
 		}
 
 		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
@@ -77,12 +83,11 @@ namespace Summoner.FreeCell {
 
 			var i = 0;
 			foreach ( var card in cards ) {
-				var subject = new [] { card };
 				var column = i % tables.Count;
-				tables[column].Push( subject );
+				tables[column].Push( card );
 
 				var destination = new PileId( PileId.Type.Table, column );
-				InGameEvents.MoveCards( subject, destination );
+				InGameEvents.SetCard( card, destination );
 				++i;
 			}
 		}

@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Summoner.FreeCell {
 	public class Game : MonoBehaviour {
-
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardPlacer placer;
 		[SerializeField] private BoardLayout layout;
@@ -20,6 +19,10 @@ namespace Summoner.FreeCell {
 			board = new Board( layout );
 			placer.Init( board, sheet, deck );
 			Initialize();
+		}
+
+		void OnDestroy() {
+			board.Dispose();
 		}
 
 		void Reset() {

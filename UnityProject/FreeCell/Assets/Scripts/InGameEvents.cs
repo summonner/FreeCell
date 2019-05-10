@@ -3,10 +3,16 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
 	public static class InGameEvents {
-		public delegate void MoveEvent( IEnumerable<Card> targets, PileId destination );
+		public delegate void SetEvent( Card subject, PileId to );
+		public static event SetEvent OnSetCard = delegate { };
+		public static void SetCard( Card subject, PileId to ) {
+			OnSetCard( subject, to );
+		}
+
+		public delegate void MoveEvent( IEnumerable<Card> subjects, PileId from, PileId to );
 		public static event MoveEvent OnMoveCards = delegate { };
-		public static void MoveCards( IEnumerable<Card> targets, PileId destination ) {
-			OnMoveCards( targets, destination );
+		public static void MoveCards( IEnumerable<Card> subjects, PileId from, PileId to ) {
+			OnMoveCards( subjects, from, to );
 		}
 
 		public delegate void ClickEvent( SelectPosition selected );
@@ -22,6 +28,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public static void Flush() {
+			OnSetCard = delegate { };
 			OnMoveCards = delegate { };
 			OnClickCard = delegate { };
 			OnCannotMove = delegate { };
