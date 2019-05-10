@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
@@ -16,19 +15,21 @@ namespace Summoner.FreeCell.Test {
 
 			Assert.IsTrue( cell.IsAcceptable( spadeAce ), "empty home cell have to accept any ace card" );
 			Assert.IsFalse( cell.IsAcceptable( spade2 ), "empty home cell must not accept any non ace cards" );
+			Assert.IsFalse( cell.IsAcceptable( spadeAce, spade2 ), "must not accept multiple cards" );
 
 			cell.Push( spadeAce );
 			Assert.AreEqual( 1, cell.Count, "failed to push a card" );
 
 			Assert.IsFalse( cell.IsAcceptable( spadeAce ), "all cards except spade2 have to discard" );
 			Assert.IsTrue( cell.IsAcceptable( spade2 ), "only spade2 can accept" );
+			Assert.IsFalse( cell.IsAcceptable( spadeAce, spade2 ), "must not accept multiple cards" );
 
 			cell.Push( spade2 );
 			Assert.AreEqual( 2, cell.Count, "failed to push a card" );
 
 			var poped = cell.Pop( 1 );
 			Assert.IsNotNull( poped, "pop function need to available for undo function" );
-			Assert.AreEqual( 1, poped.Count, "tried to pop a single card" );
+			Assert.AreEqual( 1, poped.Length, "tried to pop a single card" );
 			Assert.AreEqual( spade2, poped[0], "poped card must be a card that last in" );
 		}
 
@@ -60,7 +61,7 @@ namespace Summoner.FreeCell.Test {
 				Assert.AreEqual( 13, cell.Count, "each cells have to have 13 cards" );
 				var cards = cell.Pop( 0 );
 				var suit = cards[0].suit;
-				for ( int i=0; i < cards.Count; ++i ) {
+				for ( int i=0; i < cards.Length; ++i ) {
 					Assert.AreEqual( suit, cards[i].suit, "all cards of each cells must be same suit" );
 					Assert.AreEqual( (Card.Rank)(i + 1), cards[i].rank, "cards must be sorted in ascending order" );
 				}

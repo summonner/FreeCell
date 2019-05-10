@@ -111,7 +111,7 @@ namespace Summoner.FreeCell {
 			}
 
 			var target = poped[0];
-			foreach ( var nextPileType in SelectNextPile( poped.Count, selected.pile ) ) {
+			foreach ( var nextPileType in SelectNextPile( poped.Length, selected.pile ) ) {
 				var piles = GetPiles( nextPileType );
 				for ( int i=0; i < piles.Count; ++i ) {
 					var next = piles[i];
@@ -122,7 +122,7 @@ namespace Summoner.FreeCell {
 					var IsEmptyTableau = (next is Tableau)
 									  && (next.Count == 0);
 					var adjustment = IsEmptyTableau ? 2 : 1;
-					if ( poped.Count > numMovable / adjustment ) {
+					if ( poped.Length > numMovable / adjustment ) {
 						continue;
 					}
 

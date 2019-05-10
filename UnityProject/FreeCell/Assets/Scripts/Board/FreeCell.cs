@@ -21,10 +21,6 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Push( params Card[] cards ) {
-			Push( (IList<Card>)cards );
-		}
-
-		public void Push( IList<Card> cards ) {
 			if ( stack.Count > 0 ) {
 				return;
 			}
@@ -32,7 +28,7 @@ namespace Summoner.FreeCell {
 			stack.Add( cards[0] );
 		}
 
-		public IList<Card> Pop( int index ) {
+		public Card[] Pop( int index ) {
 			if ( isEmpty == true ) {
 				return null;
 			}
@@ -44,8 +40,9 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
-		public bool IsAcceptable( Card card ) {
-			return isEmpty;
+		public bool IsAcceptable( params Card[] cards ) {
+			return cards.Length == 1
+				&& isEmpty == true;
 		}
 
 		public void Clear() {

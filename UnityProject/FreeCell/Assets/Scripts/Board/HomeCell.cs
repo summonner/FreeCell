@@ -17,18 +17,14 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Push( params Card[] cards ) {
-			Push( (IList<Card>)cards );
-		}
-
-		public void Push( IList<Card> cards ) {
-			if ( cards.Count > 1 ) {
+			if ( cards.Length > 1 ) {
 				return;
 			}
 
 			stack.AddRange( cards );
 		}
 
-		public IList<Card> Pop( int startIndex ) {
+		public Card[] Pop( int startIndex ) {
 			if ( stack.IsOutOfRange( startIndex ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
 				return null;
@@ -42,7 +38,12 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
-		public bool IsAcceptable( Card card ) {
+		public bool IsAcceptable( params Card[] cards ) {
+			if ( cards.Length != 1 ) {
+				return false;
+			}
+
+			var card = cards[0];
 			if ( stack.Count <= 0 ) {
 				return card.rank == Card.Rank.Ace;
 			}

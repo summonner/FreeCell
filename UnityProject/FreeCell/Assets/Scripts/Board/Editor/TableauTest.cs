@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell.Test {
 	public class TableauTest {
 		#region testCases
-		public static IList<Card>[] unorderedCases = new [] {
+		public static Card[][] unorderedCases = new [] {
 			new [] {
 				new Card( Card.Suit.Spades, Card.Rank.Ace ),
 				new Card( Card.Suit.Spades, Card.Rank._2 ),
@@ -20,7 +20,7 @@ namespace Summoner.FreeCell.Test {
 			},
 		};
 
-		public static IList<Card>[] orderedCases = new [] {
+		public static Card[][] orderedCases = new [] {
 			new [] {
 				new Card( Card.Suit.Spades, Card.Rank.King ),
 				new Card( Card.Suit.Hearts, Card.Rank.Queen ),
@@ -35,7 +35,7 @@ namespace Summoner.FreeCell.Test {
 			}
 		};
 
-		public static IEnumerable<IList<Card>> wholeCases {
+		public static IEnumerable<Card[]> wholeCases {
 			get {
 				foreach ( var aCase in unorderedCases ) {
 					yield return aCase;
@@ -48,28 +48,28 @@ namespace Summoner.FreeCell.Test {
 		#endregion
 
 		[TestCaseSource( "wholeCases" )]
-		public void SinglePushPop( IList<Card> cards ) {
+		public void SinglePushPop( Card[] cards ) {
 			var pile = new Tableau();
 			SinglePush( pile, cards );
 			SinglePop( pile, cards );
 		}
 
 		[TestCaseSource( "orderedCases" )]
-		public void MultiplePushPop( IList<Card> cards ) {
+		public void MultiplePushPop( Card[] cards ) {
 			var pile = new Tableau();
 			MultiplePush( pile, cards );
 			MultiplePop( pile, cards );
 		}
 
 		[TestCaseSource( "wholeCases" )]
-		public void MultiplePushSinglePop( IList<Card> cards ) {
+		public void MultiplePushSinglePop( Card[] cards ) {
 			var pile = new Tableau();
 			MultiplePush( pile, cards );
 			SinglePop( pile, cards );
 		}
 
 		[TestCaseSource( "orderedCases" )]
-		public void SinglePushMultiplePop( IList<Card> cards ) {
+		public void SinglePushMultiplePop( Card[] cards ) {
 			var pile = new Tableau();
 			SinglePush( pile, cards );
 			MultiplePop( pile, cards );
@@ -86,18 +86,18 @@ namespace Summoner.FreeCell.Test {
 			}
 		}
 
-		private void MultiplePush( Tableau pile, IList<Card> cards ) {
+		private void MultiplePush( Tableau pile, Card[] cards ) {
 			pile.Clear();
 			Assert.AreEqual( 0, pile.Count, "have to initialized as empty" );
 			pile.Push( cards );
-			Assert.AreEqual( cards.Count, pile.Count, "failed to push cards" );
+			Assert.AreEqual( cards.Length, pile.Count, "failed to push cards" );
 		}
 
 		private void SinglePop( Tableau pile, IList<Card> cards ) {
 			for ( var i = pile.Count - 1; i >= 0; --i ) {
 				var poped = pile.Pop( i );
 				Assert.IsNotNull( poped, "failed to pop a card" );
-				Assert.AreEqual( 1, poped.Count, "tried pop single card" );
+				Assert.AreEqual( 1, poped.Length, "tried pop single card" );
 				Assert.AreEqual( i, pile.Count, "poped card still remained" );
 				Assert.AreEqual( cards[i], poped[0], "poped card must be a card that last in " );
 			}
@@ -106,7 +106,7 @@ namespace Summoner.FreeCell.Test {
 		private void MultiplePop( Tableau pile, IList<Card> cards ) {
 			var poped = pile.Pop( 0 );
 			Assert.IsNotNull( poped, "failed to pop cards" );
-			Assert.AreEqual( cards.Count, poped.Count, "tried pop all cards from pile" );
+			Assert.AreEqual( cards.Count, poped.Length, "tried pop all cards from pile" );
 			Assert.AreEqual( 0, pile.Count, "poped cards still remained" );
 
 			CollectionAssert.AreEqual( cards, poped, "poped cards have to have same order with source" );
