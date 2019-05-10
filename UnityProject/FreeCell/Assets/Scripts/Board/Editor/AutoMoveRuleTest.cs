@@ -11,6 +11,7 @@ namespace Summoner.FreeCell.Test {
 		[TestCase( "TableauToTableau_single" )]
 		[TestCase( "TableauToTableau_multi" )]
 		[TestCase( "MoveManyCards" )]
+		[TestCase( "Traverse" )]
 		public void Test( string testCase ) {
 			InGameEvents.Flush();
 

@@ -151,7 +151,7 @@ namespace Summoner.FreeCell.Test {
 		private static IEnumerable<string> ReadLines( string fileName ) {
 			var file = File.ReadAllLines( Application.dataPath + testCasePath + fileName + extension );
 			foreach ( var line in file ) {
-				yield return line;
+				yield return line.Trim();
 			}
 
 			yield return "";

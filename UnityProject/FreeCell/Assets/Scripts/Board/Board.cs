@@ -8,17 +8,28 @@ namespace Summoner.FreeCell {
 		IList<Card> Look( PileId id );
 	}
 
-	public class Board : IBoardLookup {
-		private IList<IPile> homes;
-		private IList<IPile> frees;
-		private IList<IPile> tables;
+	public interface IBoardController {
+		IList<IPile> this[PileId.Type type] { get; }
+		IPile this[PileId pile] { get; }
+	}
+
+	public class Board : IBoardLookup, IBoardController {
+		private readonly IList<IPile> homes;
+		private readonly IList<IPile> frees;
+		private readonly IList<IPile> tables;
+
+		private readonly MoveRule move;
 
 		public Board( IBoardLayout layout ) {
 			homes = Init<HomeCell>( layout.numHomes );
 			frees = Init<FreeCell>( layout.numFrees );
 			tables = Init<Tableau>( layout.numPiles );
+			Debug.Assert( homes != null );
+			Debug.Assert( frees != null );
+			Debug.Assert( tables != null );
 
-			InGameEvents.OnClickCard += OnClickCard;
+			move = new MoveRule( this );
+			InGameEvents.OnClickCard += move.AutoMove;
 		}
 
 		public Board( IBoardPreset preset ) 
@@ -38,28 +49,6 @@ namespace Summoner.FreeCell {
 				}
 
 				i = (i + 1) % target.Count;
-			}
-		}
-
-		IList<Card> IBoardLookup.Look( PileId id ) {
-			var piles = GetPiles( id.type );
-			if ( piles.IsOutOfRange( id.index ) == true ) {
-				return null;
-			}
-
-			return piles[id.index].GetReadOnly();
-		}
-
-		private IList<IPile> GetPiles( PileId.Type type ) {
-			switch ( type ) {
-				case PileId.Type.Free:
-					return frees;
-				case PileId.Type.Home:
-					return homes;
-				case PileId.Type.Table:
-					return tables;
-				default:
-					return null;
 			}
 		}
 
@@ -98,72 +87,6 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void OnClickCard( SelectPosition selected ) {
-			if ( selected.type == PileId.Type.Home ) {
-				return;
-			}
-
-			var numMovable = CountMaxMovableCards();
-			var selectedPile = GetPiles( selected.type )[selected.column];
-			var poped = selectedPile.Pop( selected.row );
-			if ( poped == null ) {
-				return;
-			}
-
-			var target = poped[0];
-			foreach ( var nextPileType in SelectNextPile( poped.Length, selected.pile ) ) {
-				var piles = GetPiles( nextPileType );
-				for ( int i=0; i < piles.Count; ++i ) {
-					var next = piles[i];
-					if ( next == selectedPile ) {
-						continue;
-					}
-
-					var IsEmptyTableau = (next is Tableau)
-									  && (next.Count == 0);
-					var adjustment = IsEmptyTableau ? 2 : 1;
-					if ( poped.Length > numMovable / adjustment ) {
-						continue;
-					}
-
-					if ( next.IsAcceptable( target ) == false ) {
-						continue;
-					}
-
-					next.Push( poped );
-					InGameEvents.MoveCards( poped, new PileId( nextPileType, i ) );
-					return;
-				}
-			}
-
-			selectedPile.Push( poped );
-			InGameEvents.CannotMove( poped );
-		}
-
-		private IEnumerable<PileId.Type> SelectNextPile( int popedCount, PileId selected ) {
-			if ( popedCount == 1 ) {
-				yield return PileId.Type.Home;
-			}
-
-			yield return PileId.Type.Table;
-
-			if ( popedCount != 1 ) {
-				yield break;
-			}
-
-			if ( selected.type == PileId.Type.Free ) {
-				yield break;
-			}
-
-			yield return PileId.Type.Free;
-		}
-
-		private int CountMaxMovableCards() {
-			var numEmptyFrees =	frees.Count( ( cell ) => (cell.Count == 0) );
-			var numEmptyTableau = tables.Count( ( pile ) => (pile.Count == 0) );
-			return (1 + numEmptyFrees) * (int)Mathf.Pow( 2f, numEmptyTableau );
-		}
-
 		public override string ToString() {
 			var str = new System.Text.StringBuilder();
 			str.Append( "F[" );
@@ -197,6 +120,41 @@ namespace Summoner.FreeCell {
 				str.AppendLine();
 			}
 			return str.ToString();
+		}
+
+		IList<Card> IBoardLookup.Look( PileId id ) {
+			var piles = GetPiles( id.type );
+			if ( piles.IsOutOfRange( id.index ) == true ) {
+				return null;
+			}
+
+			return piles[id.index].GetReadOnly();
+		}
+
+		private IList<IPile> GetPiles( PileId.Type type ) {
+			switch ( type ) {
+				case PileId.Type.Free:
+					return frees;
+				case PileId.Type.Home:
+					return homes;
+				case PileId.Type.Table:
+					return tables;
+				default:
+					return null;
+			}
+		}
+
+		IList<IPile> IBoardController.this[PileId.Type type] {
+			get {
+				return GetPiles( type );
+			}
+		}
+
+		IPile IBoardController.this[PileId pile] {
+			get {
+				var piles = GetPiles( pile.type );
+				return piles.ElementAtOrDefault( pile.index );
+			}
 		}
 	}
 }
