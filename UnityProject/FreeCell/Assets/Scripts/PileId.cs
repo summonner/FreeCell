@@ -34,5 +34,9 @@ namespace Summoner.FreeCell {
 		public override int GetHashCode() {
 			return (int)type + index;
 		}
+
+		public override string ToString() {
+			return type + "[" + index + "]";
+		}
 	}
 }
