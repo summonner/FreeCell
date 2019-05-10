@@ -4,19 +4,11 @@ using System.Linq;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class HomeCell : IPile {
+	public class HomeCell : BasePile {
+		public HomeCell()
+			: base( 13 ) { }
 
-		private readonly List<Card> stack = new List<Card>( 13 );
-
-		public int Count
-		{
-			get
-			{
-				return stack.Count;
-			}
-		}
-
-		public void Push( params Card[] cards ) {
+		public override void Push( params Card[] cards ) {
 			if ( cards.Length > 1 ) {
 				return;
 			}
@@ -24,7 +16,7 @@ namespace Summoner.FreeCell {
 			stack.AddRange( cards );
 		}
 
-		public Card[] Pop( int startIndex ) {
+		public override Card[] Pop( int startIndex ) {
 			if ( stack.IsOutOfRange( startIndex ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
 				return null;
@@ -38,7 +30,7 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
-		public bool IsAcceptable( params Card[] cards ) {
+		public override bool IsAcceptable( params Card[] cards ) {
 			if ( cards.Length != 1 ) {
 				return false;
 			}
@@ -54,14 +46,6 @@ namespace Summoner.FreeCell {
 			}
 
 			return card.rank == (top.rank + 1);
-		}
-
-		public void Clear() {
-			stack.Clear();
-		}
-
-		public IList<Card> GetReadOnly() {
-			return stack.AsReadOnly();
 		}
 	}
 }

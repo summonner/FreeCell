@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class Tableau : IPile {
-
-		private readonly List<Card> stack = new List<Card>( 20 );
-
-		public int Count {
-			get {
-				return stack.Count;
-			}
-		}
-
-		public void Push( params Card[] cards ) {
+	public class Tableau : BasePile {
+		public Tableau()
+			: base( 20 ) { }
+		
+		public override void Push( params Card[] cards ) {
 			stack.AddRange( cards );
 		}
 
-		public Card[] Pop( int startIndex ) {
+		public override Card[] Pop( int startIndex ) {
 			if ( stack.IsOutOfRange( startIndex ) == true ) {
 				Debug.Assert( false, "tried to pop too many from pile." );
 				return null;
@@ -58,7 +52,7 @@ namespace Summoner.FreeCell {
 			return true;
 		}
 
-		public bool IsAcceptable( params Card[] cards ) {
+		public override bool IsAcceptable( params Card[] cards ) {
 			if ( stack.Count == 0 ) {
 				return true;
 			}
@@ -81,23 +75,6 @@ namespace Summoner.FreeCell {
 					Debug.Assert( false, "Unknown suit type : " + card );
 					return false;
 			}
-		}
-
-		public void Clear() {
-			stack.Clear();
-		}
-
-		public IList<Card> GetReadOnly() {
-			return stack.AsReadOnly();
-		}
-
-		public override string ToString() {
-			var str = new System.Text.StringBuilder();
-			foreach ( var card in stack ) {
-				str.Append( card.ToString() + " " );
-			}
-
-			return str.ToString();
 		}
 	}
 }

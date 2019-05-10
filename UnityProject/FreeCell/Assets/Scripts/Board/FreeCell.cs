@@ -2,17 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class FreeCell : IPile {
-
-		private readonly List<Card> stack = new List<Card>( 1 );
-
-		public int Count
-		{
-			get
-			{
-				return stack.Count;
-			}
-		}
+	public class FreeCell : BasePile {
+		public FreeCell()
+			: base( 1 ) { }
 
 		private bool isEmpty {
 			get {
@@ -20,7 +12,7 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void Push( params Card[] cards ) {
+		public override void Push( params Card[] cards ) {
 			if ( stack.Count > 0 ) {
 				return;
 			}
@@ -28,7 +20,7 @@ namespace Summoner.FreeCell {
 			stack.Add( cards[0] );
 		}
 
-		public Card[] Pop( int index ) {
+		public override Card[] Pop( int index ) {
 			if ( isEmpty == true ) {
 				return null;
 			}
@@ -40,17 +32,9 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
-		public bool IsAcceptable( params Card[] cards ) {
+		public override bool IsAcceptable( params Card[] cards ) {
 			return cards.Length == 1
 				&& isEmpty == true;
-		}
-
-		public void Clear() {
-			stack.Clear();
-		}
-
-		public IList<Card> GetReadOnly() {
-			return stack.AsReadOnly();
 		}
 	}
 }
