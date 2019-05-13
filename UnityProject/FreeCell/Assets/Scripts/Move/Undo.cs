@@ -20,24 +20,15 @@ namespace Summoner.FreeCell {
 
 		public Undo( IBoardController board ) {
 			this.board = board;
-			RegisterEvent( true );
+			InGameEvents.OnMoveCards += OnMoveCards;
 			InGameUIEvents.OnUndo += OnUndo;
 		}
 
 		public void Dispose() {
-			RegisterEvent( false );
+			InGameEvents.OnMoveCards -= OnMoveCards;
 			InGameUIEvents.OnUndo -= OnUndo;
 		}
 		
-		private void RegisterEvent( bool enable ) {
-			if ( enable ) {
-				InGameEvents.OnMoveCards += OnMoveCards;
-			}
-			else {
-				InGameEvents.OnMoveCards -= OnMoveCards;
-			}
-		}
-
 		public void Clear() {
 			commands.Clear();
 		}
@@ -52,23 +43,21 @@ namespace Summoner.FreeCell {
 			}
 
 			var command = commands.Pop();
-			RegisterEvent( false );
 			Revert( command.cards, command.from, command.to );
-			RegisterEvent( true );
 		}
 
 		public void Revert( IEnumerable<Card> targets, PileId to, PileId from ) {
 			var cards = new List<Card>( targets );
 			var source = board[from];
 
-			var index = source.GetReadOnly().IndexOf( cards[0] );
+			var index = source.IndexOf( cards[0] );
 			Debug.Assert( index >= 0, "cannot find cards to undo" );
 			var poped = source.Pop( index );
 			Debug.Assert( cards.Count == poped.Length, "board state mismatch" );
 			var destination = board[to];
 			destination.Push( poped );
 
-			InGameEvents.MoveCards( poped, from, to );
+			InGameEvents.UndoCards( poped, from, to );
 		}
 	}
 }

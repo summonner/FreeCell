@@ -5,8 +5,13 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class HomeCell : BasePile {
+		public HomeCell( int index )
+			: base( PileId.Type.Home, index, 13 ) { }
+
+#if UNITY_EDITOR
 		public HomeCell()
-			: base( 13 ) { }
+			: this( 0 ) { }
+#endif
 
 		public override void Push( params Card[] cards ) {
 			if ( cards.Length > 1 ) {
@@ -35,17 +40,7 @@ namespace Summoner.FreeCell {
 				return false;
 			}
 
-			var card = cards[0];
-			if ( stack.Count <= 0 ) {
-				return card.rank == Card.Rank.Ace;
-			}
-
-			var top = stack.Last();
-			if ( card.suit != top.suit ) {
-				return false;
-			}
-
-			return card.rank == (top.rank + 1);
+			return ClearCheck.IsValid( stack.LastOrDefault(), cards[0] );
 		}
 	}
 }

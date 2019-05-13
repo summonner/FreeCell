@@ -16,6 +16,7 @@ namespace Summoner.FreeCell {
 		public Vector3 offset = new Vector3( -4f, 5f, 0f );
 
 		void Start () {
+			InGameEvents.OnClear += OnClear;
 			board = new Board( layout );
 			placer.Init( board, sheet, deck );
 			Initialize();
@@ -23,6 +24,7 @@ namespace Summoner.FreeCell {
 
 		void OnDestroy() {
 			board.Dispose();
+			InGameEvents.OnClear -= OnClear;
 		}
 
 		void Reset() {
@@ -34,6 +36,10 @@ namespace Summoner.FreeCell {
 		private void Initialize() {
 			var cards = Util.Random.FisherYatesShuffle.Draw( deck, random.Next );
 			board.Reset( cards );
+		}
+
+		private void OnClear() {
+			Debug.Log( "Clear!!" );
 		}
 	}
 }

@@ -5,7 +5,8 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public interface IBoardLookup {
-		IList<Card> Look( PileId id );
+		IPileLookup Look( PileId id );
+		IEnumerable<IPileLookup> Traverse( params PileId.Type[] types );
 	}
 
 	public interface IBoardController {
@@ -18,18 +19,21 @@ namespace Summoner.FreeCell {
 		private readonly IList<IPile> frees;
 		private readonly IList<IPile> tables;
 
-		private readonly IList<System.IDisposable> ruleComponents = new List<System.IDisposable>();
+		private readonly IList<System.IDisposable> ruleComponents;
 
 		public Board( IBoardLayout layout ) {
-			homes = Init<HomeCell>( layout.numHomes );
-			frees = Init<FreeCell>( layout.numFrees );
-			tables = Init<Tableau>( layout.numPiles );
+			homes = Init( layout.numHomes, (i) => ( new HomeCell( i ) ) );
+			frees = Init( layout.numFrees, (i) => ( new FreeCell( i ) ) );
+			tables = Init( layout.numPiles, (i) => ( new Tableau( i ) ) );
 			Debug.Assert( homes != null );
 			Debug.Assert( frees != null );
 			Debug.Assert( tables != null );
 
-			ruleComponents.Add( new AutoMove( this ) );
-			ruleComponents.Add( new Undo( this ) );
+			ruleComponents = new System.IDisposable[] {
+				new AutoMove( this ),
+				new Undo( this ),
+				new ClearCheck( this ),
+			};
 		}
 
 		public Board( IBoardPreset preset ) 
@@ -58,10 +62,10 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private static IList<IPile> Init<T>( int num ) where T : IPile, new() {
+		private static IList<IPile> Init<T>( int num, System.Func<int, T> create ) where T : IPile {
 			var list = new IPile[num];
 			for ( int i=0; i < list.Length; ++i ) {
-				list[i] = new T();
+				list[i] = create( i );
 			}
 			return list;
 		}
@@ -96,14 +100,12 @@ namespace Summoner.FreeCell {
 			var str = new System.Text.StringBuilder();
 			str.Append( "F[" );
 			foreach ( var pile in frees ) {
-				var cards = pile.GetReadOnly();
-				str.Append( cards.LastOrDefault() );
+				str.Append( pile.LastOrDefault() );
 				str.Append( " " );
 			}
 			str.Append( "][" );
 			foreach ( var pile in homes ) {
-				var cards = pile.GetReadOnly();
-				str.Append( cards.LastOrDefault() );
+				str.Append( pile.LastOrDefault() );
 				str.Append( " " );
 			}
 			str.Append( "]H" );
@@ -112,7 +114,7 @@ namespace Summoner.FreeCell {
 			var maxRow = 0;
 			IList<IList<Card>> piles = new IList<Card>[tables.Count];
 			for ( int i=0; i < tables.Count; ++i ) {
-				piles[i] = tables[i].GetReadOnly();
+				piles[i] = tables[i];
 				maxRow = Mathf.Max( maxRow, piles[i].Count );
 			}
 			for ( int row = 0; row < maxRow; ++row ) {
@@ -127,13 +129,22 @@ namespace Summoner.FreeCell {
 			return str.ToString();
 		}
 
-		IList<Card> IBoardLookup.Look( PileId id ) {
+		IPileLookup IBoardLookup.Look( PileId id ) {
 			var piles = GetPiles( id.type );
 			if ( piles.IsOutOfRange( id.index ) == true ) {
 				return null;
 			}
 
-			return piles[id.index].GetReadOnly();
+			return piles[id.index];
+		}
+
+		IEnumerable<IPileLookup> IBoardLookup.Traverse( params PileId.Type[] types ) {
+			foreach ( var type in types ) {
+				var piles = GetPiles( type );
+				foreach ( var pile in piles ) {
+					yield return pile;
+				}
+			}
 		}
 
 		private IList<IPile> GetPiles( PileId.Type type ) {
@@ -145,6 +156,7 @@ namespace Summoner.FreeCell {
 				case PileId.Type.Table:
 					return tables;
 				default:
+					Debug.Assert( false, "Unknown type of pile : " + type );
 					return null;
 			}
 		}

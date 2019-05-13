@@ -4,9 +4,14 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class Tableau : BasePile {
+		public Tableau( int index )
+			: base( PileId.Type.Table, index, 20 ) { }
+
+#if UNITY_EDITOR
 		public Tableau()
-			: base( 20 ) { }
-		
+			: this( 0 ) { }
+#endif
+
 		public override void Push( params Card[] cards ) {
 			stack.AddRange( cards );
 		}
@@ -31,7 +36,7 @@ namespace Summoner.FreeCell {
 
 		private bool DoesLinked( int index ) {
 			for ( int i = stack.Count - 2; i >= index; --i ) {
-				if ( DoesLink( stack[i + 1], stack[i] ) == false ) {
+				if ( IsStackable( stack[i + 1], stack[i] ) == false ) {
 					return false;
 				}
 			}
@@ -39,8 +44,7 @@ namespace Summoner.FreeCell {
 			return true;
 		}
 
-		private bool DoesLink( Card top, Card under ) {
-
+		public static bool IsStackable( Card top, Card under ) {
 			if ( IsRed( top ) == IsRed( under ) ) {
 				return false;
 			}
@@ -58,7 +62,7 @@ namespace Summoner.FreeCell {
 			}
 
 			var top = stack[stack.Count - 1];
-			return DoesLink( cards[0], top );
+			return IsStackable( cards[0], top );
 		}
 
 		private static bool IsRed( Card card ) {

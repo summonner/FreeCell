@@ -16,12 +16,14 @@ namespace Summoner.FreeCell {
 		void Awake() {
 			InGameEvents.OnSetCard += OnSetCard;
 			InGameEvents.OnMoveCards += OnMoveCards;
+			InGameEvents.OnUndoCards += OnMoveCards;
 			InGameEvents.OnCannotMove += OnCannotMove;
 		}
 
 		void OnDestroy() {
 			InGameEvents.OnSetCard -= OnSetCard;
 			InGameEvents.OnMoveCards -= OnMoveCards;
+			InGameEvents.OnUndoCards -= OnMoveCards;
 			InGameEvents.OnCannotMove -= OnCannotMove;
 		}
 

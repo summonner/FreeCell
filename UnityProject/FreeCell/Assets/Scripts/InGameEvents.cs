@@ -15,6 +15,11 @@ namespace Summoner.FreeCell {
 			OnMoveCards( subjects, from, to );
 		}
 
+		public static event MoveEvent OnUndoCards = delegate { };
+		public static void UndoCards( IEnumerable<Card> subjects, PileId from, PileId to ) {
+			OnUndoCards( subjects, from, to );
+		}
+
 		public delegate void ClickEvent( SelectPosition selected );
 		public static event ClickEvent OnClickCard = delegate { };
 		public static void ClickCard( SelectPosition selected ) {

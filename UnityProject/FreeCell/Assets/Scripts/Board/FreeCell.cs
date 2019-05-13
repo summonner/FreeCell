@@ -3,8 +3,12 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
 	public class FreeCell : BasePile {
+		public FreeCell( int index )
+			: base( PileId.Type.Free, index, 1 ) { }
+#if UNITY_EDITOR
 		public FreeCell()
-			: base( 1 ) { }
+			: this( 0 ) { }
+#endif
 
 		private bool isEmpty {
 			get {
