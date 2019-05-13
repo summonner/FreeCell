@@ -2,7 +2,7 @@
 using NUnit.Framework;
 
 namespace Summoner.FreeCell.Test {
-	public class AutoMoveRuleTest {
+	public class AutoMoveTest {
 
 		[TestCase( "TableauToFreecell" )]
 		[TestCase( "FreecellToTableau" )]

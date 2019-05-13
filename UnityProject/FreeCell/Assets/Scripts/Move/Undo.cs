@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class CommandStack : System.IDisposable {
+	public class Undo : System.IDisposable {
 		private struct Command {
 			public readonly IEnumerable<Card> cards;
 			public readonly PileId from;
@@ -18,7 +18,7 @@ namespace Summoner.FreeCell {
 		private readonly Stack<Command> commands = new Stack<Command>( 100 );
 		private readonly IBoardController board;
 
-		public CommandStack( IBoardController board ) {
+		public Undo( IBoardController board ) {
 			this.board = board;
 			RegisterEvent( true );
 			InGameUIEvents.OnUndo += OnUndo;

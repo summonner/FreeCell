@@ -28,8 +28,8 @@ namespace Summoner.FreeCell {
 			Debug.Assert( frees != null );
 			Debug.Assert( tables != null );
 
-			ruleComponents.Add( new MoveRule( this ) );
-			ruleComponents.Add( new CommandStack( this ) );
+			ruleComponents.Add( new AutoMove( this ) );
+			ruleComponents.Add( new Undo( this ) );
 		}
 
 		public Board( IBoardPreset preset ) 

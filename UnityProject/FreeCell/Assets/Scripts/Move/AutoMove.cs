@@ -5,21 +5,21 @@ using Summoner.Util.Extension;
 using PileType = Summoner.FreeCell.PileId.Type;
 
 namespace Summoner.FreeCell {
-	public class MoveRule : System.IDisposable {
+	public class AutoMove : System.IDisposable {
 		private readonly IBoardController board;
-		public MoveRule( IBoardController board ) {
+		public AutoMove( IBoardController board ) {
 			this.board = board;
-			InGameEvents.OnClickCard += AutoMove;
+			InGameEvents.OnClickCard += OnAutoMove;
 		}
 
 		public void Dispose() {
-			InGameEvents.OnClickCard -= AutoMove;
+			InGameEvents.OnClickCard -= OnAutoMove;
 		}
 
 		private Card lastClicked = Card.Blank;
 		private PileTraverser traverser = null;
 
-		private void AutoMove( SelectPosition selected ) {
+		private void OnAutoMove( SelectPosition selected ) {
 			if ( selected.type == PileType.Home ) {
 				return;
 			}
