@@ -27,11 +27,18 @@ namespace Summoner.FreeCell {
 			OnCannotMove( subjects );
 		}
 
+		public static event System.Action OnClear = delegate { };
+		public static void Clear() {
+			OnClear();
+		}
+
+		private static readonly Util.EventList events = null;
+		static InGameEvents() {
+			events = new Util.EventList( typeof( InGameEvents ) );
+		}
+
 		public static void Flush() {
-			OnSetCard = delegate { };
-			OnMoveCards = delegate { };
-			OnClickCard = delegate { };
-			OnCannotMove = delegate { };
+			events.Reset();
 		}
 	}
 }
