@@ -21,6 +21,7 @@ namespace Summoner.FreeCell.Test {
 			foreach ( var next in TestBoardPreset.Load( testCase ) ) {
 				if ( board == null ) {
 					board = new Board( next, typeof( AutoPlayToHome ) );
+					board.Reset( next );
 				}
 				else {
 					InGameEvents.ClickCard( current.select );

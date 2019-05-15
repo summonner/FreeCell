@@ -40,7 +40,7 @@ namespace Summoner.FreeCell {
 		}
 
 #if UNITY_EDITOR
-		public Board( IBoardPreset layout, params System.Type[] exceptRules )
+		public Board( IBoardLayout layout, params System.Type[] exceptRules )
 			: this( layout )
 		{
 			foreach ( var rule in ruleComponents ) {
@@ -53,29 +53,9 @@ namespace Summoner.FreeCell {
 		}
 #endif
 
-		public Board( IBoardPreset preset )
-			: this( (IBoardLayout)preset ) 
-		{
-			Clear();
-			ApplyPreset( homes, preset.homes );
-			ApplyPreset( frees, preset.frees );
-			ApplyPreset( tables, preset.tableau );
-		}
-
 		public void Dispose() {
 			foreach ( var component in ruleComponents ) {
 				component.Dispose();
-			}
-		}
-
-		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
-			int i=0;
-			foreach ( var card in preset ) {
-				if ( card != Card.Blank ) {
-					target[i].Push( card );
-				}
-
-				i = (i + 1) % target.Count;
 			}
 		}
 
@@ -87,29 +67,27 @@ namespace Summoner.FreeCell {
 			return list;
 		}
 
-		public void Clear() {
-			Clear( homes );
-			Clear( frees );
-			Clear( tables );
+		public void Reset( IBoardPreset preset ) {
+			ApplyPreset( homes, preset.homes );
+			ApplyPreset( frees, preset.frees );
+			ApplyPreset( tables, preset.tableau );
 		}
 
-		private static void Clear( IList<IPile> piles ) {
-			foreach ( var pile in piles ) {
+		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
+			foreach ( var pile in target ) {
 				pile.Clear();
 			}
-		}
 
-		public void Reset( IEnumerable<Card> cards ) {
-			Clear();
+			int i = 0;
+			foreach ( var card in preset ) {
+				if ( card != Card.Blank ) {
+					target[i].Push( card );
 
-			var i = 0;
-			foreach ( var card in cards ) {
-				var column = i % tables.Count;
-				tables[column].Push( card );
+					var destination = new PileId( PileId.Type.Table, i );
+					InGameEvents.SetCard( card, destination );
+				}
 
-				var destination = new PileId( PileId.Type.Table, column );
-				InGameEvents.SetCard( card, destination );
-				++i;
+				i = (i + 1) % target.Count;
 			}
 		}
 

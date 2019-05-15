@@ -7,9 +7,9 @@ namespace Summoner.FreeCell {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardPlacer placer;
 		[SerializeField] private BoardLayout layout;
-		private System.Random random = new System.Random( 0 );
+		private BasicPlacement preset;
 
-		private readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
+		private static readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
 
 		private Board board;
 		public Vector3 spacing = new Vector3( 1.1f, 0.25f, 0.01f );
@@ -17,14 +17,16 @@ namespace Summoner.FreeCell {
 
 		void Start () {
 			InGameEvents.OnClear += OnClear;
+			InGameUIEvents.OnReset += OnReset;
 			board = new Board( layout );
 			placer.Init( board, sheet, deck );
-			Initialize();
+			NewGame();
 		}
 
 		void OnDestroy() {
 			board.Dispose();
 			InGameEvents.OnClear -= OnClear;
+			InGameUIEvents.OnReset -= OnReset;
 		}
 
 		void Reset() {
@@ -33,13 +35,17 @@ namespace Summoner.FreeCell {
 			layout = FindObjectOfType<BoardLayout>();
 		}
 
-		private void Initialize() {
-			var cards = Util.Random.FisherYatesShuffle.Draw( deck, random.Next );
-			board.Reset( cards );
+		private void NewGame() {
+			preset = new BasicPlacement( deck, Random.Range( 0, 100 ) );
+			board.Reset( preset );
 		}
 
 		private void OnClear() {
-			Debug.Log( "Clear!!" );
+			Invoke( "NewGame", 1f );
+		}
+
+		private void OnReset() {
+			board.Reset( preset );
 		}
 	}
 }

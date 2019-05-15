@@ -9,12 +9,6 @@ namespace Summoner.FreeCell {
 		int numPiles { get; }
 	}
 
-	public interface IBoardPreset : IBoardLayout {
-		IEnumerable<Card> homes { get; }
-		IEnumerable<Card> frees { get; }
-		IEnumerable<Card> tableau { get; }
-	}
-
 	public class BoardLayout : MonoBehaviour, IBoardLayout {
 		public Transform[] homeCells;
 		public Transform[] freeCells;

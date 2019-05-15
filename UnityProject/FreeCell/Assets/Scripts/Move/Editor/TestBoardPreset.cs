@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell.Test {
-	public class TestBoardPreset : IBoardPreset {
+	public class TestBoardPreset : IBoardPreset, IBoardLayout {
 		public readonly IList<Card> frees;
 		public readonly IList<Card> homes;
 		public readonly IList<IList<Card>> tableau;
