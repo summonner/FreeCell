@@ -9,35 +9,49 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell.Test {
 	public class TestBoardPreset : IBoardPreset, IBoardLayout {
-		public readonly IList<Card> frees;
-		public readonly IList<Card> homes;
-		public readonly IList<IList<Card>> tableau;
+		private readonly IList<Card> frees;
+		private readonly IList<Card> homes;
+		private readonly IList<IList<Card>> tableau;
+		
+		private readonly System.Action operation = delegate { };
 
-		public readonly SelectPosition select;
-
-		public TestBoardPreset( string freeCells, string homeCells, params string[] tableau ) {
+		public TestBoardPreset( string freeCells, string homeCells, string[] tableau, bool undo ) {
 			var cards = new TestCardList( freeCells );
 			frees = cards.results;
-			if ( cards.targetIndex >= 0 ) {
-				select = new SelectPosition( PileId.Type.Free, cards.targetIndex, 0 );
+			if ( cards.selectIndex >= 0 ) {
+				operation = Click( PileId.Type.Free, cards.selectIndex, 0 );
 			}
 
 			cards = new TestCardList( homeCells );
 			homes = cards.results;
-			if ( cards.targetIndex >= 0 ) {
-				select = new SelectPosition( PileId.Type.Home, cards.targetIndex, 0 );
+			if ( cards.selectIndex >= 0 ) {
+				operation = Click( PileId.Type.Home, cards.selectIndex, 0 );
 			}
 
 			var tables = new List<IList<Card>>();
 			for ( int row = 0; row < tableau.Length; ++row ) {
 				cards = new TestCardList( tableau[row] );
-
 				tables.Add( cards.results );
-				if ( cards.targetIndex >= 0 ) {
-					select = new SelectPosition( PileId.Type.Table, cards.targetIndex, row );
+				if ( cards.selectIndex >= 0 ) {
+					operation = Click( PileId.Type.Table, cards.selectIndex, row );
 				}
 			}
 			this.tableau = tables.AsReadOnly();
+
+			if ( undo == true ) {
+				operation = () => { Object.FindObjectOfType<InGameUIEvents>().Undo(); };
+			}
+		}
+
+		private static System.Action Click( PileId.Type type, int column, int row ) {
+			var position = new SelectPosition( type, column, row );
+			return () => {
+				InGameEvents.ClickCard( position );
+			};
+		}
+
+		public void ApplyOperation() {
+			operation();
 		}
 
 		public override string ToString() {
@@ -116,6 +130,7 @@ namespace Summoner.FreeCell.Test {
 			return piles[row].ElementAtOrDefault( column );
 		}
 
+		private const string undoOperation = "#UNDO";
 		private static readonly Regex cells = new Regex( @"\[([^\]]*)\]" );
 		public static IEnumerable<TestBoardPreset> Load( string fileName ) {
 			var builder = new Builder();
@@ -128,6 +143,9 @@ namespace Summoner.FreeCell.Test {
 					}
 					builder.freeCells = matches[0].Groups[1].Value;
 					builder.homeCells = matches[1].Groups[1].Value;
+				}
+				else if ( line.Equals( undoOperation, System.StringComparison.OrdinalIgnoreCase ) == true ) {
+					builder.undo = true;
 				}
 				else if ( line.IsNullOrEmpty() == false ) {
 					builder.tableau.Add( line );
@@ -142,6 +160,7 @@ namespace Summoner.FreeCell.Test {
 			public string freeCells = "";
 			public string homeCells = "";
 			public List<string> tableau = new List<string>();
+			public bool undo = false;
 
 			public bool IsEmpty() {
 				return freeCells.IsNullOrEmpty() == true
@@ -150,10 +169,11 @@ namespace Summoner.FreeCell.Test {
 			}
 
 			public TestBoardPreset Build() {
-				var preset = new TestBoardPreset( freeCells, homeCells, tableau.ToArray() );
+				var preset = new TestBoardPreset( freeCells, homeCells, tableau.ToArray(), undo );
 				freeCells = "";
 				homeCells = "";
 				tableau.Clear();
+				undo = false;
 				return preset;
 			}
 		}

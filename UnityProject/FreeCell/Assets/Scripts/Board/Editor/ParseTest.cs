@@ -53,7 +53,7 @@ namespace Summoner.FreeCell.Test {
 
 		[TestCaseSource( "selectCases" )]
 		public int Select( string text ) {
-			return new TestCardList( text ).targetIndex;
+			return new TestCardList( text ).selectIndex;
 		}
 
 		public static IEnumerable<TestCaseData> selectCases {

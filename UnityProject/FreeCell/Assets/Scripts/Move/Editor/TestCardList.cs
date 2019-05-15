@@ -8,7 +8,7 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell.Test {
 	public class TestCardList {
 		public readonly IList<Card> results = null;
-		public readonly int targetIndex = -1;
+		public readonly int selectIndex = -1;
 
 		public int Count {
 			get {
@@ -35,7 +35,7 @@ namespace Summoner.FreeCell.Test {
 
 				var isTarget = ParseOperation( tokens[1].Value );
 				if ( isTarget == true ) {
-					targetIndex = i;
+					selectIndex = i;
 				}
 			}
 

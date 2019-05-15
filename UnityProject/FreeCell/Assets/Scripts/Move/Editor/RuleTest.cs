@@ -23,10 +23,22 @@ namespace Summoner.FreeCell.Test {
 		[TestCase( "ClearCheck" )]
 		[TestCase( "AutoPlayToHomeAndClear" )]
 		public void ClearCheck( string testCase ) {
-			var isCleared = false;
-			InGameEvents.OnClear += () => { isCleared = true; };
-			Test( testCase );
-			Assert.IsTrue( isCleared, "OnClear event has not occured" );
+			int cleared = 0;
+			InGameEvents.OnClear += () => { cleared += 1; };
+			{
+				Test( testCase );
+			}
+			Assert.AreEqual( 1, cleared, "OnClear event has not occured or too much" );
+		}
+
+		[Test]
+		public void Undo() {
+			var gameObject = new GameObject( "Test.InGameUIEvents" );
+			gameObject.AddComponent<InGameUIEvents>();
+			{
+				Test( "Undo" );
+			}
+			Object.DestroyImmediate( gameObject );
 		}
 
 		private void Test( string testCase, params System.Type[] excludeRules ) {
@@ -39,7 +51,7 @@ namespace Summoner.FreeCell.Test {
 					board.Reset( next );
 				}
 				else {
-					InGameEvents.ClickCard( current.select );
+					current.ApplyOperation();
 				}
 
 //				Debug.Log( board );
