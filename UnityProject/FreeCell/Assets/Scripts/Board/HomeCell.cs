@@ -40,7 +40,16 @@ namespace Summoner.FreeCell {
 				return false;
 			}
 
-			return ClearCheck.IsValid( stack.LastOrDefault(), cards[0] );
+			return IsValid( stack.LastOrDefault(), cards[0] );
+		}
+
+		public static bool IsValid( Card first, Card next ) {
+			if ( first == Card.Blank ) {
+				return next.rank == Card.Rank.Ace;
+			}
+
+			return first.suit == next.suit
+				&& (first.rank + 1) == next.rank;
 		}
 	}
 }

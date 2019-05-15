@@ -118,32 +118,44 @@ namespace Summoner.FreeCell.Test {
 
 		private static readonly Regex cells = new Regex( @"\[([^\]]*)\]" );
 		public static IEnumerable<TestBoardPreset> Load( string fileName ) {
-			var freeCells = "";
-			var homeCells = "";
-			var tableau = new List<string>();
+			var builder = new Builder();
 
 			foreach ( var line in ReadLines( fileName ) ) {
 				var matches = cells.Matches( line );
 				if ( matches.Count == 2 ) {
-					freeCells = matches[0].Groups[1].Value;
-					homeCells = matches[1].Groups[1].Value;
+					if ( builder.IsEmpty() == false ) {
+						yield return builder.Build();
+					}
+					builder.freeCells = matches[0].Groups[1].Value;
+					builder.homeCells = matches[1].Groups[1].Value;
 				}
 				else if ( line.IsNullOrEmpty() == false ) {
-					tableau.Add( line );
+					builder.tableau.Add( line );
 				}
-				else if ( IsEmpty( freeCells, homeCells, tableau ) == false ) {
-					yield return new TestBoardPreset( freeCells, homeCells, tableau.ToArray() );
-					freeCells = "";
-					homeCells = "";
-					tableau.Clear();
+				else if ( builder.IsEmpty() == false ) {
+					yield return builder.Build();
 				}
 			}
 		}
 
-		private static bool IsEmpty( string freeCells, string homeCells, IList<string> tableau ) {
-			return freeCells.IsNullOrEmpty() == true
-				&& homeCells.IsNullOrEmpty() == true
-				&& tableau.IsNullOrEmpty() == true;
+		private class Builder {
+			public string freeCells = "";
+			public string homeCells = "";
+			public List<string> tableau = new List<string>();
+
+			public bool IsEmpty() {
+				return freeCells.IsNullOrEmpty() == true
+					&& homeCells.IsNullOrEmpty() == true
+					&& tableau.IsNullOrEmpty() == true;
+			}
+
+			public TestBoardPreset Build() {
+				var preset = new TestBoardPreset( freeCells, homeCells, tableau.ToArray() );
+				freeCells = "";
+				homeCells = "";
+				tableau.Clear();
+				return preset;
+			}
 		}
 
 		private const string testCasePath = "/TestCases/";

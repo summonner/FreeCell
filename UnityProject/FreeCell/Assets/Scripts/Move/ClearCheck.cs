@@ -16,39 +16,14 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
-			var homes = board[PileId.Type.Home];
-
-			foreach ( var home in homes ) {
-				if ( IsClear( home ) == false ) {
+			var piles = board[PileId.Type.Table, PileId.Type.Free];
+			foreach ( var pile in piles ) {
+				if ( pile.IsNullOrEmpty() == false ) {
 					return;
 				}
 			}
 
 			InGameEvents.Clear();
-		}
-
-		private static bool IsClear( IList<Card> suit ) {
-			if ( suit.Count != 13 ) {
-				return false;
-			}
-
-			var prev = Card.Blank;
-			foreach ( var card in suit ) {
-				if ( IsValid( prev, card ) == false ) {
-					return false;
-				}
-				prev = card;
-			}
-			return true;
-		}
-
-		public static bool IsValid( Card first, Card next ) {
-			if ( first == Card.Blank ) {
-				return next.rank == Card.Rank.Ace;
-			}
-
-			return first.suit == next.suit
-				&& (first.rank + 1) == next.rank;
 		}
 	}
 }

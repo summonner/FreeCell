@@ -40,11 +40,11 @@ namespace Summoner.FreeCell {
 		}
 
 #if UNITY_EDITOR
-		public Board( IBoardLayout layout, params System.Type[] exceptRules )
+		public Board( IBoardLayout layout, params System.Type[] excludeRules )
 			: this( layout )
 		{
 			foreach ( var rule in ruleComponents ) {
-				if ( exceptRules.Contains( rule.GetType() ) == false ) {
+				if ( excludeRules.Contains( rule.GetType() ) == false ) {
 					continue;
 				}
 
