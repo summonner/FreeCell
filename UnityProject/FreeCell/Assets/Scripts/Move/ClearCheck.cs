@@ -16,7 +16,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
-			var homes = board.Traverse( PileId.Type.Home );
+			var homes = board[PileId.Type.Home];
 
 			foreach ( var home in homes ) {
 				if ( IsClear( home ) == false ) {

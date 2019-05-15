@@ -3,7 +3,7 @@
 namespace Summoner.FreeCell {
 	public struct PileId {
 		public enum Type {
-			Home, Free, Table,
+			Home, Table, Free,
 		}
 
 		public readonly Type type;

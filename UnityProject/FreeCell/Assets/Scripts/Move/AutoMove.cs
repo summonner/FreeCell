@@ -37,10 +37,9 @@ namespace Summoner.FreeCell {
 				lastClicked = clicked;
 			}
 
-			foreach ( var moveTo in traverser.Traverse( selected.pile ) ) {
-				var pile = moveTo.pile;
+			foreach ( var pile in traverser.Traverse( selected.pile ) ) {
 				var isFreeToFree = selected.type == PileType.Free 
-								&& moveTo.id.type == PileType.Free;
+								&& pile.id.type == PileType.Free;
 				if ( isFreeToFree == true ) {
 					continue;
 				}
@@ -49,13 +48,13 @@ namespace Summoner.FreeCell {
 					continue;
 				}
 
-				var adjustment = moveTo.isEmptyTableau ? 2 : 1;
+				var adjustment = IsEmptyTableau( pile ) ? 2 : 1;
 				if ( poped.Length > numMovable / adjustment ) {
 					continue;
 				}
 
 				pile.Push( poped );
-				InGameEvents.MoveCards( poped, selected.pile, moveTo.id );
+				InGameEvents.MoveCards( poped, selected.pile, pile.id );
 				return;
 			}
 
@@ -74,34 +73,51 @@ namespace Summoner.FreeCell {
 			return piles.Count( ( pile ) => (pile.Count == 0) );
 		}
 
+		public bool IsEmptyTableau( IPile pile ) {
+			return pile is Tableau
+				&& pile.Count == 0;
+		}
+
 		private class PileTraverser {
-			private readonly IList<Pile> homes;
-			private readonly IList<Pile> piles;
+			private readonly IList<IPile> homes;
+			private readonly IList<IPile> piles;
 
 			public PileTraverser( IBoardController board, PileId selected ) {
-				var homes = new List<Pile>( 4 );
-				homes.AddRange( Convert( board, PileType.Home ) );
+				var homes = new List<IPile>( 4 );
+				homes.AddRange( board[PileType.Home] );
 				this.homes = homes.AsReadOnly();
 
-				var piles = new List<Pile>( 12 );
-				piles.AddRange( Convert( board, PileType.Table ) );
-				piles.AddRange( Convert( board, PileType.Free ) );
+				var piles = new List<IPile>( 12 );
+				piles.AddRange( board[PileType.Table, PileType.Free] );
+				piles.Sort( Sort );
 				if ( selected.type == PileType.Table ) {
-					var selectedPile = piles[selected.index];
-					piles.RemoveAt( selected.index );
-					piles.Add( selectedPile );
+					MoveSelectedToLast( piles, selected );
 				}
 				this.piles = piles.AsReadOnly();
 			}
 
-			private static IEnumerable<Pile> Convert( IBoardController board, PileType type ) {
-				var piles = board[type];
-				for ( int i = 0; i < piles.Count; ++i ) {
-					yield return new Pile( piles[i], type, i );
+			private int Sort( IPile left, IPile right ) {
+				if ( left.id.type != right.id.type ) {
+					return left.id.type - right.id.type;
 				}
+
+				if ( left.Count == 0 && right.Count != 0 ) {
+					return 1;
+				}
+				else if ( left.Count != 0 && right.Count == 0 ) {
+					return -1;
+				}
+
+				return left.id.index - right.id.index;
 			}
 
-			public IEnumerable<Pile> Traverse( PileId selected ) {
+			private static void MoveSelectedToLast( List<IPile> piles, PileId selected ) {
+				var selectedPile = piles.First( ( pile ) => (pile.id == selected) );
+				piles.Remove( selectedPile );
+				piles.Add( selectedPile );
+			}
+
+			public IEnumerable<IPile> Traverse( PileId selected ) {
 				foreach ( var home in homes ) {
 					yield return home;
 				}
@@ -119,26 +135,6 @@ namespace Summoner.FreeCell {
 					yield return piles[index];
 				}
 			}
-		}
-
-		private struct Pile {
-			public readonly IPile pile;
-			public readonly PileId id;
-
-			public bool isEmptyTableau {
-				get {
-					return pile is Tableau
-						&& pile.Count == 0;
-				}
-			}
-
-			public Pile( IPile pile, PileId id ) {
-				this.pile = pile;
-				this.id = id;
-			}
-
-			public Pile( IPile pile, PileId.Type type, int index ) 
-				: this( pile, new PileId( type, index ) ){ }
 		}
 	}
 }

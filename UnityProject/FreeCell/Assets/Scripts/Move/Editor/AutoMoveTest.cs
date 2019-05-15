@@ -20,12 +20,13 @@ namespace Summoner.FreeCell.Test {
 			TestBoardPreset current = null;
 			foreach ( var next in TestBoardPreset.Load( testCase ) ) {
 				if ( board == null ) {
-					board = new Board( next );
+					board = new Board( next, typeof( AutoPlayToHome ) );
 				}
 				else {
 					InGameEvents.ClickCard( current.select );
 				}
 
+//				Debug.Log( board );
 				Assert.AreEqual( next, board, "move[" + (numMoves++) + "] failed" );
 				current = next;
 			}

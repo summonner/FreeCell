@@ -5,13 +5,15 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public interface IBoardLookup {
-		IPileLookup Look( PileId id );
-		IEnumerable<IPileLookup> Traverse( params PileId.Type[] types );
+		IPileLookup this[PileId id] { get; }
+		IPileLookup this[PileId.Type type, int index] { get; }
+		IEnumerable<IPileLookup> this[params PileId.Type[] types] { get; }
 	}
 
 	public interface IBoardController {
-		IList<IPile> this[PileId.Type type] { get; }
 		IPile this[PileId pile] { get; }
+		IPile this[PileId.Type type, int index] { get; }
+		IEnumerable<IPile> this[params PileId.Type[] type] { get; }
 	}
 
 	public class Board : IBoardLookup, IBoardController, System.IDisposable {
@@ -33,10 +35,25 @@ namespace Summoner.FreeCell {
 				new AutoMove( this ),
 				new Undo( this ),
 				new ClearCheck( this ),
+				new AutoPlayToHome( this ),
 			};
 		}
 
-		public Board( IBoardPreset preset ) 
+#if UNITY_EDITOR
+		public Board( IBoardPreset layout, params System.Type[] exceptRules )
+			: this( layout )
+		{
+			foreach ( var rule in ruleComponents ) {
+				if ( exceptRules.Contains( rule.GetType() ) == false ) {
+					continue;
+				}
+
+				rule.Dispose();
+			}
+		}
+#endif
+
+		public Board( IBoardPreset preset )
 			: this( (IBoardLayout)preset ) 
 		{
 			Clear();
@@ -129,23 +146,6 @@ namespace Summoner.FreeCell {
 			return str.ToString();
 		}
 
-		IPileLookup IBoardLookup.Look( PileId id ) {
-			var piles = GetPiles( id.type );
-			if ( piles.IsOutOfRange( id.index ) == true ) {
-				return null;
-			}
-
-			return piles[id.index];
-		}
-
-		IEnumerable<IPileLookup> IBoardLookup.Traverse( params PileId.Type[] types ) {
-			foreach ( var type in types ) {
-				var piles = GetPiles( type );
-				foreach ( var pile in piles ) {
-					yield return pile;
-				}
-			}
-		}
 
 		private IList<IPile> GetPiles( PileId.Type type ) {
 			switch ( type ) {
@@ -161,16 +161,53 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		IList<IPile> IBoardController.this[PileId.Type type] {
-			get {
-				return GetPiles( type );
+		private IPile Look( PileId id ) {
+			var piles = GetPiles( id.type );
+			return piles.FirstOrDefault( ( pile ) => (pile.id == id) );
+		}
+
+		private IEnumerable<IPile> Traverse( PileId.Type[] types ) {
+			foreach ( var type in types ) {
+				var piles = GetPiles( type );
+				foreach ( var pile in piles ) {
+					yield return pile;
+				}
 			}
 		}
 
-		IPile IBoardController.this[PileId pile] {
+		IPileLookup IBoardLookup.this[PileId id] {
 			get {
-				var piles = GetPiles( pile.type );
-				return piles.ElementAtOrDefault( pile.index );
+				return Look( id );
+			}
+		}
+
+		IPileLookup IBoardLookup.this[PileId.Type type, int index] {
+			get {
+				return Look( new PileId( type, index ) );
+			}
+		}
+
+		IEnumerable<IPileLookup> IBoardLookup.this[params PileId.Type[] types] {
+			get	{
+				return Traverse( types ).Cast<IPileLookup>();
+			}
+		}
+
+		IPile IBoardController.this[PileId id] {
+			get	{
+				return Look( id );
+			}
+		}
+
+		IPile IBoardController.this[PileId.Type type, int index] {
+			get {
+				return Look( new PileId( type, index ) );
+			}
+		}
+
+		IEnumerable<IPile> IBoardController.this[params PileId.Type[] types] {
+			get {
+				return Traverse( types );
 			}
 		}
 	}

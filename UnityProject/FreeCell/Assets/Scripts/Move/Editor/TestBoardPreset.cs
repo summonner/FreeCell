@@ -82,7 +82,7 @@ namespace Summoner.FreeCell.Test {
 
 		private static bool Equals( IBoardLookup board, IList<Card> cards, PileId.Type type ) {
 			for ( int i = 0; i < cards.Count; ++i ) {
-				var pile = board.Look( new PileId( type, i ) );
+				var pile = board[type, i];
 				var actual = pile.LastOrDefault();
 				if ( cards[i] != actual ) {
 					return false;
@@ -93,12 +93,12 @@ namespace Summoner.FreeCell.Test {
 
 		private static bool Equals( IBoardLookup board, IList<IList<Card>> tableau ) {
 			if ( tableau.IsNullOrEmpty() == true ) {
-				return board.Look( new PileId( PileId.Type.Table, 0 ) ).IsNullOrEmpty();
+				return board[PileId.Type.Table, 0].IsNullOrEmpty();
 			}
 
 			var numPiles = tableau[0].Count;
 			for ( int column = 0; column < numPiles; ++column ) {
-				var pile = board.Look( new PileId( PileId.Type.Table, column ) );
+				var pile = board[PileId.Type.Table, column];
 				for ( int row = 0; row < pile.Count; ++row ) {
 					if ( SafeGet( tableau, row, column ) != pile[row] ) {
 						return false;
