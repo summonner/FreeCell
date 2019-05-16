@@ -5,7 +5,7 @@ using Summoner.Util.Extension;
 using PileType = Summoner.FreeCell.PileId.Type;
 
 namespace Summoner.FreeCell {
-	public class AutoMove : System.IDisposable {
+	public class AutoMove : IRuleComponent {
 		private readonly IBoardController board;
 		public AutoMove( IBoardController board ) {
 			this.board = board;
@@ -14,6 +14,10 @@ namespace Summoner.FreeCell {
 
 		public void Dispose() {
 			InGameEvents.OnClickCard -= OnAutoMove;
+		}
+
+		public void Reset() {
+			// do nothing
 		}
 
 		private Card lastClicked = Card.Blank;

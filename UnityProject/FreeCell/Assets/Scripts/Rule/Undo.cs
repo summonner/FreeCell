@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class Undo : System.IDisposable {
+	public class Undo : IRuleComponent {
 		private struct Command {
 			public readonly IEnumerable<Card> cards;
 			public readonly PileId from;
@@ -22,15 +22,17 @@ namespace Summoner.FreeCell {
 			this.board = board;
 			InGameEvents.OnMoveCards += OnMoveCards;
 			InGameUIEvents.OnUndo += OnUndo;
-			InGameUIEvents.OnReset += Clear;
 		}
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
 			InGameUIEvents.OnUndo -= OnUndo;
-			InGameUIEvents.OnReset -= Clear;
 		}
-		
+
+		public void Reset() {
+			Clear();
+		}
+
 		public void Clear() {
 			commands.Clear();
 		}

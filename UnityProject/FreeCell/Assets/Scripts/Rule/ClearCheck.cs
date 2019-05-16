@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class ClearCheck : System.IDisposable {
+	public class ClearCheck : IRuleComponent {
 		private IBoardLookup board;
 
 		public ClearCheck( IBoardLookup board ) {
@@ -13,6 +13,10 @@ namespace Summoner.FreeCell {
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+		}
+
+		public void Reset() {
+			// do nothing
 		}
 
 		public void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {

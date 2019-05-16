@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class AutoPlayToHome : System.IDisposable {
+	public class AutoPlayToHome : IRuleComponent {
 		private readonly IBoardController board;
 
 		public AutoPlayToHome( IBoardController board ) {
@@ -13,6 +13,10 @@ namespace Summoner.FreeCell {
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+		}
+
+		public void Reset() {
+			// do nothing
 		}
 
 		private void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
@@ -44,7 +48,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private IEnumerable<Card> TraverseTableau() {
-			foreach ( var pile in board[PileId.Type.Table] ) {
+			foreach ( var pile in board[PileId.Type.Table, PileId.Type.Free] ) {
 				foreach ( var card in pile ) {
 					yield return card;
 				}

@@ -21,7 +21,7 @@ namespace Summoner.FreeCell {
 		private readonly IList<IPile> frees;
 		private readonly IList<IPile> tables;
 
-		private readonly IList<System.IDisposable> ruleComponents;
+		private readonly IList<IRuleComponent> ruleComponents;
 
 		public Board( IBoardLayout layout ) {
 			homes = Init( layout.numHomes, (i) => ( new HomeCell( i ) ) );
@@ -31,7 +31,7 @@ namespace Summoner.FreeCell {
 			Debug.Assert( frees != null );
 			Debug.Assert( tables != null );
 
-			ruleComponents = new System.IDisposable[] {
+			ruleComponents = new IRuleComponent[] {
 				new AutoMove( this ),
 				new Undo( this ),
 				new ClearCheck( this ),
@@ -71,6 +71,9 @@ namespace Summoner.FreeCell {
 			ApplyPreset( homes, preset.homes );
 			ApplyPreset( frees, preset.frees );
 			ApplyPreset( tables, preset.tableau );
+			foreach ( var component in ruleComponents ) {
+				component.Reset();
+			}
 		}
 
 		private void ApplyPreset( IList<IPile> target, IEnumerable<Card> preset ) {
