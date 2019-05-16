@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 4231457508382762}
   - component: {fileID: 61855028875097550}
   - component: {fileID: 114655643775235682}
+  - component: {fileID: 114276113540904098}
   m_Layer: 8
   m_Name: CardTemplate
   m_TagString: Untagged
@@ -110,6 +111,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.1
   scale: 0.1
+--- !u!114 &114276113540904098
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612210250750190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4146e7f3b918694b9c9ac985ed4b90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 212158290339329518}
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 10
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.1
+      value: 1
+      inSlope: 10
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &114655643775235682
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -122,31 +159,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderer: {fileID: 212158290339329518}
-  anim: {fileID: 114163161690596272}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  vibrateAnim: {fileID: 114163161690596272}
+  moveAnim: {fileID: 114276113540904098}
 --- !u!212 &212158290339329518
 SpriteRenderer:
   m_ObjectHideFlags: 1

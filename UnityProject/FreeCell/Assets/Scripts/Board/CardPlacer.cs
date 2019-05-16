@@ -6,7 +6,6 @@ namespace Summoner.FreeCell {
 	public class CardPlacer : MonoBehaviour {
 		[SerializeField] private BoardLayout layout;
 		private IBoardLookup board;
-
 		private Dictionary<Card, CardObject> cards = new Dictionary<Card, CardObject>( 52 );
 
 		void Reset() {
@@ -14,16 +13,10 @@ namespace Summoner.FreeCell {
 		}
 
 		void Awake() {
-			InGameEvents.OnSetCard += OnSetCard;
-			InGameEvents.OnMoveCards += OnMoveCards;
-			InGameEvents.OnUndoCards += OnMoveCards;
 			InGameEvents.OnCannotMove += OnCannotMove;
 		}
 
 		void OnDestroy() {
-			InGameEvents.OnSetCard -= OnSetCard;
-			InGameEvents.OnMoveCards -= OnMoveCards;
-			InGameEvents.OnUndoCards -= OnMoveCards;
 			InGameEvents.OnCannotMove -= OnCannotMove;
 		}
 
@@ -38,29 +31,15 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void OnMoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
-			var pile = board[to];
-			var spacing = CalculateSpacing( to.type );
-
-			foreach ( var target in targets ) {
-				SetCardPosition( target, to, pile, spacing );
-			}
-		}
-
-		private void OnSetCard( Card target, PileId to ) {
-			var pile = board[to];
-			var spacing = CalculateSpacing( to.type );
-			SetCardPosition( target, to, pile, spacing );
-		}
-
-		private void SetCardPosition( Card target, PileId to, IList<Card> pile, Vector3 spacing ) {
+		public System.Action MoveCard( Card target, PileId to ) {
 			var card = cards[target];
 			var pilePosition = layout[to];
-			var row = pile.IndexOf( target );
+			var row = board[to].IndexOf( target );
+			var spacing = CalculateSpacing( to.type );
 			var position = pilePosition.position + row * spacing;
 
 			card.onClick = () => { InGameEvents.ClickCard( new SelectPosition( to, row ) ); };
-			card.SetPosition( position );
+			return card.SetDestination( position );
 		}
 
 		private void OnCannotMove( IEnumerable<Card> subjects ) {
