@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public class GameSeed : MonoBehaviour {
 		[MinMaxRange( 0f, 100f )]
-		public Range range;
+		public RangeInt range;
 		public int testSeed = -1;
 		private int currentSeed = 0;
 
@@ -17,7 +17,7 @@ namespace Summoner.FreeCell {
 				return testSeed;
 			}
 
-			return Random.Range( (int)range.min, (int)range.max );
+			return Random.Range( range.min, range.max );
 		}
 
 		void OnGUI() {

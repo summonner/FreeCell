@@ -14,27 +14,53 @@ namespace Summoner.EditorExtension {
 				range = new MinMaxRangeAttribute( 0, 1 );
 			}
 
-			var minProperty = property.FindPropertyRelative( "min" );
-			var maxProperty = property.FindPropertyRelative( "max" );
-			if ( minProperty == null || maxProperty == null ) {
-				EditorGUI.LabelField( position, property.name + "\nCannot find fields. \"min\", \"max\"" );
+			var min = property.FindPropertyRelative( range.minProperty );
+			var max = property.FindPropertyRelative( range.maxProperty );
+			if ( min == null || max == null ) {
+				EditorGUI.LabelField( position, property.name + "\nCannot find fields. \"" + range.minProperty + "\", \"" + range.maxProperty + "\"" );
 				return;
 			}
 
-			var min = minProperty.floatValue;
-			var max = maxProperty.floatValue;
+			var drawMinMaxSlider = GetDrawSliderFunc( min.propertyType );
 
 			var layout = new PropertyLayoutHelper();
 			layout.Add( (rect) => { EditorGUI.LabelField( position, property.name ); } );
 			layout.Begin();
-			layout.Add( (rect) => { min = EditorGUI.FloatField( rect, min ); }, labelLength );
-			layout.Add( (rect) => EditorGUI.MinMaxSlider( rect, ref min, ref max, range.min, range.max ) );
-			layout.Add( (rect) => { max = EditorGUI.FloatField( rect, max ); }, labelLength );
+			layout.Add( (rect) => EditorGUI.PropertyField( rect, min, GUIContent.none ), labelLength );
+			layout.Add( (rect) => drawMinMaxSlider( rect, min, max, range ) );
+			layout.Add( (rect) => EditorGUI.PropertyField( rect, max, GUIContent.none ), labelLength );
 			layout.End();
 			layout.Render( position );
+		}
 
-			minProperty.floatValue = min;
-			maxProperty.floatValue = max;
+		private delegate void DrawSlider( Rect position, SerializedProperty min, SerializedProperty max, MinMaxRangeAttribute range );
+		private DrawSlider GetDrawSliderFunc( SerializedPropertyType type ) {
+			switch ( type ) {
+				case SerializedPropertyType.Float:
+					return MinMaxSlider;
+
+				case SerializedPropertyType.Integer:
+					return MinMaxSliderInt;
+
+				default:
+					goto case SerializedPropertyType.Float;
+			}
+		}
+
+		private void MinMaxSlider( Rect position, SerializedProperty min, SerializedProperty max, MinMaxRangeAttribute range ) {
+			var minValue = min.floatValue;
+			var maxValue = max.floatValue;
+			EditorGUI.MinMaxSlider( position, ref minValue, ref maxValue, range.min, range.max );
+			min.floatValue = minValue;
+			max.floatValue = maxValue;
+		}
+
+		private void MinMaxSliderInt( Rect position, SerializedProperty min, SerializedProperty max, MinMaxRangeAttribute range ) {
+			var minValue = (float)min.intValue;
+			var maxValue = (float)max.intValue;
+			EditorGUI.MinMaxSlider( position, ref minValue, ref maxValue, range.min, range.max );
+			min.intValue = Mathf.FloorToInt( minValue );
+			max.intValue = Mathf.CeilToInt( maxValue );
 		}
 
 		public override float GetPropertyHeight( SerializedProperty property, GUIContent label ) {
