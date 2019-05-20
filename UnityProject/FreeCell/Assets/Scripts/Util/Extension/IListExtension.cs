@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Summoner.Util.Extension {
 	public static class IListExtension {
-		public static bool IsOutOfRange<T>( this IList<T> list, int index ) {
+		public static bool IsOutOfRange<T>( this ICollection<T> list, int index ) {
 			return list == null
 				|| index < 0
 				|| index >= list.Count;
 		}
 
-		public static bool IsNullOrEmpty<T>( this IList<T> list ) {
+		public static bool IsNullOrEmpty<T>( this ICollection<T> list ) {
 			return list == null
 				|| list.Count == 0;
 		}
@@ -34,6 +34,13 @@ namespace Summoner.Util.Extension {
 
 		public static System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly<T>( this T[] array ) {
 			return System.Array.AsReadOnly( array );
+		}
+
+		public static IEnumerable<KeyValuePair<int, T>> WithIndex<T>( this IEnumerable<T> list ) {
+			var i = 0;
+			foreach ( var item in list ) {
+				yield return new KeyValuePair<int, T>( i++, item );
+			}
 		}
 	}
 }

@@ -21,11 +21,13 @@ namespace Summoner.FreeCell {
 		public Undo( IBoardController board ) {
 			this.board = board;
 			InGameEvents.OnMoveCards += OnMoveCards;
+			InGameEvents.OnAutoPlay += OnMoveCards;
 			InGameUIEvents.OnUndo += OnUndo;
 		}
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+			InGameEvents.OnAutoPlay -= OnMoveCards;
 			InGameUIEvents.OnUndo -= OnUndo;
 		}
 

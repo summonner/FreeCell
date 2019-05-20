@@ -87,7 +87,7 @@ namespace Summoner.FreeCell {
 					target[i].Push( card );
 
 					var destination = new PileId( PileId.Type.Table, i );
-					InGameEvents.SetCard( card, destination );
+					InGameEvents.InitBoard( card, destination );
 				}
 
 				i = (i + 1) % target.Count;

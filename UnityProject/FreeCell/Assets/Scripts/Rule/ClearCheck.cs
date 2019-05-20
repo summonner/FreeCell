@@ -9,10 +9,12 @@ namespace Summoner.FreeCell {
 		public ClearCheck( IBoardLookup board ) {
 			this.board = board;
 			InGameEvents.OnMoveCards += OnMoveCards;
+			InGameEvents.OnAutoPlay += OnMoveCards;
 		}
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+			InGameEvents.OnAutoPlay -= OnMoveCards;
 		}
 
 		public void Reset() {

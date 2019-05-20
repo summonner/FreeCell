@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class AutoPlayToHome : IRuleComponent {
@@ -9,10 +10,12 @@ namespace Summoner.FreeCell {
 		public AutoPlayToHome( IBoardController board ) {
 			this.board = board;
 			InGameEvents.OnMoveCards += OnMoveCards;
+			InGameEvents.OnAutoPlay += OnMoveCards;
 		}
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
+			InGameEvents.OnAutoPlay -= OnMoveCards;
 		}
 
 		public void Reset() {
@@ -32,7 +35,10 @@ namespace Summoner.FreeCell {
 						continue;
 					}
 
-					InGameEvents.ClickCard( new SelectPosition( pile.id, pile.Count - 1 ) );
+					var poped = board[pile.id].Pop( pile.Count - 1 );
+					Debug.Assert( poped.IsNullOrEmpty() == false );
+					home.Push( poped );
+					InGameEvents.AutoPlay( poped, pile.id, home.id );
 					return;
 				}
 			}
