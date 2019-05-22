@@ -23,5 +23,10 @@ namespace Summoner {
 			this.min = min;
 			this.max = max;
 		}
+
+		public bool Contains( int value ) {
+			return value >= min
+				&& value <= max;
+		}
 	}
 }

@@ -7,11 +7,11 @@ namespace Summoner.FreeCell.Anims {
 		[SerializeField][Range( 0.01f, 1f )] private float longInterval = 0.1f;
 		[SerializeField][Range( 0f, 0.1f )]  private float shortInterval = 0.01f;
 
-		[SerializeField] private CardPlacer placer;
+		[SerializeField] private CardObjectHolder placer;
 		private AnimQueue autoPlayQueue;
 
 		void Reset() {
-			placer = GetComponent<CardPlacer>();
+			placer = GetComponent<CardObjectHolder>();
 		}
 
 		void Awake() {

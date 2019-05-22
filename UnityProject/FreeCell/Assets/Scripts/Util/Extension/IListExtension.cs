@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Text;
 using System.Collections.Generic;
 
 namespace Summoner.Util.Extension {
@@ -34,6 +35,31 @@ namespace Summoner.Util.Extension {
 
 		public static System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly<T>( this T[] array ) {
 			return System.Array.AsReadOnly( array );
+		}
+
+		public static string Join<T>( this IEnumerable<T> list ) {
+			if ( list == null ) {
+				return "null";
+			}
+
+			StringBuilder str = new StringBuilder();
+			str.Append( "[" );
+			foreach ( var item in list ) {
+				if ( item == null ) {
+					str.Append( "null" );
+				}
+				else {
+					str.Append( item.ToString() );
+				}
+				str.Append( ", " );
+			}
+
+			if ( str.Length > 1 ) {
+				str.Length -= 2;
+			}
+			str.Append( "]" );
+
+			return str.ToString();
 		}
 
 		public static IEnumerable<KeyValuePair<int, T>> WithIndex<T>( this IEnumerable<T> list ) {

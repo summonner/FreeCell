@@ -23,12 +23,12 @@ namespace Summoner.FreeCell {
 		private Card lastClicked = Card.Blank;
 		private PileTraverser traverser = null;
 
-		private void OnAutoMove( SelectPosition selected ) {
+		private void OnAutoMove( PositionOnBoard selected ) {
 			if ( selected.type == PileType.Home ) {
 				return;
 			}
 
-			var numMovable = CountMaxMovableCards();
+			var numMovable = board.CountMaxMovables();
 			var selectedPile = board[selected.pile];
 			var poped = selectedPile.Pop( selected.row );
 			if ( poped.IsNullOrEmpty() == true ) {
@@ -66,18 +66,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.CannotMove( poped );
 		}
 
-		private int CountMaxMovableCards() {
-			var numEmptyFrees = CountEmpties( PileType.Free );
-			var numEmptyTableau = CountEmpties( PileType.Table );
-			return (1 + numEmptyFrees) * (int)Mathf.Pow( 2f, numEmptyTableau );
-		}
-
-		private int CountEmpties( PileType type ) {
-			var piles = board[type];
-			return piles.Count( ( pile ) => (pile.Count == 0) );
-		}
-
-		public bool IsEmptyTableau( IPile pile ) {
+		public static bool IsEmptyTableau( IPile pile ) {
 			return pile is Tableau
 				&& pile.Count == 0;
 		}

@@ -36,6 +36,10 @@ namespace Summoner.FreeCell {
 			return poped;
 		}
 
+		public override bool CanMove( int index ) {
+			return index < Count;
+		}
+
 		public override bool IsAcceptable( params Card[] cards ) {
 			return cards.Length == 1
 				&& isEmpty == true;

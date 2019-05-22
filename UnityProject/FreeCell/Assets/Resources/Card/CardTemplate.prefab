@@ -36,9 +36,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4231457508382762}
-  - component: {fileID: 61855028875097550}
   - component: {fileID: 114655643775235682}
   - component: {fileID: 114276113540904098}
+  - component: {fileID: 114283681166483838}
+  - component: {fileID: 61855028875097550}
   m_Layer: 8
   m_Name: CardTemplate
   m_TagString: Untagged
@@ -122,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4146e7f3b918694b9c9ac985ed4b90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 212158290339329518}
+  floater: {fileID: 114283681166483838}
   curve:
     serializedVersion: 2
     m_Curve:
@@ -147,6 +148,33 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &114283681166483838
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612210250750190}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25a66bdedcf9b044ac09f7b0d71c9a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 212158290339329518}
+  collider: {fileID: 61855028875097550}
+  contactFilter:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 768
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
 --- !u!114 &114655643775235682
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -161,6 +189,7 @@ MonoBehaviour:
   renderer: {fileID: 212158290339329518}
   vibrateAnim: {fileID: 114163161690596272}
   moveAnim: {fileID: 114276113540904098}
+  floater: {fileID: 114283681166483838}
 --- !u!212 &212158290339329518
 SpriteRenderer:
   m_ObjectHideFlags: 1

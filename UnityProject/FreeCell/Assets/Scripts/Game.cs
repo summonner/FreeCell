@@ -6,7 +6,7 @@ namespace Summoner.FreeCell {
 	[RequireComponent( typeof(GameSeed) )]
 	public class Game : MonoBehaviour {
 		[SerializeField] private CardSpriteSheet sheet;
-		[SerializeField] private CardPlacer placer;
+		[SerializeField] private CardObjectHolder placer;
 		[SerializeField] private BoardLayout layout;
 		[SerializeField] private GameSeed seed;
 		private BasicPlacement preset;
@@ -31,7 +31,7 @@ namespace Summoner.FreeCell {
 
 		void Reset() {
 			sheet = null;
-			placer = FindObjectOfType<CardPlacer>();
+			placer = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
 			seed = GetComponent<GameSeed>();
 		}

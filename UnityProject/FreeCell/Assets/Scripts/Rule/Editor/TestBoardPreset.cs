@@ -44,7 +44,7 @@ namespace Summoner.FreeCell.Test {
 		}
 
 		private static System.Action Click( PileId.Type type, int column, int row ) {
-			var position = new SelectPosition( type, column, row );
+			var position = new PositionOnBoard( type, column, row );
 			return () => {
 				InGameEvents.ClickCard( position );
 			};

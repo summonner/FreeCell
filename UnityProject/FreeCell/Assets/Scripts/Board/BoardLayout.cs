@@ -1,14 +1,9 @@
 using UnityEngine;
+using System.Linq;
 using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public interface IBoardLayout {
-		int numHomes { get; }
-		int numFrees { get; }
-		int numPiles { get; }
-	}
-
 	public class BoardLayout : MonoBehaviour, IBoardLayout {
 		public Transform[] homeCells;
 		public Transform[] freeCells;
@@ -21,6 +16,19 @@ namespace Summoner.FreeCell {
 		public int numFrees = 4;
 		public const int numHomes = 4;
 		public Vector3 headOffset = new Vector3( 0.0f, 1.5f, 0f );
+
+		void Awake() {
+			Init( homeCells, PileId.Type.Home );
+			Init( freeCells, PileId.Type.Free );
+			Init( tablePiles, PileId.Type.Table );
+		}
+
+		private static void Init( Transform[] piles, PileId.Type type ) {
+			for ( int i=0; i < piles.Length; ++i ) {
+				var component = piles[i].gameObject.AddComponent<BoardComponent>();
+				component.position = new PositionOnBoard( type, i, -1 );
+			}
+		}
 
 #if UNITY_EDITOR
 		[ContextMenu( "Create Init" )]
@@ -78,16 +86,19 @@ namespace Summoner.FreeCell {
 			}
 		}
 #endif
+		public Vector3 GetWorldPosition( PositionOnBoard position ) {
+			var piles = GetPile( position.type );
+			var pile = piles.ElementAt( position.column );
+			var spacing = CalculateSpacing( this.spacing, position );
+			return pile.position + spacing;
+		}
 
-		public Transform this[PileId id] {
-			get {
-				var pile = GetPile( id.type );
-				if ( pile.IsOutOfRange( id.index ) == true ) {
-					return null;
-				}
-
-				return pile[id.index];
+		private static Vector3 CalculateSpacing( Vector3 spacing, PositionOnBoard position ) {
+			spacing.x = 0f;
+			if ( position.type != PileId.Type.Table ) {
+				spacing.y = 0f;
 			}
+			return spacing * position.row;
 		}
 
 		private Transform[] GetPile( PileId.Type type ) {

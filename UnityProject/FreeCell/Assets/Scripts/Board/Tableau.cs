@@ -17,12 +17,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public override Card[] Pop( int startIndex ) {
-			if ( stack.IsOutOfRange( startIndex ) == true ) {
-				Debug.Assert( false, "tried to pop too many from pile." );
-				return null;
-			}
-
-			if ( DoesLinked( startIndex ) == false ) {
+			if ( CanMove( startIndex ) == false ) {
 				return null;
 			}
 
@@ -32,6 +27,19 @@ namespace Summoner.FreeCell {
 			stack.RemoveRange( startIndex, popCount );
 
 			return poped;
+		}
+
+		public override bool CanMove( int startIndex ) {
+			if ( stack.IsOutOfRange( startIndex ) == true ) {
+				Debug.Assert( false, "tried to pop too many from pile." );
+				return false;
+			}
+
+			if ( DoesLinked( startIndex ) == false ) {
+				return false;
+			}
+
+			return true;
 		}
 
 		private bool DoesLinked( int index ) {
@@ -45,7 +53,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public static bool IsStackable( Card top, Card under ) {
-			if ( IsRed( top ) == IsRed( under ) ) {
+			if ( AreDifferentColor( top, under ) == false ) {
 				return false;
 			}
 
@@ -65,19 +73,22 @@ namespace Summoner.FreeCell {
 			return IsStackable( cards[0], top );
 		}
 
-		private static bool IsRed( Card card ) {
+		private static bool AreDifferentColor( Card left, Card right ) {
+			return GetColor( left ) + GetColor( right ) == 0;
+		}
+
+		private static int GetColor( Card card ) {
 			switch ( card.suit ) {
 				case Card.Suit.Diamonds:
 				case Card.Suit.Hearts:
-					return true;
+					return 1;
 
 				case Card.Suit.Spades:
 				case Card.Suit.Clubs:
-					return false;
+					return -1;
 
 				default:
-					Debug.Assert( false, "Unknown suit type : " + card );
-					return false;
+					return 3;
 			}
 		}
 	}

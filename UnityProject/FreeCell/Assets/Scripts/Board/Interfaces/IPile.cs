@@ -4,6 +4,8 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public interface IPileLookup : IList<Card> {
 		PileId id { get; }
+
+		bool CanMove( int row );
 	}
 
 	public interface IPile : IPileLookup {

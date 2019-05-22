@@ -4,18 +4,6 @@ using System.Linq;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public interface IBoardLookup {
-		IPileLookup this[PileId id] { get; }
-		IPileLookup this[PileId.Type type, int index] { get; }
-		IEnumerable<IPileLookup> this[params PileId.Type[] types] { get; }
-	}
-
-	public interface IBoardController {
-		IPile this[PileId pile] { get; }
-		IPile this[PileId.Type type, int index] { get; }
-		IEnumerable<IPile> this[params PileId.Type[] type] { get; }
-	}
-
 	public class Board : IBoardLookup, IBoardController, System.IDisposable {
 		private readonly IList<IPile> homes;
 		private readonly IList<IPile> frees;
@@ -36,6 +24,7 @@ namespace Summoner.FreeCell {
 				new Undo( this ),
 				new ClearCheck( this ),
 				new AutoPlayToHome( this ),
+				new DragAndDrop( this ),
 			};
 		}
 
@@ -190,6 +179,17 @@ namespace Summoner.FreeCell {
 			get {
 				return Traverse( types );
 			}
+		}
+
+		int IBoardController.CountMaxMovables() {
+			var numEmptyFrees = CountEmpties( PileId.Type.Free );
+			var numEmptyTableau = CountEmpties( PileId.Type.Table );
+			return (1 + numEmptyFrees) * (int)Mathf.Pow( 2f, numEmptyTableau );
+		}
+
+		private int CountEmpties( PileId.Type type ) {
+			var piles = GetPiles( type );
+			return piles.Count( ( pile ) => (pile.Count == 0) );
 		}
 	}
 }

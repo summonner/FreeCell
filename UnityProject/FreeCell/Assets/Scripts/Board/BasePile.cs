@@ -66,6 +66,7 @@ namespace Summoner.FreeCell {
 		public abstract void Push( params Card[] cards );
 		public abstract Card[] Pop( int index );
 		public abstract bool IsAcceptable( params Card[] card );
+		public abstract bool CanMove( int index );
 
 		void IList<Card>.Insert( int index, Card item ) {
 			throw new System.NotSupportedException();
