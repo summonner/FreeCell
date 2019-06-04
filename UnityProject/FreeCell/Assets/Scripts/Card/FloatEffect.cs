@@ -65,6 +65,10 @@ namespace Summoner.FreeCell {
 		}
 
 		public IList<PileId> CheckOverlapped() {
+			if ( enabled == false ) {
+				return null;
+			}
+
 			collider.enabled = true;
 			var hits = collider.OverlapCollider( contactFilter, overlapped );
 			collider.enabled = false;
