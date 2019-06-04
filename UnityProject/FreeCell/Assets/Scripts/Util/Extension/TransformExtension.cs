@@ -13,5 +13,22 @@ namespace Summoner.Util.Extension {
 			transform.parent = parent;
 			transform.Reset();
 		}
+
+		public static T GetComponent<T>( this Transform transform ) { 
+			return transform.gameObject.GetComponent<T>();
+		}
+
+		public static T GetOrAddComponent<T>( this Transform transform ) where T : Component {
+			return transform.gameObject.GetOrAddComponent<T>();
+		}
+
+		public static T GetOrAddComponent<T>( this GameObject gameObject ) where T : Component {
+			var component = gameObject.GetComponent<T>();
+			if ( component != null ) {
+				return component;
+			}
+
+			return gameObject.AddComponent<T>();
+		}
 	}
 }

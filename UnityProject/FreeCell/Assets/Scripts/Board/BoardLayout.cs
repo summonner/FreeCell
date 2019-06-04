@@ -5,72 +5,11 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class BoardLayout : MonoBehaviour, IBoardLayout {
-		public Transform[] homeCells;
-		public Transform[] freeCells;
-		public Transform[] tablePiles;
-
-		public int numPiles = 8;
-		public Vector3 spacing = new Vector3( 1.1f, -0.4f, -0.01f );
-		public Vector3 offset = new Vector3( 0f, 5f, 0f );
-
-		public int numFrees = 4;
-		public const int numHomes = 4;
-		public Vector3 headOffset = new Vector3( 0.0f, 1.5f, 0f );
-
-		void Awake() {
-			Init( homeCells, PileId.Type.Home );
-			Init( freeCells, PileId.Type.Free );
-			Init( tablePiles, PileId.Type.Table );
-		}
-
-		private static void Init( Transform[] piles, PileId.Type type ) {
-			for ( int i=0; i < piles.Length; ++i ) {
-				var component = piles[i].gameObject.AddComponent<BoardComponent>();
-				component.position = new PositionOnBoard( type, i, -1 );
-			}
-		}
+		public BoardComponent[] homeCells;
+		public BoardComponent[] freeCells;
+		public BoardComponent[] tablePiles;
 
 #if UNITY_EDITOR
-		[ContextMenu( "Create Init" )]
-		void Init() {
-			var transform = this.transform;
-
-			Clear();
-			var tableOffset = offset;
-			tableOffset.x += (numPiles - 1f) * -0.5f * spacing.x;
-			tablePiles = BuildPiles( numPiles, tableOffset, "table" );
-
-			var upPartOffset = offset;
-			upPartOffset.x += (numFrees + numHomes - 1f + headOffset.x) * -0.5f * spacing.x;
-			upPartOffset.y += headOffset.y;
-			freeCells = BuildPiles( numFrees, upPartOffset, "free" );
-
-			upPartOffset.x += (numFrees + headOffset.x) * spacing.x;
-			homeCells = BuildPiles( numHomes, upPartOffset, "home" );
-		}
-
-		private void Clear() {
-			while ( transform.childCount > 0 ) {
-				DestroyImmediate( transform.GetChild( 0 ).gameObject );
-			}
-		}
-
-		private Transform[] BuildPiles( int numPiles, Vector3 offset, string name ) {
-			var piles = new Transform[numPiles];
-			for ( var i = 0; i < numPiles; ++i ) {
-				var pos = offset;
-				pos.x += i * spacing.x;
-
-				var pile = new GameObject( name + i ).transform;
-				pile.parent = transform;
-				pile.localPosition = pos;
-
-				piles[i] = pile;
-			}
-
-			return piles;
-		}
-
 		private void OnDrawGizmos() {
 			DrawGizmos( tablePiles, Color.red );
 			DrawGizmos( freeCells, Color.cyan );
@@ -79,29 +18,24 @@ namespace Summoner.FreeCell {
 
 		private static readonly Vector3 size = new Vector3( 1f, 1.357f, 1f );
 
-		private static void DrawGizmos( Transform[] transforms, Color color ) {
+		private static void DrawGizmos( BoardComponent[] piles, Color color ) {
 			Gizmos.color = color;
-			foreach ( var t in transforms ) {
-				Gizmos.DrawWireCube( t.position, size );
+			foreach ( var pile in piles ) {
+				if ( pile == null ) {
+					continue;
+				}
+
+				Gizmos.DrawWireCube( pile.transform.position, size );
 			}
 		}
 #endif
 		public Vector3 GetWorldPosition( PositionOnBoard position ) {
 			var piles = GetPile( position.type );
 			var pile = piles.ElementAt( position.column );
-			var spacing = CalculateSpacing( this.spacing, position );
-			return pile.position + spacing;
+			return pile.GetWorldPosition( position.row );
 		}
 
-		private static Vector3 CalculateSpacing( Vector3 spacing, PositionOnBoard position ) {
-			spacing.x = 0f;
-			if ( position.type != PileId.Type.Table ) {
-				spacing.y = 0f;
-			}
-			return spacing * position.row;
-		}
-
-		private Transform[] GetPile( PileId.Type type ) {
+		private BoardComponent[] GetPile( PileId.Type type ) {
 			switch ( type ) {
 				case PileId.Type.Free:
 					return freeCells;
