@@ -9,11 +9,11 @@ namespace Summoner.FreeCell {
 		private readonly IBoardController board;
 		public AutoMove( IBoardController board ) {
 			this.board = board;
-			InGameEvents.OnClickCard += OnAutoMove;
+			PlayerInputEvents.OnClick += OnAutoMove;
 		}
 
 		public void Dispose() {
-			InGameEvents.OnClickCard -= OnAutoMove;
+			PlayerInputEvents.OnClick -= OnAutoMove;
 		}
 
 		public void Reset() {

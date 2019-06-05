@@ -6,6 +6,7 @@ namespace Summoner.FreeCell.Test {
 		[SetUp]
 		public void Setup() {
 			InGameEvents.Flush();
+			PlayerInputEvents.Flush();
 		}
 
 		[TestCase( "TableauToFreecell" )]

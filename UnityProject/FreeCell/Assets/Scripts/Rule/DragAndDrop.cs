@@ -4,22 +4,16 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public class DragAndDrop : IRuleComponent {
+	public class DragAndDrop : IRuleComponent, IDragAndDropListener {
 		private readonly IBoardController board;
 
 		public DragAndDrop( IBoardController board ) {
 			this.board = board;
-			InGameEvents.OnBeginDrag += OnBeginDrag;
-			InGameEvents.OnDrag += OnDrag;
-			InGameEvents.OnEndDrag += OnEndDrag;
-			InGameEvents.OnDropCard += OnDropCard;
+			Util.Event.SubscribeHelper.Subscribe( this );
 		}
 
 		public void Dispose() {
-			InGameEvents.OnBeginDrag -= OnBeginDrag;
-			InGameEvents.OnDrag -= OnDrag;
-			InGameEvents.OnEndDrag -= OnEndDrag;
-			InGameEvents.OnDropCard -= OnDropCard;
+			Util.Event.SubscribeHelper.Unsubscribe( this );
 		}
 
 		public void Reset() {
@@ -28,7 +22,7 @@ namespace Summoner.FreeCell {
 
 		private PositionOnBoard selected;
 		private IEnumerable<Card> selectedCards = null;
-		private void OnBeginDrag( PositionOnBoard position ) {
+		void IDragAndDropListener.OnBeginDrag( PositionOnBoard position ) {
 			var pile = board[position.pile];
 			if ( pile.CanMove( position.row ) == false ) {
 				return;
@@ -39,7 +33,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.BeginFloatCards( selectedCards );
 		}
 
-		private void OnDrag( PositionOnBoard position, Vector3 displacement ) {
+		void IDragAndDropListener.OnDrag( PositionOnBoard position, Vector3 displacement ) {
 			if ( selectedCards == null ) {
 				return;
 			}
@@ -51,7 +45,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.FloatCards( selectedCards, displacement );
 		}
 
-		private void OnEndDrag( PositionOnBoard position ) {
+		void IDragAndDropListener.OnEndDrag( PositionOnBoard position ) {
 			if ( selectedCards == null ) {
 				return;
 			}
@@ -64,7 +58,7 @@ namespace Summoner.FreeCell {
 			selectedCards = null;
 		}
 
-		private void OnDropCard( PositionOnBoard position, IEnumerable<PileId> receivers ) {
+		void IDragAndDropListener.OnDrop( PositionOnBoard position, IEnumerable<PileId> receivers ) {
 			if ( selectedCards == null ) {
 				return;
 			}

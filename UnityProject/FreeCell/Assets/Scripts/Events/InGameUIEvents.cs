@@ -13,13 +13,13 @@ namespace Summoner.FreeCell {
 			OnReset();
 		}
 
-		private static readonly Util.EventList events = null;
+		private static readonly Util.Event.Backup initialValues = null;
 		static InGameUIEvents() {
-			events = new Util.EventList( typeof( InGameUIEvents ) );
+			initialValues = new Util.Event.Backup( typeof( InGameUIEvents ) );
 		}
 
 		public static void Flush() {
-			events.Reset();
+			initialValues.Apply();
 		}
 	}
 }
