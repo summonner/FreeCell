@@ -17,6 +17,7 @@ namespace Summoner.FreeCell.Test {
 		[TestCase( "TableauToTableau_multi" )]
 		[TestCase( "MoveManyCards" )]
 		[TestCase( "Traverse" )]
+		[TestCase( "DragAndDrop" )]
 		public void AutoMove( string testCase ) {
 			Test( testCase, typeof( AutoPlayToHome ) );
 		}
@@ -32,12 +33,13 @@ namespace Summoner.FreeCell.Test {
 			Assert.AreEqual( 1, cleared, "OnClear event has not occured or too much" );
 		}
 
-		[Test]
-		public void Undo() {
+		[TestCase( "Undo" )]
+		[TestCase( "UndoWithDragAndDrop" )]
+		public void Undo( string testCase ) {
 			var gameObject = new GameObject( "Test.InGameUIEvents" );
 			gameObject.AddComponent<InGameUIEvents>();
 			{
-				Test( "Undo" );
+				Test( testCase );
 			}
 			Object.DestroyImmediate( gameObject );
 		}
@@ -46,7 +48,7 @@ namespace Summoner.FreeCell.Test {
 			int numMoves = 0;
 			Board board = null;
 			TestBoardPreset current = null;
-			foreach ( var next in TestBoardPreset.Load( testCase ) ) {
+			foreach ( var next in TestCaseParser.Load( testCase ) ) {
 				if ( board == null ) {
 					board = new Board( next, excludeRules );
 					board.Reset( next );

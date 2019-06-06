@@ -1,9 +1,7 @@
 using UnityEngine;
 
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Summoner.Util.Extension;
 
@@ -13,34 +11,34 @@ namespace Summoner.FreeCell.Test {
 		private readonly IList<Card> homes;
 		private readonly IList<IList<Card>> tableau;
 		
-		private readonly System.Action operation = delegate { };
+		private readonly TestOperation operation = new TestOperation();
 
 		public TestBoardPreset( string freeCells, string homeCells, string[] tableau, bool undo ) {
-			var cards = new TestCardList( freeCells );
-			frees = cards.results;
-			if ( cards.selectIndex >= 0 ) {
-				operation = Click( PileId.Type.Free, cards.selectIndex, 0 );
-			}
+			var cards = TestCard.Parse( freeCells );
+			frees = SelectValue( cards );
+			operation.Add( cards, PileId.Type.Free );
 
-			cards = new TestCardList( homeCells );
-			homes = cards.results;
-			if ( cards.selectIndex >= 0 ) {
-				operation = Click( PileId.Type.Home, cards.selectIndex, 0 );
-			}
+			cards = TestCard.Parse( homeCells );
+			homes = SelectValue( cards );
+			operation.Add( cards, PileId.Type.Home );
 
 			var tables = new List<IList<Card>>();
 			for ( int row = 0; row < tableau.Length; ++row ) {
-				cards = new TestCardList( tableau[row] );
-				tables.Add( cards.results );
-				if ( cards.selectIndex >= 0 ) {
-					operation = Click( PileId.Type.Table, cards.selectIndex, row );
-				}
+				cards = TestCard.Parse( tableau[row] );
+				tables.Add( SelectValue( cards ) );
+				operation.Add( cards, row );
 			}
 			this.tableau = tables.AsReadOnly();
 
 			if ( undo == true ) {
-				operation = () => { Object.FindObjectOfType<InGameUIEvents>().Undo(); };
+				operation.MakeUndo();
 			}
+		}
+
+		private IList<Card> SelectValue( IList<TestCard> cards ) {
+			return cards.Select( (card) => ( card.value ) )
+				.ToList()
+				.AsReadOnly();
 		}
 
 		private static System.Action Click( PileId.Type type, int column, int row ) {
@@ -51,7 +49,7 @@ namespace Summoner.FreeCell.Test {
 		}
 
 		public void ApplyOperation() {
-			operation();
+			operation.Execute();
 		}
 
 		public override string ToString() {
@@ -130,64 +128,7 @@ namespace Summoner.FreeCell.Test {
 			return piles[row].ElementAtOrDefault( column );
 		}
 
-		private const string undoOperation = "#UNDO";
-		private static readonly Regex cells = new Regex( @"\[([^\]]*)\]" );
-		public static IEnumerable<TestBoardPreset> Load( string fileName ) {
-			var builder = new Builder();
-
-			foreach ( var line in ReadLines( fileName ) ) {
-				var matches = cells.Matches( line );
-				if ( matches.Count == 2 ) {
-					if ( builder.IsEmpty() == false ) {
-						yield return builder.Build();
-					}
-					builder.freeCells = matches[0].Groups[1].Value;
-					builder.homeCells = matches[1].Groups[1].Value;
-				}
-				else if ( line.Equals( undoOperation, System.StringComparison.OrdinalIgnoreCase ) == true ) {
-					builder.undo = true;
-				}
-				else if ( line.IsNullOrEmpty() == false ) {
-					builder.tableau.Add( line );
-				}
-				else if ( builder.IsEmpty() == false ) {
-					yield return builder.Build();
-				}
-			}
-		}
-
-		private class Builder {
-			public string freeCells = "";
-			public string homeCells = "";
-			public List<string> tableau = new List<string>();
-			public bool undo = false;
-
-			public bool IsEmpty() {
-				return freeCells.IsNullOrEmpty() == true
-					&& homeCells.IsNullOrEmpty() == true
-					&& tableau.IsNullOrEmpty() == true;
-			}
-
-			public TestBoardPreset Build() {
-				var preset = new TestBoardPreset( freeCells, homeCells, tableau.ToArray(), undo );
-				freeCells = "";
-				homeCells = "";
-				tableau.Clear();
-				undo = false;
-				return preset;
-			}
-		}
-
-		private const string testCasePath = "/TestCases/";
-		private const string extension = ".txt";
-		private static IEnumerable<string> ReadLines( string fileName ) {
-			var file = File.ReadAllLines( Application.dataPath + testCasePath + fileName + extension );
-			foreach ( var line in file ) {
-				yield return line.Trim();
-			}
-
-			yield return "";
-		}
+		
 
 		IEnumerable<Card> IBoardPreset.homes
 		{

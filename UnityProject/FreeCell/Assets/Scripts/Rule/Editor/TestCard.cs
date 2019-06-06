@@ -6,40 +6,43 @@ using System.Text.RegularExpressions;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell.Test {
-	public class TestCardList {
-		public readonly IList<Card> results = null;
-		public readonly int selectIndex = -1;
-
-		public int Count {
-			get {
-				return results.Count;
-			}
+	public class TestCard {
+		public enum Operation {
+			None,
+			Select,
+			Drop,
 		}
 
-		public Card this[int index] {
-			get {
-				return results[index];
+		private static readonly Regex regex = new Regex( @"([\*@]?)(?:([\w\u2660-\u2667\u25c6\u25c7])(\w+)|_)" );
+		public static IList<TestCard> Parse( string cards ) {
+			var matches = regex.Matches( cards );
+			var results = new TestCard[matches.Count];
+
+			for ( int i = 0; i < matches.Count; ++i ) {
+				var token = matches[i].Groups;
+				results[i] = new TestCard( token );
 			}
+
+			return results.AsReadOnly();
 		}
 
-		private static readonly Regex regex = new Regex( @"(\*?)([\w\u2660-\u2667\u25c6\u25c7])(\w+)|_" );
+		public readonly Card value = Card.Blank;
+		public readonly Operation operation = Operation.None;
 
-		public TestCardList( string pile ) {
-			var matches = regex.Matches( pile );
-			var results = new Card[matches.Count];
+		private TestCard( GroupCollection tokens ) {
+			operation = ParseOperation( tokens[1].Value );
+			value = ParseCard( tokens );
+		}
 
-			for ( int i=0; i < matches.Count; ++i ) {
-				var tokens = matches[i].Groups;
-
-				results[i] = ParseCard( tokens );
-
-				var isTarget = ParseOperation( tokens[1].Value );
-				if ( isTarget == true ) {
-					selectIndex = i;
-				}
+		private static Operation ParseOperation( string token ) {
+			switch ( token ) {
+				case "*":
+					return Operation.Select;
+				case "@":
+					return Operation.Drop;
+				default:
+					return Operation.None;
 			}
-
-			this.results = results.AsReadOnly();
 		}
 
 		private static Card ParseCard( GroupCollection tokens ) {
@@ -50,10 +53,6 @@ namespace Summoner.FreeCell.Test {
 			var suit = ParseSuit( tokens[2].Value );
 			var rank = ParseRank( tokens[3].Value );
 			return new Card( suit, rank );
-		}
-
-		private static bool ParseOperation( string token ) {
-			return token == "*";
 		}
 
 		private static Card.Suit ParseSuit( string suit ) {
@@ -83,6 +82,9 @@ namespace Summoner.FreeCell.Test {
 				case "♣":
 				case "♧":
 					return Card.Suit.Clubs;
+
+				case "":
+					return Card.Suit.NONE;
 
 				default:
 					Debug.LogError( "Unknown suit token : " + suit );
@@ -139,6 +141,9 @@ namespace Summoner.FreeCell.Test {
 				case "k":
 				case "13":
 					return Card.Rank.King;
+
+				case "":
+					return Card.Rank.NONE;
 
 				default:
 					Debug.LogError( "Unknown rank token : " + rank );
