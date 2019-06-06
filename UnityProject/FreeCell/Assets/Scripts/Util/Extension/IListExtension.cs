@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Summoner.Util.Extension {
@@ -31,6 +32,20 @@ namespace Summoner.Util.Extension {
 				}
 			}
 			return -1;
+		}
+
+		public static IList<T> FindAll<T>( this IList<T> list, System.Predicate<T> match ) {
+			var asList = list as List<T>;
+			if ( asList != null ) {
+				return asList.FindAll( match );
+			}
+
+			if ( list is T[] ) {
+				return System.Array.FindAll( (T[])list, match );
+			}
+
+			return list.Where( new System.Func<T, bool>( match ) )
+						.ToArray();
 		}
 
 		public static System.Collections.ObjectModel.ReadOnlyCollection<T> AsReadOnly<T>( this T[] array ) {

@@ -7,8 +7,11 @@ using PileType = Summoner.FreeCell.PileId.Type;
 namespace Summoner.FreeCell {
 	public class AutoMove : IRuleComponent {
 		private readonly IBoardController board;
+		private readonly CardMover mover;
 		public AutoMove( IBoardController board ) {
 			this.board = board;
+			this.mover = new CardMover( board );
+
 			PlayerInputEvents.OnClick += OnAutoMove;
 		}
 
@@ -24,51 +27,18 @@ namespace Summoner.FreeCell {
 		private PileTraverser traverser = null;
 
 		private void OnAutoMove( PositionOnBoard selected ) {
-			if ( selected.type == PileType.Home ) {
+			if ( mover.SetSource( selected ) == false ) {
 				return;
 			}
 
-			var numMovable = board.CountMaxMovables();
-			var selectedPile = board[selected.pile];
-			var poped = selectedPile.Pop( selected.row );
-			if ( poped.IsNullOrEmpty() == true ) {
-				return;
-			}
-
-			var clicked = poped[0];
+			var clicked = mover.clicked;
 			if ( lastClicked != clicked ) {
 				traverser = new PileTraverser( board, selected.pile );
 				lastClicked = clicked;
 			}
 
-			foreach ( var pile in traverser.Traverse( selected.pile ) ) {
-				var isFreeToFree = selected.type == PileType.Free 
-								&& pile.id.type == PileType.Free;
-				if ( isFreeToFree == true ) {
-					continue;
-				}
-
-				if ( pile.IsAcceptable( poped ) == false ) {
-					continue;
-				}
-
-				var adjustment = IsEmptyTableau( pile ) ? 2 : 1;
-				if ( poped.Length > numMovable / adjustment ) {
-					continue;
-				}
-
-				pile.Push( poped );
-				InGameEvents.MoveCards( poped, selected.pile, pile.id );
-				return;
-			}
-
-			selectedPile.Push( poped );
-			InGameEvents.CannotMove( poped );
-		}
-
-		public static bool IsEmptyTableau( IPile pile ) {
-			return pile is Tableau
-				&& pile.Count == 0;
+			var destinations = traverser.Traverse( selected.pile );
+			mover.Execute( destinations );
 		}
 
 		private class PileTraverser {
@@ -125,7 +95,23 @@ namespace Summoner.FreeCell {
 
 				for ( int i=1; i < piles.Count; ++i ) {
 					var index = (start + i) % piles.Count;
-					yield return piles[index];
+					var pile = piles[index];
+					var isFreeToFree = selected.type == PileType.Free
+									&& pile.id.type == PileType.Free;
+					if ( isFreeToFree == true ) {
+						continue;
+					}
+
+					yield return pile;
+				}
+			}
+
+			private IList<IPile> FindCandidates( PileType type ) {
+				if ( type == PileType.Free ) {
+					return piles.FindAll( (pile) => ( pile.id.type != PileType.Free ) );
+				}
+				else {
+					return piles;
 				}
 			}
 		}

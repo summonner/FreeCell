@@ -181,15 +181,8 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		int IBoardController.CountMaxMovables() {
-			var numEmptyFrees = CountEmpties( PileId.Type.Free );
-			var numEmptyTableau = CountEmpties( PileId.Type.Table );
-			return (1 + numEmptyFrees) * (int)Mathf.Pow( 2f, numEmptyTableau );
-		}
-
-		private int CountEmpties( PileId.Type type ) {
-			var piles = GetPiles( type );
-			return piles.Count( ( pile ) => (pile.Count == 0) );
+		IBoardLookup IBoardController.AsReadOnly() {
+			return this;
 		}
 	}
 }

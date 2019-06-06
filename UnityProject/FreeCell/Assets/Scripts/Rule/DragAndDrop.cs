@@ -6,9 +6,12 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class DragAndDrop : IRuleComponent, IDragAndDropListener {
 		private readonly IBoardController board;
+		private readonly CardMover mover;
 
 		public DragAndDrop( IBoardController board ) {
 			this.board = board;
+			this.mover = new CardMover( board );
+
 			Util.Event.SubscribeHelper.Subscribe( this );
 		}
 
@@ -67,36 +70,20 @@ namespace Summoner.FreeCell {
 				return;
 			}
 
-			var numMovable = board.CountMaxMovables();
-			var source = board[position.pile];
-			var poped = source.Pop( position.row );
-			foreach ( var destination in receivers ) {
-				var dest = board[destination];
-				if ( CanMoveCards( poped, dest, numMovable ) == true ) {
-					dest.Push( poped );
-					InGameEvents.MoveCards( poped, position.pile, destination );
-					selectedCards = null;
-					return;
-				}
+			if ( mover.SetSource( position ) == false ) {
+				return;
 			}
-			source.Push( poped );
+			
+			var destinations = Traverse( receivers );
+			if ( mover.Execute( destinations ) == true ) {
+				selectedCards = null;
+			}
 		}
 
-		private bool CanMoveCards( Card[] poped, IPile dest, int numMovable ) {
-			if ( poped.IsNullOrEmpty() == true ) {
-				return false;
+		private IEnumerable<IPile> Traverse( IEnumerable<PileId> receivers ) {
+			foreach ( var dest in receivers ) {
+				yield return board[dest];
 			}
-
-			if ( dest.IsAcceptable( poped ) == false ) {
-				return false;
-			}
-
-			var adjustment = AutoMove.IsEmptyTableau( dest ) ? 2 : 1;
-			if ( poped.Length > numMovable / adjustment ) {
-				return false;
-			}
-
-			return true;
 		}
 	}
 }
