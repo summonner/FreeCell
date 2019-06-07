@@ -34,25 +34,11 @@ namespace Summoner.FreeCell.Anims {
 			InGameEvents.OnGameClear -= OnClear;
 		}
 
-		public static IEnumerator ScheduleAnim( Queue<AnimTrigger> triggers, System.Action onFinish ) {
-			while ( triggers.Count > 0 ) {
-				var anim = triggers.Dequeue();
-				anim.play();
-				yield return new WaitForSeconds( anim.delay );
-			}
-
-			onFinish();
-		}
-
 		private void OnMoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
-			var userQueue = new Queue<AnimTrigger>();
-			foreach ( var target in targets ) {
-				var trigger = placer.MoveCard( target, to );
-				userQueue.Enqueue( new AnimTrigger( trigger, shortInterval ) );
-			}
+			var userQueue = new AnimQueue( this );
+			var trigger = placer.MoveCard( targets, to );
+			userQueue.Enqueue( trigger, shortInterval );
 			
-			StartCoroutine( ScheduleAnim( userQueue, delegate { } ) );
-
 			if ( autoPlayQueue.isPlaying == false ) {
 				autoPlayQueue.Enqueue( longInterval );
 			}
@@ -64,22 +50,20 @@ namespace Summoner.FreeCell.Anims {
 		}
 
 		private void OnAutoPlay( ICollection<Card> targets, PileId from, PileId to ) {
-			foreach ( var target in targets ) {
-				var trigger = placer.MoveCard( target, to );
-				autoPlayQueue.Enqueue( trigger, shortInterval );
-			}
+			var trigger = placer.MoveCard( targets, to );
+			autoPlayQueue.Enqueue( trigger, shortInterval );
 			autoPlayQueue.Enqueue( longInterval - shortInterval );
 		}
 
 		private void OnClear() {
 			autoPlayQueue.ResetDelays( shortInterval );
-			autoPlayQueue.Enqueue( placer.OnReset, 0 );
+			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
 		}
 
 		private void OnReset() {
 			autoPlayQueue.Clear();
+			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
 			autoPlayQueue.Enqueue( longInterval );
-			placer.OnReset();
 		}
 	}
 }

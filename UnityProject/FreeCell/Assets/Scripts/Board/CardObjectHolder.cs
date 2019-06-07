@@ -47,6 +47,12 @@ namespace Summoner.FreeCell {
 			return card.SetDestination( position );
 		}
 
+		public IEnumerable<System.Action> MoveCard( IEnumerable<Card> targets, PileId to ) {
+			foreach ( var target in targets ) {
+				yield return MoveCard( target, to );
+			}
+		}
+
 		private IEnumerable<CardObject> Find( IEnumerable<Card> subjects ) {
 			foreach ( var subject in subjects ) {
 				yield return cards[subject];
@@ -77,11 +83,10 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void OnReset() {
+		public IEnumerable<System.Action> OnReset() {
 			var position = transform.position;
 			foreach ( var card in cards.Values ) {
-				var trigger = card.SetDestination( position );
-				trigger();
+				yield return card.SetDestination( position );
 			}
 		}
 	}

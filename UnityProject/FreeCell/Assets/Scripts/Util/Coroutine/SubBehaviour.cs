@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Summoner.Util {
+namespace Summoner.Util.Coroutine {
 	public abstract class SubBehaviour {
 		private readonly MonoBehaviour outer;
 
@@ -10,11 +10,11 @@ namespace Summoner.Util {
 			this.outer = outer;
 		}
 
-		protected Coroutine StartCoroutine( IEnumerator routine ) {
+		protected UnityEngine.Coroutine StartCoroutine( IEnumerator routine ) {
 			return outer.StartCoroutine( routine );
 		}
 
-		protected void StopCoroutine( Coroutine routine ) {
+		protected void StopCoroutine( UnityEngine.Coroutine routine ) {
 			if ( routine == null ) {
 				return;
 			}
