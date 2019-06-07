@@ -16,20 +16,22 @@ namespace Summoner.FreeCell.Anims {
 
 		void Awake() {
 			InGameEvents.OnInitBoard += OnInitBoard;
+			InGameEvents.OnClearBoard += OnReset;
 			InGameEvents.OnMoveCards += OnMoveCards;
 			InGameEvents.OnUndoCards += OnMoveCards;
 			InGameEvents.OnAutoPlay += OnAutoPlay;
-			InGameEvents.OnClear += OnClear;
+			InGameEvents.OnGameClear += OnClear;
 
 			autoPlayQueue = new AnimQueue( this );
 		}
 
 		void OnDestroy() {
 			InGameEvents.OnInitBoard -= OnInitBoard;
+			InGameEvents.OnClearBoard -= OnReset;
 			InGameEvents.OnMoveCards -= OnMoveCards;
 			InGameEvents.OnUndoCards -= OnMoveCards;
 			InGameEvents.OnAutoPlay -= OnAutoPlay;
-			InGameEvents.OnClear -= OnClear;
+			InGameEvents.OnGameClear -= OnClear;
 		}
 
 		public static IEnumerator ScheduleAnim( Queue<AnimTrigger> triggers, System.Action onFinish ) {
@@ -71,6 +73,13 @@ namespace Summoner.FreeCell.Anims {
 
 		private void OnClear() {
 			autoPlayQueue.ResetDelays( shortInterval );
+			autoPlayQueue.Enqueue( placer.OnReset, 0 );
+		}
+
+		private void OnReset() {
+			autoPlayQueue.Clear();
+			autoPlayQueue.Enqueue( longInterval );
+			placer.OnReset();
 		}
 	}
 }

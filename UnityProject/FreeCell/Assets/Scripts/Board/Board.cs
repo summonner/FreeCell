@@ -57,6 +57,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Reset( IBoardPreset preset ) {
+			InGameEvents.ClearBoard();
 			ApplyPreset( homes, preset.homes );
 			ApplyPreset( frees, preset.frees );
 			ApplyPreset( tables, preset.tableau );

@@ -76,5 +76,13 @@ namespace Summoner.FreeCell {
 				card.EndFloat();
 			}
 		}
+
+		public void OnReset() {
+			var position = transform.position;
+			foreach ( var card in cards.Values ) {
+				var trigger = card.SetDestination( position );
+				trigger();
+			}
+		}
 	}
 }

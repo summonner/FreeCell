@@ -9,6 +9,12 @@ namespace Summoner.FreeCell {
 			OnInitBoard( subject, to );
 		}
 
+		public delegate void ClearBoardEvent();
+		public static event ClearBoardEvent OnClearBoard = delegate { };
+		public static void ClearBoard() {
+			OnClearBoard();
+		}
+
 		public delegate void MoveEvent( ICollection<Card> subjects, PileId from, PileId to );
 		public static event MoveEvent OnMoveCards = delegate { };
 		public static void MoveCards( ICollection<Card> subjects, PileId from, PileId to ) {
@@ -48,9 +54,9 @@ namespace Summoner.FreeCell {
 			OnEndFloatCards( subjects );
 		}
 
-		public static event System.Action OnClear = delegate { };
-		public static void Clear() {
-			OnClear();
+		public static event System.Action OnGameClear = delegate { };
+		public static void GameClear() {
+			OnGameClear();
 		}
 
 		private static readonly Util.Event.Backup initialValues = null;

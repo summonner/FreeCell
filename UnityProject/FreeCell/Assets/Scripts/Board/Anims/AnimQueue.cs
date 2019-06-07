@@ -41,5 +41,11 @@ namespace Summoner.FreeCell.Anims {
 				anim.delay = interval;
 			}
 		}
+
+		public void Clear() {
+			StopCoroutine( scheduler );
+			scheduler = null;
+			anims.Clear();
+		}
 	}
 }

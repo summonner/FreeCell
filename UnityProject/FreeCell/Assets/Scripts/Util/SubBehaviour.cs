@@ -6,6 +6,7 @@ namespace Summoner.Util {
 		private readonly MonoBehaviour outer;
 
 		public SubBehaviour( MonoBehaviour outer ) {
+			Debug.Assert( outer != null );
 			this.outer = outer;
 		}
 
@@ -14,10 +15,18 @@ namespace Summoner.Util {
 		}
 
 		protected void StopCoroutine( Coroutine routine ) {
+			if ( routine == null ) {
+				return;
+			}
+
 			outer.StopCoroutine( routine );
 		}
 
 		protected void StopCoroutine( IEnumerator routine ) {
+			if ( routine == null ) {
+				return;
+			}
+
 			outer.StopCoroutine( routine );
 		}
 	}

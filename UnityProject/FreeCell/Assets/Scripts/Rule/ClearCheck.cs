@@ -29,7 +29,7 @@ namespace Summoner.FreeCell {
 				}
 			}
 
-			InGameEvents.Clear();
+			InGameEvents.GameClear();
 		}
 	}
 }

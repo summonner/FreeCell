@@ -16,7 +16,7 @@ namespace Summoner.FreeCell {
 		private Board board;
 
 		void Start () {
-			InGameEvents.OnClear += OnClear;
+			InGameEvents.OnGameClear += OnClear;
 			InGameUIEvents.OnReset += OnReset;
 			board = new Board( layout );
 			placer.Init( board, sheet, deck );
@@ -25,7 +25,7 @@ namespace Summoner.FreeCell {
 
 		void OnDestroy() {
 			board.Dispose();
-			InGameEvents.OnClear -= OnClear;
+			InGameEvents.OnGameClear -= OnClear;
 			InGameUIEvents.OnReset -= OnReset;
 		}
 

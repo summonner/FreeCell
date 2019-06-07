@@ -26,7 +26,7 @@ namespace Summoner.FreeCell.Test {
 		[TestCase( "AutoPlayToHomeAndClear" )]
 		public void ClearCheck( string testCase ) {
 			int cleared = 0;
-			InGameEvents.OnClear += () => { cleared += 1; };
+			InGameEvents.OnGameClear += () => { cleared += 1; };
 			{
 				Test( testCase );
 			}
