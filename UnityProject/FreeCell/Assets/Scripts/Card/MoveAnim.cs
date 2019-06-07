@@ -8,13 +8,14 @@ namespace Summoner.FreeCell {
 
 		[SerializeField] private FloatEffect floater;
 		[SerializeField] private AnimationCurve curve = AnimationCurve.Linear( 0f, 0f, 0.1f, 1f );
+		public bool isPlaying { get; private set; }
 
 		void Reset() {
 			floater = GetComponentInChildren<FloatEffect>();
 		}
 
 		public System.Action SetDestination( Vector3 worldPosition ) {
-			floater.Ready();
+			isPlaying = true;
 
 			return () => {
 				if ( anim != null ) {
@@ -34,6 +35,7 @@ namespace Summoner.FreeCell {
 
 			floater.End();
 			anim = null;
+			isPlaying = false;
 		}
 	}
 }

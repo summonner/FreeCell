@@ -44,6 +44,11 @@ namespace Summoner.FreeCell {
 			if ( eventData.dragging == true ) {
 				return;
 			}
+
+			if ( moveAnim.isPlaying == true ) {
+				return;
+			}
+
 			PlayerInputEvents.Click( position );
 		}
 

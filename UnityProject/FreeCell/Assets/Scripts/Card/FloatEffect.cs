@@ -35,10 +35,6 @@ namespace Summoner.FreeCell {
 			collider.enabled = true;
 		}
 
-		public void Ready() {
-			collider.enabled = false;
-		}
-
 		public Vector3 Begin() {
 			Debug.Assert( transform != null, this );
 			enabled = true;
