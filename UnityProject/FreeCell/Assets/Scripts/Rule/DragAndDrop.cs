@@ -74,15 +74,8 @@ namespace Summoner.FreeCell {
 				return;
 			}
 			
-			var destinations = Traverse( receivers );
-			if ( mover.Execute( destinations ) == true ) {
+			if ( mover.Execute( receivers ) == true ) {
 				selectedCards = null;
-			}
-		}
-
-		private IEnumerable<IPile> Traverse( IEnumerable<PileId> receivers ) {
-			foreach ( var dest in receivers ) {
-				yield return board[dest];
 			}
 		}
 	}

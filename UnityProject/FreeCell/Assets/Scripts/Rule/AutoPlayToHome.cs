@@ -50,10 +50,10 @@ namespace Summoner.FreeCell {
 				return false;
 			}
 
-			return TraverseTableau().Any( (tableau) => ( Tableau.IsStackable( tableau, card ) ) );
+			return TraverseCards().Any( (tableau) => ( Tableau.IsStackable( tableau, card ) ) );
 		}
 
-		private IEnumerable<Card> TraverseTableau() {
+		private IEnumerable<Card> TraverseCards() {
 			foreach ( var pile in board[PileId.Type.Table, PileId.Type.Free] ) {
 				foreach ( var card in pile ) {
 					yield return card;

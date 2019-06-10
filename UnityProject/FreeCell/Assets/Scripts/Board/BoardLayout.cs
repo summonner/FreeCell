@@ -48,23 +48,13 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-
-		int IBoardLayout.numHomes {
-			get {
-				return homeCells.Length;
+		int IBoardLayout.GetNumber( PileId.Type type ) {
+			var piles = GetPile( type );
+			if ( piles == null ) {
+				return 0;
 			}
-		}
 
-		int IBoardLayout.numFrees {
-			get {
-				return freeCells.Length;
-			}
-		}
-
-		int IBoardLayout.numPiles {
-			get {
-				return tablePiles.Length;
-			}
+			return piles.Length;
 		}
 	}
 }

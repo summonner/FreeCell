@@ -42,21 +42,19 @@ namespace Summoner.FreeCell {
 		}
 
 		private class PileTraverser {
-			private readonly IList<IPile> homes;
-			private readonly IList<IPile> piles;
+			private readonly IList<PileId> homes;
+			private readonly IList<PileId> piles;
 
 			public PileTraverser( IBoardController board, PileId selected ) {
-				var homes = new List<IPile>( 4 );
-				homes.AddRange( board[PileType.Home] );
-				this.homes = homes.AsReadOnly();
+				homes = board[PileType.Home].Select( (pile) => ( pile.id ) ).ToList().AsReadOnly();
 
-				var piles = new List<IPile>( 12 );
-				piles.AddRange( board[PileType.Table, PileType.Free] );
-				piles.Sort( Sort );
-				if ( selected.type == PileType.Table ) {
-					MoveSelectedToLast( piles, selected );
-				}
-				this.piles = piles.AsReadOnly();
+				piles = (from pile in board[PileType.Table, PileType.Free]
+						orderby (selected.type == PileType.Table && pile.id != selected),
+								pile.id.type,
+								pile.Count == 0,
+								pile.id.index
+						select pile.id)
+						.ToList().AsReadOnly();
 			}
 
 			private int Sort( IPile left, IPile right ) {
@@ -80,12 +78,12 @@ namespace Summoner.FreeCell {
 				piles.Add( selectedPile );
 			}
 
-			public IEnumerable<IPile> Traverse( PileId selected ) {
+			public IEnumerable<PileId> Traverse( PileId selected ) {
 				foreach ( var home in homes ) {
 					yield return home;
 				}
 
-				var start = piles.FindIndex( (pile) => ( pile.id == selected ) );
+				var start = piles.FindIndex( (pile) => ( pile == selected ) );
 				var doesnotFound = start < 0
 								&& piles.Count > 0;
 				if ( doesnotFound == true ) {
@@ -97,21 +95,12 @@ namespace Summoner.FreeCell {
 					var index = (start + i) % piles.Count;
 					var pile = piles[index];
 					var isFreeToFree = selected.type == PileType.Free
-									&& pile.id.type == PileType.Free;
+									&& pile.type == PileType.Free;
 					if ( isFreeToFree == true ) {
 						continue;
 					}
 
 					yield return pile;
-				}
-			}
-
-			private IList<IPile> FindCandidates( PileType type ) {
-				if ( type == PileType.Free ) {
-					return piles.FindAll( (pile) => ( pile.id.type != PileType.Free ) );
-				}
-				else {
-					return piles;
 				}
 			}
 		}

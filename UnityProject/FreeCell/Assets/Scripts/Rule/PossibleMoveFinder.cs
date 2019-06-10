@@ -31,11 +31,7 @@ namespace Summoner.FreeCell {
 					}
 
 					foreach ( var cards in FindMovables( from, numMovables ) ) {
-						if ( to.IsAcceptable( cards ) == false ) {
-							continue;
-						}
-
-						if ( cards.Length <= numMovables.MoveTo( to ) ) {
+						if ( CardMover.CanMove( cards, to, numMovables ) == true ) {
 							return;
 						}
 					}
@@ -48,8 +44,12 @@ namespace Summoner.FreeCell {
 		private IEnumerable<Card[]> FindMovables( IPileLookup from, NumberOfMovables numMovables ) {
 			for ( int numMoves = 1; numMoves <= numMovables.value; ++numMoves ) {
 				int i = from.Count - numMoves;
+				if ( i < 0 ) {
+					break;
+				}
+
 				if ( from.CanMove( i ) == false ) {
-					yield break;
+					break;
 				}
 
 				yield return from.Skip( i ).ToArray();

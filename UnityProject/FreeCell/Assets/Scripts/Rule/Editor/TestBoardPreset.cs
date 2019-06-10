@@ -164,27 +164,16 @@ namespace Summoner.FreeCell.Test {
 			}
 		}
 
-		int IBoardLayout.numHomes
-		{
-			get
-			{
-				return homes.Count;
-			}
-		}
-
-		int IBoardLayout.numFrees
-		{
-			get
-			{
-				return frees.Count;
-			}
-		}
-
-		int IBoardLayout.numPiles
-		{
-			get
-			{
-				return tableau[0].Count;
+		int IBoardLayout.GetNumber( PileId.Type type ) {
+			switch ( type ) {
+				case PileId.Type.Home:
+					return homes.Count;
+				case PileId.Type.Free:
+					return frees.Count;
+				case PileId.Type.Table:
+					return tableau[0].Count;
+				default:
+					return 0;
 			}
 		}
 	}

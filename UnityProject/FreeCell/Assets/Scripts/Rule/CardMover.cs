@@ -34,40 +34,50 @@ namespace Summoner.FreeCell {
 			return true;
 		}
 
-		public bool Execute( IEnumerable<IPile> destinations ) {
+		public bool Execute( IEnumerable<PileId> destinations ) {
 			if ( poped.IsNullOrEmpty() == true ) {
 				return false;
 			}
 
-			var result = TryMove( destinations );
-			if ( result == false ) {
+			var piles = GetPiles( destinations );
+			var pile = TryMove( piles );
+			if ( pile == null ) {
 				selectedPile.Push( poped );
 				InGameEvents.CannotMove( poped );
-			}
-
-			return result;
-		}
-
-		private bool TryMove( IEnumerable<IPile> piles ) {
-			if ( poped.Length > numMovables.value ) {
 				return false;
 			}
-
-			foreach ( var pile in piles ) {
-				if ( pile.IsAcceptable( poped ) == false ) {
-					continue;
-				}
-
-				if ( poped.Length > numMovables.MoveTo( pile ) ) {
-					continue;
-				}
-
+			else {
 				pile.Push( poped );
 				InGameEvents.MoveCards( poped, selectedPile.id, pile.id );
 				return true;
 			}
+		}
 
-			return false;
+		private IEnumerable<IPile> GetPiles( IEnumerable<PileId> ids ) {
+			foreach ( var id in ids ) {
+				yield return board[id];
+			}
+		}
+
+		private IPile TryMove( IEnumerable<IPile> piles ) {
+			if ( poped.Length > numMovables.value ) {
+				return null;
+			}
+
+			foreach ( var pile in piles ) {
+				if ( CanMove( poped, pile, numMovables ) == false ) {
+					continue;
+				}
+
+				return pile;
+			}
+
+			return null;
+		}
+
+		public static bool CanMove( Card[] cards, IPileLookup to, NumberOfMovables numMovables ) {
+			return to.IsAcceptable( cards )
+				&& cards.Length <= numMovables.MoveTo( to );
 		}
 	}
 }
