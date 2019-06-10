@@ -6,11 +6,11 @@ namespace Summoner.FreeCell {
 		PileId id { get; }
 
 		bool CanMove( int row );
+		bool IsAcceptable( params Card[] card );
 	}
 
 	public interface IPile : IPileLookup {
 		void Push( params Card[] cards );
 		Card[] Pop( int startIndex );
-		bool IsAcceptable( params Card[] card );
 	}
 }

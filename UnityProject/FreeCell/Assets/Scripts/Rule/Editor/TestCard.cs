@@ -13,7 +13,7 @@ namespace Summoner.FreeCell.Test {
 			Drop,
 		}
 
-		private static readonly Regex regex = new Regex( @"([\*@]?)(?:([\w\u2660-\u2667\u25c6\u25c7])(\w+)|_)" );
+		private static readonly Regex regex = new Regex( @"([\*@]?)(?:([\w\u2660-\u2667\u25c6\u25c7])(\w+)|[_·])" );
 		public static IList<TestCard> Parse( string cards ) {
 			var matches = regex.Matches( cards );
 			var results = new TestCard[matches.Count];

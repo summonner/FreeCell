@@ -59,6 +59,11 @@ namespace Summoner.FreeCell {
 			OnGameClear();
 		}
 
+		public static event System.Action OnNoMoreMoves = delegate { };
+		public static void NoMoreMoves() {
+			OnNoMoreMoves();
+		}
+
 		private static readonly Util.Event.Backup initialValues = null;
 		static InGameEvents() {
 			initialValues = new Util.Event.Backup( typeof( InGameEvents ) );

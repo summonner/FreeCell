@@ -44,6 +44,17 @@ namespace Summoner.FreeCell.Test {
 			Object.DestroyImmediate( gameObject );
 		}
 
+		[TestCase( "NoMoreMoves" )]
+		[TestCase( "NoMoreMoves_simple" )]
+		public void NoMoreMoves( string testCase ) {
+			int noMoreMoves = 0;
+			InGameEvents.OnNoMoreMoves += () => { noMoreMoves += 1; };
+			{
+				Test( testCase );
+			}
+			Assert.AreEqual( 1, noMoreMoves, "OnNoMoreMoves event has not occured or too much" );
+		}
+
 		private void Test( string testCase, params System.Type[] excludeRules ) {
 			int numMoves = 0;
 			Board board = null;
