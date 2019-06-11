@@ -5,8 +5,10 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell {
 	public class PossibleMoveFinder : IRuleComponent {
 		private readonly IBoardLookup board;
+		private readonly MoveTester mover;
 		public PossibleMoveFinder( IBoardLookup board ) {
 			this.board = board;
+			this.mover = new MoveTester( board );
 
 			InGameEvents.OnMoveCards += FindMove;
 		}
@@ -23,15 +25,19 @@ namespace Summoner.FreeCell {
 			var fromPiles = board[PileId.Type.Table, PileId.Type.Free];
 			var toPiles = board[PileId.Type.Table, PileId.Type.Free, PileId.Type.Home];
 
-			var numMovables = new NumberOfMovables( board );
 			foreach ( var from in fromPiles ) {
-				foreach ( var to in toPiles ) {
-					if ( to == from ) {
-						continue;
+				foreach ( var position in GetPositions( from ) ) {
+					if ( mover.SetSource( position ) != MoveTester.Result.Success ) {
+						break;
 					}
 
-					foreach ( var cards in FindMovables( from, numMovables ) ) {
-						if ( CardMover.CanMove( cards, to, numMovables ) == true ) {
+					foreach ( var to in toPiles ) {
+						if ( to == from ) {
+							continue;
+						}
+
+						if ( mover.SetDestination( to.id ) == MoveTester.Result.Success ) {
+							//Debug.Log( position + " -> " + to.id + "\n\n" + board );
 							return;
 						}
 					}
@@ -41,18 +47,9 @@ namespace Summoner.FreeCell {
 			InGameEvents.NoMoreMoves();
 		}
 
-		private IEnumerable<Card[]> FindMovables( IPileLookup from, NumberOfMovables numMovables ) {
-			for ( int numMoves = 1; numMoves <= numMovables.value; ++numMoves ) {
-				int i = from.Count - numMoves;
-				if ( i < 0 ) {
-					break;
-				}
-
-				if ( from.CanMove( i ) == false ) {
-					break;
-				}
-
-				yield return from.Skip( i ).ToArray();
+		private IEnumerable<PositionOnBoard> GetPositions( IPileLookup from ) {
+			for ( int i = from.Count - 1; i >= 0; --i ) {
+				yield return new PositionOnBoard( from.id, i );
 			}
 		}
 	}

@@ -64,6 +64,13 @@ namespace Summoner.FreeCell {
 			OnNoMoreMoves();
 		}
 
+		public static event System.Action OnNotEnoughFreeCells = delegate { };
+		public static void NotEnoughFreeCells() {
+			OnNotEnoughFreeCells();
+		}
+
+
+
 		private static readonly Util.Event.Backup initialValues = null;
 		static InGameEvents() {
 			initialValues = new Util.Event.Backup( typeof( InGameEvents ) );
