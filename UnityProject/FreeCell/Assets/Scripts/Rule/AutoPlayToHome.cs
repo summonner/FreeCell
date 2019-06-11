@@ -6,9 +6,14 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class AutoPlayToHome : IRuleComponent {
 		private readonly IBoardController board;
+		private readonly MoveTester tester;
+		private readonly PossibleMoveFinder moveFinder;
 
 		public AutoPlayToHome( IBoardController board ) {
 			this.board = board;
+			this.tester = new MoveTester( board.AsReadOnly() );
+			this.moveFinder = new PossibleMoveFinder( board.AsReadOnly() );
+
 			InGameEvents.OnMoveCards += OnMoveCards;
 			InGameEvents.OnAutoPlay += OnMoveCards;
 		}
@@ -22,16 +27,24 @@ namespace Summoner.FreeCell {
 			// do nothing
 		}
 
-		private void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
+		private void OnMoveCards( IEnumerable<Card> _does, PileId _not, PileId _use ) {
 			var homes = board[PileId.Type.Home];
 			foreach ( var pile in board[PileId.Type.Free, PileId.Type.Table] ) {
-				var top = pile.LastOrDefault();
+				var position = GetLast( pile );
+				if ( position.row < 0 ) {
+					continue;
+				}
+
+				if ( tester.SetSource( position ) != MoveTester.Result.Success ) {
+					continue;
+				}
+
 				foreach ( var home in homes ) {
-					if ( home.IsAcceptable( top ) == false ) {
+					if ( tester.SetDestination( home.id ) != MoveTester.Result.Success ) {
 						continue;
 					}
 
-					if ( DoesExistAnyStackable( top ) == true ) {
+					if ( DoesExistAnyStackable( tester.subjects.FirstOrDefault() ) == true ) {
 						continue;
 					}
 
@@ -42,10 +55,20 @@ namespace Summoner.FreeCell {
 					return;
 				}
 			}
+
+			FindAnyPossibleMove( _does, _not, _use );
+		}
+
+		private PositionOnBoard GetLast( IPile pile ) {
+			return new PositionOnBoard( pile.id, pile.Count - 1 );
 		}
 
 		private static readonly Card.Rank[] specialCases = new [] { Card.Rank.Ace, Card.Rank._2 };
 		private bool DoesExistAnyStackable( Card card ) {
+			if ( card == Card.Blank ) {
+				return true;
+			}
+
 			if ( specialCases.Contains( card.rank ) == true ) {
 				return false;
 			}
@@ -59,6 +82,10 @@ namespace Summoner.FreeCell {
 					yield return card;
 				}
 			}
+		}
+
+		private void FindAnyPossibleMove( IEnumerable<Card> cards, PileId from, PileId to ) {
+			moveFinder.FindMove( cards, from, to );
 		}
 	}
 }

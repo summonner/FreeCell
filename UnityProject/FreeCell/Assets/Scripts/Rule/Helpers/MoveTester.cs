@@ -25,7 +25,7 @@ namespace Summoner.FreeCell {
 
 		public Result SetSource( PositionOnBoard selected ) {
 			this.selected = selected;
-			subjects = null;
+			subjects = new Card[0];
 
 			if ( selected.type == PileId.Type.Home ) {
 				return Result.ImmovableCardSelected;

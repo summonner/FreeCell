@@ -10,11 +10,11 @@ namespace Summoner.FreeCell {
 			this.board = board;
 			this.mover = new MoveTester( board );
 
-			InGameEvents.OnMoveCards += FindMove;
+//			InGameEvents.OnMoveCards += FindMove;
 		}
 
 		public void Dispose() {
-			InGameEvents.OnMoveCards -= FindMove;
+//			InGameEvents.OnMoveCards -= FindMove;
 		}
 
 		public void Reset() {
