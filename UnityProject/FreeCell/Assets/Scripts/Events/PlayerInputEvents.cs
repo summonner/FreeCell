@@ -34,6 +34,12 @@ namespace Summoner.FreeCell {
 			OnDrop( selected, destination );
 		}
 
+		public static void SimulateDragAndDrop( PositionOnBoard selected, IEnumerable<PileId> destinations ) {
+			BeginDrag( selected );
+			Drop( selected, destinations );
+			EndDrag( selected );
+		}
+
 		private static readonly System.Type type = typeof( PlayerInputEvents );
 		private static readonly Util.Event.Backup initialValues = null;
 		static PlayerInputEvents() {

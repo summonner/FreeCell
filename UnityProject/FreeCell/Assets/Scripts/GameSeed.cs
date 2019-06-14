@@ -1,27 +1,27 @@
 using UnityEngine;
-using System.Collections.Generic;
+using Summoner.UI;
 
 namespace Summoner.FreeCell {
 	public class GameSeed : MonoBehaviour {
 		[MinMaxRange( 0f, 100f )]
-		public RangeInt range;
-		public int testSeed = -1;
-		private int currentSeed = 0;
+		[SerializeField] private RangeInt range;
+		[SerializeField] private int testSeed = -1;
+		[SerializeField] private PresentInt onChangeSeed;
 
-		public int Get() {
-			return currentSeed = GetValue();
+		public int currentSeed { get; private set; }
+
+		public int Generate() {
+			currentSeed = GetNewValue();
+			onChangeSeed.Invoke( currentSeed );
+			return currentSeed;
 		}
 
-		private int GetValue() {
+		private int GetNewValue() {
 			if ( testSeed >= 0 ){
 				return testSeed;
 			}
 
 			return Random.Range( range.min, range.max );
-		}
-
-		void OnGUI() {
-			GUILayout.Label( currentSeed.ToString() );
 		}
 	}
 }

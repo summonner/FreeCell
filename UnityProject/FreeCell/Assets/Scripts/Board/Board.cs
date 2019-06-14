@@ -29,7 +29,6 @@ namespace Summoner.FreeCell {
 				new ClearCheck( this ),
 				new AutoPlayToHome( this ),
 				new DragAndDrop( this ),
-			//	new PossibleMoveFinder( this ),	// integrated to AutoPlayToHome
 			};
 		}
 

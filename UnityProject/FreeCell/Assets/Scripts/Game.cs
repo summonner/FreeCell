@@ -6,9 +6,10 @@ namespace Summoner.FreeCell {
 	[RequireComponent( typeof(GameSeed) )]
 	public class Game : MonoBehaviour {
 		[SerializeField] private CardSpriteSheet sheet;
-		[SerializeField] private CardObjectHolder placer;
+		[SerializeField] private CardObjectHolder cards;
 		[SerializeField] private BoardLayout layout;
 		[SerializeField] private GameSeed seed;
+		[SerializeField] private DemoPlayer demo;
 		private BasicPlacement preset;
 
 		private static readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
@@ -16,10 +17,13 @@ namespace Summoner.FreeCell {
 		private Board board;
 
 		void Start () {
+			InGameEvents.OnNoMoreMoves += delegate { Debug.Log( "No More Moves" ); };
 			InGameEvents.OnGameClear += OnClear;
 			InGameUIEvents.OnReset += OnReset;
+			InGameUIEvents.OnNewGame += OnNewGame;
+
 			board = new Board( layout );
-			placer.Init( board, sheet, deck );
+			cards.Init( board, sheet, deck );
 			NewGame();
 		}
 
@@ -27,18 +31,23 @@ namespace Summoner.FreeCell {
 			board.Dispose();
 			InGameEvents.OnGameClear -= OnClear;
 			InGameUIEvents.OnReset -= OnReset;
+			InGameUIEvents.OnNewGame -= OnNewGame;
 		}
 
 		void Reset() {
 			sheet = null;
-			placer = FindObjectOfType<CardObjectHolder>();
+			cards = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
 			seed = GetComponent<GameSeed>();
 		}
 
 		private void NewGame() {
-			preset = new BasicPlacement( deck, seed.Get() );
+			preset = new BasicPlacement( deck, seed.Generate() );
 			board.Reset( preset );
+
+			if ( demo != null ) {
+				demo.Play( board );
+			}
 		}
 
 		private void OnClear() {
@@ -47,6 +56,12 @@ namespace Summoner.FreeCell {
 
 		private void OnReset() {
 			board.Reset( preset );
+		}
+
+		private void OnNewGame() {
+			Destroy( demo );
+			demo = null;
+			NewGame();
 		}
 	}
 }

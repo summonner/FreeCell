@@ -6,12 +6,10 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class AutoPlayToHome : IRuleComponent {
 		private readonly IBoardController board;
-		private readonly MoveTester tester;
 		private readonly PossibleMoveFinder moveFinder;
 
 		public AutoPlayToHome( IBoardController board ) {
 			this.board = board;
-			this.tester = new MoveTester( board.AsReadOnly() );
 			this.moveFinder = new PossibleMoveFinder( board.AsReadOnly() );
 
 			InGameEvents.OnMoveCards += OnMoveCards;
@@ -28,39 +26,26 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnMoveCards( IEnumerable<Card> _does, PileId _not, PileId _use ) {
-			var homes = board[PileId.Type.Home];
-			foreach ( var pile in board[PileId.Type.Free, PileId.Type.Table] ) {
-				var position = GetLast( pile );
-				if ( position.row < 0 ) {
-					continue;
-				}
-
-				if ( tester.SetSource( position ) != MoveTester.Result.Success ) {
-					continue;
-				}
-
-				foreach ( var home in homes ) {
-					if ( tester.SetDestination( home.id ) != MoveTester.Result.Success ) {
-						continue;
-					}
-
-					if ( DoesExistAnyStackable( tester.subjects.FirstOrDefault() ) == true ) {
-						continue;
-					}
-
-					var poped = board[pile.id].Pop( pile.Count - 1 );
-					Debug.Assert( poped.IsNullOrEmpty() == false );
-					home.Push( poped );
-					InGameEvents.AutoPlay( poped, pile.id, home.id );
-					return;
-				}
+			if ( FindMoveToHome() == true ) {
+				return;
 			}
 
-			FindAnyPossibleMove( _does, _not, _use );
+			if ( moveFinder.HasAnyMove() == false ) {
+				InGameEvents.NoMoreMoves();
+			}
 		}
 
-		private PositionOnBoard GetLast( IPile pile ) {
-			return new PositionOnBoard( pile.id, pile.Count - 1 );
+		private bool FindMoveToHome() {
+			foreach ( var move in moveFinder.FindMoves( PileId.Type.Home ) ) {
+				if ( DoesExistAnyStackable( move.cards.FirstOrDefault() ) == true ) {
+					continue;
+				}
+
+				ApplyMove( move );
+				return true;
+			}
+
+			return false;
 		}
 
 		private static readonly Card.Rank[] specialCases = new [] { Card.Rank.Ace, Card.Rank._2 };
@@ -84,8 +69,14 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void FindAnyPossibleMove( IEnumerable<Card> cards, PileId from, PileId to ) {
-			moveFinder.FindMove( cards, from, to );
+		private void ApplyMove( Move move ) {
+			var from = board[move.from];
+			var poped = from.Pop( from.Count - 1 );
+			Debug.Assert( poped.SequenceEqual( move.cards ) );
+
+			board[move.to].Push( poped );
+
+			InGameEvents.AutoPlay( poped, move.from, move.to );
 		}
 	}
 }

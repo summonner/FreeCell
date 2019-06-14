@@ -13,6 +13,11 @@ namespace Summoner.FreeCell {
 			OnReset();
 		}
 
+		public static event System.Action OnNewGame = delegate { };
+		public void NewGame() {
+			OnNewGame();
+		}
+
 		private static readonly Util.Event.Backup initialValues = null;
 		static InGameUIEvents() {
 			initialValues = new Util.Event.Backup( typeof( InGameUIEvents ) );

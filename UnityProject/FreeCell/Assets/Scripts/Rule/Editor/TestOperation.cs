@@ -60,9 +60,7 @@ namespace Summoner.FreeCell.Test {
 		}
 
 		private static void DragAndDrop( PositionOnBoard selected, IEnumerable<PileId> droppeds ) {
-			PlayerInputEvents.BeginDrag( selected );
-			PlayerInputEvents.Drop( selected, droppeds );
-			PlayerInputEvents.EndDrag( selected );
+			PlayerInputEvents.SimulateDragAndDrop( selected, droppeds );
 		}
 
 		public override string ToString() {
