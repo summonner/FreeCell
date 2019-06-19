@@ -4,8 +4,8 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class NotEnoughFreeCellEffect : MonoBehaviour {
-		[SerializeField] private Material sprite;
-		[SerializeField] private AnimationCurve alphaAnim;
+		[SerializeField] private Material sprite = null;
+		[SerializeField] private AnimationCurve alphaAnim = null;
 		[SerializeField] private int numLoops = 1;
 
 		void OnEnable() {

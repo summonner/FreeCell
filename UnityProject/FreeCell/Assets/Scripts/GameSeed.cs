@@ -6,7 +6,7 @@ namespace Summoner.FreeCell {
 		[MinMaxRange( 0f, 100f )]
 		[SerializeField] private RangeInt range;
 		[SerializeField] private int testSeed = -1;
-		[SerializeField] private PresentInt onChangeSeed;
+		[SerializeField] private PresentInt onChangeSeed = null;
 
 		public int currentSeed { get; private set; }
 

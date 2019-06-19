@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Summoner.UI {
 	[RequireComponent( typeof( Text ) )]
 	public class IntPresenter : BasePresenter {
-		[SerializeField] private bool addComma;
+		[SerializeField] private bool addComma = false;
 
 		public void Set( int value ) {
 			Present( ToString( value ) );

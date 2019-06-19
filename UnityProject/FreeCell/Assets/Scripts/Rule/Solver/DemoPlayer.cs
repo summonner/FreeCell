@@ -6,7 +6,7 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class DemoPlayer : MonoBehaviour {
-		[SerializeField] private InGameUIEvents ui;
+		[SerializeField] private InGameUIEvents ui = null;
 		private bool isCleared;
 		
 		void OnEnable() {

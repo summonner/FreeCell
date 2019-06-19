@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace Summoner.UI {
 	public class BasePresenter : MonoBehaviour {
-		[SerializeField] private Text label;
-		[SerializeField] private string format;
+		[SerializeField] private Text label = null;
+		[SerializeField] private string format = null;
 
 		[ContextMenu( "Find Label" )]
 		void Reset() {
