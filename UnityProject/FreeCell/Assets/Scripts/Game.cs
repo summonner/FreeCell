@@ -10,9 +10,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private BoardLayout layout;
 		[SerializeField] private GameSeed seed;
 		[SerializeField] private DemoPlayer demo;
-		private BasicPlacement preset;
-
-		private static readonly IList<Card> deck = new List<Card>( Card.NewDeck() ).AsReadOnly();
+		private IBoardPreset preset;
 
 		private Board board;
 
@@ -23,7 +21,7 @@ namespace Summoner.FreeCell {
 			InGameUIEvents.OnNewGame += OnNewGame;
 
 			board = new Board( layout );
-			cards.Init( board, sheet, deck );
+			cards.Init( board, sheet );
 			NewGame();
 		}
 
@@ -42,7 +40,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void NewGame() {
-			preset = new BasicPlacement( deck, seed.Generate() );
+			preset = new MSShuffler( seed.Generate() );
 			board.Reset( preset );
 
 			if ( demo != null ) {
@@ -63,5 +61,14 @@ namespace Summoner.FreeCell {
 			demo = null;
 			NewGame();
 		}
+
+#if UNITY_EDITOR
+		[ContextMenu( "Take Board Snapshot" )]
+		public void TakeBoardSnapshot() {
+			// to check deal number from
+			// https://freecellgamesolutions.com/find-game-number
+			Debug.Log( board.ToString( "#C" ) );
+		}
+#endif
 	}
 }

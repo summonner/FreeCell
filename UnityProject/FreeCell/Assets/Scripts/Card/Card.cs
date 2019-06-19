@@ -56,16 +56,33 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public override string ToString() {
-			return ToString( suit ) + ToString( rank );
+		public string ToString( string format ) {
+			format = format.Replace( "C", "{0}" );
+			format = format.Replace( "S", "{1}" );
+			format = format.Replace( "#", "{2}" );
+			return string.Format( format, ToString( suit ), ToSymbol( suit ), ToString( rank ) );
 		}
 
-		private static string ToString( Suit suit ) {
+		public override string ToString() {
+			return ToSymbol( suit ) + ToString( rank );
+		}
+
+		private static string ToSymbol( Suit suit ) {
 			switch ( suit ) {
 				case Suit.Spades:	return "♤";
 				case Suit.Hearts:	return "♥";
 				case Suit.Diamonds:	return "◆";
 				case Suit.Clubs:	return "♧";
+				default:			return "·";
+			}
+		}
+
+		private static string ToString( Suit suit ) {
+			switch ( suit ) {
+				case Suit.Spades:	return "S";
+				case Suit.Hearts:	return "H";
+				case Suit.Diamonds: return "D";
+				case Suit.Clubs:	return "C";
 				default:			return "·";
 			}
 		}
@@ -81,7 +98,7 @@ namespace Summoner.FreeCell {
 				case Rank._7:		return "7";
 				case Rank._8:		return "8";
 				case Rank._9:		return "9";
-				case Rank._10:		return "0";
+				case Rank._10:		return "T";
 				case Rank.Jack:		return "J";
 				case Rank.Queen:	return "Q";
 				case Rank.King:		return "K";

@@ -1237,9 +1237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7da3e1db016e241bc9cea8c9854ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range:
-    min: 0
-    max: 100
+  range: 32000
   testSeed: -1
   onChangeSeed:
     m_PersistentCalls:
@@ -1425,7 +1423,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 14.568787}
+  m_AnchoredPosition: {x: 0, y: 14.568726}
   m_SizeDelta: {x: -30.000061, y: 80}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &783876912

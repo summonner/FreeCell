@@ -89,7 +89,7 @@ namespace Summoner.FreeCell.Test {
 			new Rank( Card.Rank._7, new [] { "7" } ),
 			new Rank( Card.Rank._8, new [] { "8" } ),
 			new Rank( Card.Rank._9, new [] { "9" } ),
-			new Rank( Card.Rank._10, new [] { "0", "10" } ),
+			new Rank( Card.Rank._10, new [] { "0", "10", "t", "T" } ),
 			new Rank( Card.Rank.Jack, new [] { "j", "J", "11" } ),
 			new Rank( Card.Rank.Queen, new [] { "q", "Q", "12" } ),
 			new Rank( Card.Rank.King, new [] { "k", "K", "13" } ),

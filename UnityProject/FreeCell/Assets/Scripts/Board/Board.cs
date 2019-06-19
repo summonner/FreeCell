@@ -76,6 +76,10 @@ namespace Summoner.FreeCell {
 				pile.Clear();
 			}
 
+			if ( preset == null ) {
+				return;
+			}
+
 			int i = 0;
 			foreach ( var card in preset ) {
 				if ( card != Card.Blank ) {
@@ -88,6 +92,10 @@ namespace Summoner.FreeCell {
 		}
 
 		public override string ToString() {
+			return ToString( "S#" );
+		}
+
+		public string ToString( string cardFormat ) {
 			var str = new System.Text.StringBuilder();
 			str.Append( "F[" );
 			foreach ( var pile in Traverse( PileId.Type.Free ) ) {
@@ -108,7 +116,7 @@ namespace Summoner.FreeCell {
 				for ( int column = 0; column < tables.Count; ++column ) {
 					var current = tables[column];
 					var card = current.IsOutOfRange( row ) ? Card.Blank : current[row];
-					str.Append( card );
+					str.Append( card.ToString( cardFormat ) );
 					str.Append( " " );
 				}
 				str.AppendLine();

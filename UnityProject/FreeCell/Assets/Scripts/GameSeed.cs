@@ -3,8 +3,7 @@ using Summoner.UI;
 
 namespace Summoner.FreeCell {
 	public class GameSeed : MonoBehaviour {
-		[MinMaxRange( 0f, 100f )]
-		[SerializeField] private RangeInt range;
+		[SerializeField] private int range = 32000;
 		[SerializeField] private int testSeed = -1;
 		[SerializeField] private PresentInt onChangeSeed = null;
 
@@ -21,7 +20,7 @@ namespace Summoner.FreeCell {
 				return testSeed;
 			}
 
-			return Random.Range( range.min, range.max );
+			return Random.Range( 1, range );
 		}
 	}
 }

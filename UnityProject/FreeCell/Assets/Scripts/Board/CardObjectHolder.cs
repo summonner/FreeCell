@@ -1,9 +1,12 @@
 using UnityEngine;
+using System.Linq;
 using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class CardObjectHolder : MonoBehaviour {
+		private static readonly IList<Card> deck = Card.NewDeck().ToList().AsReadOnly();
+
 		[SerializeField] private BoardLayout layout;
 		private IBoardLookup board;
 		private Dictionary<Card, CardObject> cards = new Dictionary<Card, CardObject>( 52 );
@@ -26,7 +29,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.OnEndFloatCards -= OnEndFloatCards;
 		}
 
-		public void Init( IBoardLookup board, CardSpriteSheet sheet, IEnumerable<Card> deck ) {
+		public void Init( IBoardLookup board, CardSpriteSheet sheet ) {
 			this.board = board;
 
 			foreach ( var card in deck ) {
