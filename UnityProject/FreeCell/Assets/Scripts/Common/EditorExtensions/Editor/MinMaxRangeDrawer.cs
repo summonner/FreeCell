@@ -24,7 +24,7 @@ namespace Summoner.EditorExtension {
 			var drawMinMaxSlider = GetDrawSliderFunc( min.propertyType );
 
 			var layout = new PropertyLayoutHelper();
-			layout.Add( (rect) => { EditorGUI.LabelField( position, property.name ); } );
+			layout.Add( (rect) => { EditorGUI.LabelField( rect, property.name ); } );
 			layout.Begin();
 			layout.Add( (rect) => EditorGUI.PropertyField( rect, min, GUIContent.none ), labelLength );
 			layout.Add( (rect) => drawMinMaxSlider( rect, min, max, range ) );

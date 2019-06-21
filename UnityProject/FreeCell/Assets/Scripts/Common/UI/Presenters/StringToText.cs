@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Summoner.UI {
-	[RequireComponent( typeof( Text ) )]
-	public class StringPresenter : BasePresenter {
+	public class StringToText : BaseToText {
 		public void Set( string value ) {
 			Present( value );
 		}

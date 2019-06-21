@@ -3,17 +3,6 @@ using System.Collections.Generic;
 
 namespace Summoner {
 
-	[System.Serializable]
-	public struct Range {
-		public float min;
-		public float max;
-
-		public Range( float min, float max ) {
-			this.min = min;
-			this.max = max;
-		}
-	}
-
 	///	<summary>Include min value and exclude max value. [min, max) </summary>
 	[System.Serializable]
 	public struct RangeInt {

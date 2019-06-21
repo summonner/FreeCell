@@ -5,9 +5,16 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class StageList : MonoBehaviour {
+		[SerializeField] private PresentRatio test;
+		public int ratio;
 
 		void Awake() {
 			GetComponent<DynamicGridLayoutGroup>().numItems = 32000;
+			test.Invoke( ratio, 100000 );
+		}
+
+		void Update() {
+			test.Invoke( ratio, 100000 );
 		}
 
 		public void OnInitButton( int index, GameObject target ) {

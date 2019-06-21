@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Summoner.UI {
-	[RequireComponent( typeof( Text ) )]
-	public class IntPresenter : BasePresenter {
+	public class NumberToText : BaseToText {
 		[SerializeField] private bool addComma = false;
 
 		public void Set( int value ) {
@@ -12,11 +11,15 @@ namespace Summoner.UI {
 
 		private string ToString( int value ) {
 			if ( addComma == true ) {
-				return value.ToString( "{0:n0}" );
+				return AddComma( value );
 			}
 			else {
 				return value.ToString();
 			}
+		}
+
+		public static string AddComma( int value ) {
+			return string.Format( "{0:n0}", value );
 		}
 	}
 }

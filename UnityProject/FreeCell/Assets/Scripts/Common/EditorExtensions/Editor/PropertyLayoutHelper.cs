@@ -33,7 +33,12 @@ namespace Summoner.EditorExtension {
 		}
 
 		public void Render( Rect position ) {
+			var indent = EditorGUI.indentLevel;
+			position = EditorGUI.IndentedRect( position );
+
+			EditorGUI.indentLevel = 0;
 			stack.Peek().Render( position );
+			EditorGUI.indentLevel = indent;
 		}
 
 		private interface ISubRect {
