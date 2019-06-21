@@ -1,0 +1,52 @@
+fileFormatVersion: 2
+guid: 7b7a9acb136f2cf469b6c589bd957878
+ScriptedImporter:
+  fileIDToRecycleName:
+    2800000: tex
+    21300000: sprite
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: a57477913897c46af95d590f580878bd, type: 3}
+  svgType: 1
+  texturedSpriteMeshType: 0
+  svgPixelsPerUnit: 100
+  gradientResolution: 128
+  alignment: 0
+  customPivot: {x: 0, y: 0}
+  generatePhysicsShape: 0
+  preserveViewport: 0
+  advancedMode: 0
+  predefinedResolutionIndex: 1
+  targetResolution: 1080
+  resolutionMultiplier: 1
+  stepDistance: 10
+  samplingStepDistance: 100
+  maxCordDeviationEnabled: 0
+  maxCordDeviation: 1
+  maxTangentAngleEnabled: 0
+  maxTangentAngle: 5
+  keepTextureAspectRatio: 1
+  textureSize: 70
+  textureWidth: 256
+  textureHeight: 256
+  wrapMode: 1
+  filterMode: 1
+  sampleCount: 1
+  spriteData:
+    TessellationDetail: 0
+    SpriteRect:
+      name: Progress
+      originalName: 
+      pivot: {x: 0.5, y: 0.5}
+      alignment: 0
+      border: {x: 35, y: 35, z: 35, w: 35}
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 70
+        height: 70
+      spriteID: 2d791987e9b449647b97255e0b756318
+    PhysicsOutlines: []

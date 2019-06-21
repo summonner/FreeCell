@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Summoner.Util.Extension;
 
 namespace Summoner.UI {
 	public class BasePresenter : MonoBehaviour {
@@ -14,7 +15,15 @@ namespace Summoner.UI {
 
 		protected void Present( string value ) {
 			Debug.Assert( label != null );
-			label.text = string.Format( format, value );
+			label.text = ApplyFormat( value );
+		}
+
+		private string ApplyFormat( string value ) {
+			if ( format.IsNullOrEmpty() == true ) {
+				return value;
+			}
+
+			return string.Format( format, value );
 		}
 	}
 }

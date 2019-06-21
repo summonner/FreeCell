@@ -303,6 +303,38 @@
          result="composite2"
          id="feComposite8242" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter2980">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood2970" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite2972" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="3"
+         result="blur"
+         id="feGaussianBlur2974" />
+      <feOffset
+         dx="3"
+         dy="3"
+         result="offset"
+         id="feOffset2976" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite2978" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -311,11 +343,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.22627417"
-     inkscape:cx="3260.8944"
-     inkscape:cy="-6500.6381"
+     inkscape:zoom="0.056568543"
+     inkscape:cx="2911.4041"
+     inkscape:cy="-6179.3306"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer11"
+     inkscape:current-layer="layer3"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -352,7 +384,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -7811,4 +7843,8 @@
            y="7073.2324"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.33332825px;font-family:'Segoe Script';-inkscape-font-specification:'Segoe Script';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.9994548;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;" /></flowRegion><flowPara
          id="flowPara7863">FreeCell</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="ui" />
 </svg>

@@ -14,6 +14,7 @@ namespace Summoner {
 		}
 	}
 
+	///	<summary>Include min value and exclude max value. [min, max) </summary>
 	[System.Serializable]
 	public struct RangeInt {
 		public int min;
@@ -26,7 +27,17 @@ namespace Summoner {
 
 		public bool Contains( int value ) {
 			return value >= min
-				&& value <= max;
+				&& value < max;
+		}
+
+		public IEnumerator<int> GetEnumerator() {
+			return GetEnumerable().GetEnumerator();
+		}
+
+		public IEnumerable<int> GetEnumerable() {
+			for ( int i = min; i < max; ++i ) {
+				yield return i;
+			}
 		}
 	}
 }
