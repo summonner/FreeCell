@@ -30,7 +30,9 @@ namespace Summoner.UI {
 		protected override void Awake() {
 			base.Awake();
 			AdjustChildrenCount();
-			view.onValueChanged.AddListener( OnScroll );
+			if ( view != null ) {
+				view.onValueChanged.AddListener( OnScroll );
+			}
 		}
 
 		public override void CalculateLayoutInputHorizontal() {
@@ -171,6 +173,11 @@ namespace Summoner.UI {
 			private readonly IDirectionalProperties directionalProperties;
 
 			public Properties( DynamicGridLayoutGroup outer ) {
+				if ( outer.view == null ) {
+					directionalProperties = new PropertiesForHorizontal( Vector2.zero, 0, 0 );
+					return;
+				}
+
 				var padding = new Vector2( outer.padding.horizontal, outer.padding.vertical );
 				var margin = padding - outer.spacing;
 				this.itemSize = outer.cellSize + outer.spacing;

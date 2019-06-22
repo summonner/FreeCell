@@ -5,7 +5,7 @@ using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
 	public class StageList : MonoBehaviour {
-		[SerializeField] private PresentRatio test;
+		[SerializeField] private PresentRatio test = null;
 		public int ratio;
 
 		void Awake() {
@@ -19,7 +19,7 @@ namespace Summoner.FreeCell {
 
 		public void OnInitButton( int index, GameObject target ) {
 			var button = target.GetComponent<StageButton>();
-			button.Set( index, StageState.Cleared );
+			button.Set( index + 1, StageState.Cleared );
 		}
 	}
 }

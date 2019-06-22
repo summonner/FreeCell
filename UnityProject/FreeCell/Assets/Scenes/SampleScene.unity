@@ -480,7 +480,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0d1da16a7172c4faf9cc5d99bdb858, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 117153504}
   format: '{0} / {1}'
   addComma: 1
   allowOverflow: 0
@@ -693,7 +692,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5b89abdf42d84a8aba3ce60e646dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 194420090}
   format: '#{0}'
   addComma: 0
 --- !u!114 &194420090
@@ -3542,7 +3540,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5b89abdf42d84a8aba3ce60e646dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: {fileID: 1506862532}
   format: 
   addComma: 0
 --- !u!1 &1523130402
@@ -3711,7 +3708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6fc2dee4e070d54b8d4095e962828db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 1584176145}
   range:
     min: 0.1
     max: 1

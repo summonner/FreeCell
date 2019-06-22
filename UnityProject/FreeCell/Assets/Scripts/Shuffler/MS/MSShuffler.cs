@@ -52,9 +52,5 @@ namespace Summoner.FreeCell {
 			"CQ DQ HQ SQ " +
 			"CK DK HK SK"
 		).ToArray();
-
-		public static readonly int[] unwinnables = {	// until 1,000,000
-			11982, 146692, 186216, 455889, 495505, 512118, 517776, 781948
-		};
 	}
 }

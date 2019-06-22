@@ -14,7 +14,7 @@ namespace Summoner.FreeCell {
 
 	public class StageButton : MonoBehaviour {
 		[SerializeField] private Image symbol;
-		[SerializeField] private Sprite[] sprites;
+		[SerializeField] private Sprite[] sprites = null;
 		public PresentInt presentStageNumber;
 
 		void Reset() {
