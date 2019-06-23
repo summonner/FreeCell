@@ -21,6 +21,7 @@ namespace Summoner.UI {
 
 		private Properties properties;
 		private IDictionary<int, RectTransform> visibles = new Dictionary<int, RectTransform>();
+		private ObjectPool<Transform> pool;
 
 		protected override void Reset() {
 			base.Reset();
@@ -29,6 +30,8 @@ namespace Summoner.UI {
 
 		protected override void Awake() {
 			base.Awake();
+			pool = new ObjectPool<Transform>( () => ( Instantiate( gridItem, transform ).transform ) );
+
 			AdjustChildrenCount();
 			if ( view != null ) {
 				view.onValueChanged.AddListener( OnScroll );
@@ -55,24 +58,31 @@ namespace Summoner.UI {
 		}
 
 		private void RemoveChildren( int numToRemove ) {
-			for ( int i=0; i < numToRemove; ++i ) {
 #if UNITY_EDITOR
-				if ( Application.isPlaying == false ) {
+			if ( Application.isPlaying == false ) {
+				for ( int i=0; i < numToRemove; ++i ) {
 					DestroyImmediate( transform.GetChild( 0 ).gameObject );
 				}
-				else
+				return;
+			}
 #endif
-				{
-					// TODO : Use ObjectPool
-					Destroy( transform.GetChild( 0 ).gameObject );
+			foreach ( Transform child in transform ) {
+				if ( child.gameObject.activeInHierarchy == false ) {
+					continue;
 				}
+
+				if ( numToRemove <= 0 ) {
+					break;
+				}
+
+				pool.Push( child );
+				numToRemove -= 1;
 			}
 		}
 
 		private void GenerateChildren( int numToGenerate ) {
 			for ( int i=0; i < numToGenerate; ++i ) {
-				var instance = Instantiate( gridItem, transform );
-				instance.SetActive( true );
+				pool.Pop();
 			}
 		}
 
@@ -160,7 +170,9 @@ namespace Summoner.UI {
 		}
 
 		private void SetChildTo( int index, RectTransform child ) {
+#if UNITY_EDITOR
 			child.name = index.ToString();
+#endif
 			var position = properties.IndexToPosition( index );
 			SetChildAlongAxis( child, 0, position.x, cellSize.x );
 			SetChildAlongAxis( child, 1, position.y, cellSize.y );
