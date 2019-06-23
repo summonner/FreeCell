@@ -35,14 +35,6 @@ namespace Summoner.UI {
 			}
 		}
 
-		public override void CalculateLayoutInputHorizontal() {
-			base.CalculateLayoutInputHorizontal();
-			this.properties = new Properties( this );
-
-			var size = properties.totalSize.x;
-			SetLayoutInputForAxis( size, size, -1, 0 );
-		}
-
 		public int numItems {
 			get {
 				return _numItems;
@@ -84,12 +76,33 @@ namespace Summoner.UI {
 			}
 		}
 
+		public override void CalculateLayoutInputHorizontal() {
+			RebuildRectChildren();	// instead base.CalculateLayoutInputHorizontal();
+			this.properties = new Properties( this );
+
+			var size = properties.totalSize.x;
+			SetLayoutInputForAxis( size, size, -1, 0 );
+		}
+
+		private void RebuildRectChildren() {
+			rectChildren.Clear();
+			for ( int i = 0; i < rectTransform.childCount; i++ ) {
+				RectTransform rect = rectTransform.GetChild( i ) as RectTransform;
+				if ( rect == null )
+					continue;
+				ILayoutIgnorer ignorer = rect.GetComponent( typeof( ILayoutIgnorer ) ) as ILayoutIgnorer;
+				if ( rect.gameObject.activeInHierarchy && !(ignorer != null && ignorer.ignoreLayout) )
+					rectChildren.Add( rect );
+			}
+		}
+
 		public override void CalculateLayoutInputVertical() {
 			var size = properties.totalSize.y;
 			SetLayoutInputForAxis( size, size, -1, 1 );
 		}
 
 		public override void SetLayoutHorizontal() {
+			m_Tracker.Clear();
 			foreach ( var child in rectChildren ) {
 				m_Tracker.Add( this, child, 
 					DrivenTransformProperties.Anchors |
@@ -101,7 +114,7 @@ namespace Summoner.UI {
 				child.sizeDelta = cellSize;
 			}
 
-			m_Tracker.Add( this, rectTransform, DrivenTransformProperties.SizeDeltaX | DrivenTransformProperties.SizeDeltaY );
+			m_Tracker.Add( this, rectTransform, DrivenTransformProperties.SizeDelta );
 			var totalSize = properties.totalSize;
 			rectTransform.SetSizeWithCurrentAnchors( RectTransform.Axis.Horizontal, totalSize.x );
 			rectTransform.SetSizeWithCurrentAnchors( RectTransform.Axis.Vertical, totalSize.y );
