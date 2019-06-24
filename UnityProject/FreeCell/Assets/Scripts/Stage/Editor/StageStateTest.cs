@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Summoner.FreeCell.Test {
 	[TestFixture]
 	public class StageStateTest {
-		private static readonly RangeInt range = new RangeInt( 0, 32000 );
+		private static readonly RangeInt range = StageInfo.range;
 		public static IEnumerable<int> GetRandomStages( int numStages ) {
 			for ( int i = 0; i < numStages; ++i ) {
 				yield return Random.Range( range.min, range.max );

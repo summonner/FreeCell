@@ -9,15 +9,15 @@ namespace Summoner {
 		public int min;
 		public int max;
 
+		public RangeInt( int min, int max ) {
+			this.min = min;
+			this.max = max;
+		}
+
 		public int Length {
 			get {
 				return max - min;
 			}
-		}
-
-		public RangeInt( int min, int max ) {
-			this.min = min;
-			this.max = max;
 		}
 
 		public bool Contains( int value ) {
@@ -33,11 +33,6 @@ namespace Summoner {
 			for ( int i = min; i < max; ++i ) {
 				yield return i;
 			}
-		}
-
-		public bool IsOutOfRange( int value ) {
-			return value < min
-				|| value >= max;
 		}
 	}
 }

@@ -6,20 +6,18 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class StageList : MonoBehaviour {
 		[SerializeField] private PresentRatio test = null;
-		public int ratio;
+		private StageStates states;
 
 		void Awake() {
-			GetComponent<DynamicGridLayoutGroup>().numItems = 32000;
-			test.Invoke( ratio, 100000 );
-		}
-
-		void Update() {
-			test.Invoke( ratio, 100000 );
+			states = new StageStates();
+			GetComponent<DynamicGridLayoutGroup>().numItems = states.Count;
+			test.Invoke( states.numCleared, 100000 );
 		}
 
 		public void OnInitButton( int index, GameObject target ) {
 			var button = target.GetComponent<StageButton>();
-			button.Set( index + 1, StageState.Cleared );
+			var stageNumber = StageNumber.FromIndex( index );
+			button.Set( stageNumber, states[stageNumber] );
 		}
 	}
 }

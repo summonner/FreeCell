@@ -4,16 +4,11 @@ using BitArray = System.Collections.Specialized.BitVector32;
 
 namespace Summoner.FreeCell {
 	public class StageStates {
-		public static readonly RangeInt range = new RangeInt( 0, 32000 );
 		public int numCleared { get; private set; }
 		private readonly IStorageData storage;
 
 		private const int pageSize = 32;
-		private IDictionary<int, BitArray> map = new Dictionary<int, BitArray>( range.Length / pageSize );
-
-		public static readonly int[] unwinnables = {	// until 1,000,000
-			11982, 146692, 186216, 455889, 495505, 512118, 517776, 781948
-		};
+		private IDictionary<int, BitArray> map = null;
 
 		public StageStates() 
 			: this( new PlayerPrefsData() )
@@ -25,7 +20,20 @@ namespace Summoner.FreeCell {
 			}
 
 			this.storage = storage;
-			numCleared = storage.numCleared;
+			this.numCleared = storage.numCleared;
+			this.map = new Dictionary<int, BitArray>( Count / pageSize );
+		}
+
+		public int Count {
+			get {
+				return StageInfo.numStages;
+			}
+		}
+
+		public bool this[StageNumber stageNumber] {
+			get {
+				return this[stageNumber.index];
+			}
 		}
 
 		public bool this[int stageIndex] {
@@ -69,10 +77,6 @@ namespace Summoner.FreeCell {
 			public readonly int bitMask;
 
 			public Index( int stageIndex ) {
-				if ( range.IsOutOfRange( stageIndex ) == true ) {
-					throw new System.ArgumentOutOfRangeException( "Invalid Stage Number" );
-				}
-
 				this.page = stageIndex / pageSize;
 				this.bitMask = 1 << stageIndex % pageSize;
 			}
