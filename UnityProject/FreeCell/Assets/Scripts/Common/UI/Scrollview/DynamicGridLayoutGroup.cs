@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Summoner.UI {
@@ -16,12 +17,21 @@ namespace Summoner.UI {
 		[SerializeField] private Axis direction = Axis.Vertical;
 		[SerializeField] private int constraintCount = 0;
 		[SerializeField] private GameObject gridItem = null;
-		[SerializeField] private int _numItems = 1;
+		public int numItems = 1;
 		public InitGridItem onInitGridItem = null;
 
 		private Properties properties;
 		private IDictionary<int, RectTransform> visibles = new Dictionary<int, RectTransform>();
-		private ObjectPool<Transform> pool;
+		private ObjectPool<Transform> _pool;
+		private ObjectPool<Transform> pool {
+			get {
+				if ( _pool == null ) {
+					_pool = new ObjectPool<Transform>( () => (Instantiate( gridItem, transform ).transform) );
+				}
+
+				return _pool;
+			}
+		}
 
 		protected override void Reset() {
 			base.Reset();
@@ -30,26 +40,13 @@ namespace Summoner.UI {
 
 		protected override void Awake() {
 			base.Awake();
-			pool = new ObjectPool<Transform>( () => ( Instantiate( gridItem, transform ).transform ) );
-
-			AdjustChildrenCount();
 			if ( view != null ) {
 				view.onValueChanged.AddListener( OnScroll );
 			}
 		}
 
-		public int numItems {
-			get {
-				return _numItems;
-			}
-			set {
-				_numItems = value;
-				AdjustChildrenCount();
-			}
-		}
-
-		[ContextMenu("Rebuild Children")]
-		private void AdjustChildrenCount() {
+		private IEnumerator AdjustChildrenCount() {
+			yield return new WaitForEndOfFrame();
 			visibles.Clear();
 			properties = new Properties( this );
 
@@ -89,6 +86,9 @@ namespace Summoner.UI {
 		public override void CalculateLayoutInputHorizontal() {
 			RebuildRectChildren();	// instead base.CalculateLayoutInputHorizontal();
 			this.properties = new Properties( this );
+			if ( properties.numChildren != rectChildren.Count ) {
+				StartCoroutine( AdjustChildrenCount() );
+			}
 
 			var size = properties.totalSize.x;
 			SetLayoutInputForAxis( size, size, -1, 0 );
@@ -98,11 +98,14 @@ namespace Summoner.UI {
 			rectChildren.Clear();
 			for ( int i = 0; i < rectTransform.childCount; i++ ) {
 				RectTransform rect = rectTransform.GetChild( i ) as RectTransform;
-				if ( rect == null )
+				if ( rect == null ) {
 					continue;
-				ILayoutIgnorer ignorer = rect.GetComponent( typeof( ILayoutIgnorer ) ) as ILayoutIgnorer;
-				if ( rect.gameObject.activeInHierarchy && !(ignorer != null && ignorer.ignoreLayout) )
+				}
+
+				ILayoutIgnorer ignorer = rect.GetComponent( typeof(ILayoutIgnorer) ) as ILayoutIgnorer;
+				if ( rect.gameObject.activeInHierarchy && !(ignorer != null && ignorer.ignoreLayout) ) {
 					rectChildren.Add( rect );
+				}
 			}
 		}
 
