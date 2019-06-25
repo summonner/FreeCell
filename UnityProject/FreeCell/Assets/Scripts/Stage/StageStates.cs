@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Summoner.Util.Singleton;
 using BitArray = System.Collections.Specialized.BitVector32;
 
 namespace Summoner.FreeCell {
-	public class StageStates {
+	public class StageStates : Singleton<StageStates> {
 		public int numCleared { get; private set; }
 		private readonly IStorageData storage;
 

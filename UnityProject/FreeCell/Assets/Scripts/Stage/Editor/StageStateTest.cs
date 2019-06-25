@@ -16,23 +16,25 @@ namespace Summoner.FreeCell.Test {
 
 		[Test]
 		public void Empty() {
-			var info = new StageStates( new TestData() );
-			Assert.AreEqual( 0, info.numCleared, "initial numCleared must be 0" );
-			foreach ( var stageIndex in GetRandomStages( 5 ) ) {
-				Assert.AreEqual( false, info[stageIndex], "initial state must be false" );
+			using ( var info = new StageStates( new TestData() ) ) {
+				Assert.AreEqual( 0, info.numCleared, "initial numCleared must be 0" );
+				foreach ( var stageIndex in GetRandomStages( 5 ) ) {
+					Assert.AreEqual( false, info[stageIndex], "initial state must be false" );
+				}
 			}
 		}
 
 		public static int[] numClear = new[] { 1, 3, 7, 99 };
 		[TestCaseSource( "numClear" )]
 		public void Clear( int numClear ) {
-			var info = new StageStates( new TestData() );
-			var clears = new HashSet<int>( GetRandomStages( numClear ) );
-			foreach ( var clearedStage in clears ) {
-				info.Clear( clearedStage );
-			}
+			using ( var info = new StageStates( new TestData() ) ) {
+				var clears = new HashSet<int>( GetRandomStages( numClear ) );
+				foreach ( var clearedStage in clears ) {
+					info.Clear( clearedStage );
+				}
 
-			Check( info, clears );
+				Check( info, clears );
+			}
 		}
 
 		private void Check( StageStates info, ICollection<int> clears ) {
@@ -52,8 +54,9 @@ namespace Summoner.FreeCell.Test {
 			var clears = new[] { 0, 1, 2, 3, 8, 9, 10, 12, 224, 246, 247, 4351, 4348 };
 			data.numCleared = clears.Length;
 
-			var info = new StageStates( data );
-			Check( info, clears );
+			using ( var info = new StageStates( data ) ) {
+				Check( info, clears );
+			}
 		}
 
 		private class TestData : StageStates.IStorageData {

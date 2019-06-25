@@ -135,10 +135,10 @@ namespace Summoner.UI {
 
 		public override void SetLayoutVertical() {
 			var viewRange = CalculateViewRange();
-			UpdateVisibles( viewRange );
+			UpdateChildIndex( viewRange );
 
 			foreach ( var child in visibles ) {
-				SetChildTo( child.Key, child.Value );
+				SetChildPosition( child.Key, child.Value );
 			}
 		}
 
@@ -148,11 +148,11 @@ namespace Summoner.UI {
 			return new RangeInt( startIndex, startIndex + rectChildren.Count );
 		}
 
-		private void UpdateVisibles( RangeInt viewRange ) {
+		private void UpdateChildIndex( RangeInt viewRange ) {
 			var invisibles = FindInvisibles( viewRange ).GetEnumerator();
-			var shows = viewRange.GetEnumerable().Except( visibles.Keys );
+			var newlyVisibles = viewRange.GetEnumerable().Except( visibles.Keys );
 
-			foreach ( var index in shows ) {
+			foreach ( var index in newlyVisibles ) {
 				if ( invisibles.MoveNext() == false ) {
 					break;
 				}
@@ -172,7 +172,7 @@ namespace Summoner.UI {
 			return rectChildren.Except( visibles.Values ).ToArray();
 		}
 
-		private void SetChildTo( int index, RectTransform child ) {
+		private void SetChildPosition( int index, RectTransform child ) {
 #if UNITY_EDITOR
 			child.name = index.ToString();
 #endif
@@ -183,6 +183,31 @@ namespace Summoner.UI {
 
 		public void OnScroll( Vector2 viewPosition ) {
 			SetLayoutVertical();
+		}
+
+		private Vector2 CalculateViewSize() {
+			if ( view == null ) {
+				return Vector2.zero;
+			}
+
+			return view.viewport.GetComponent<RectTransform>().rect.size;
+		}
+
+		public void Show( int index ) {
+			var viewSize = CalculateViewSize();
+			var itemCenter = properties.IndexToPosition( index ) + cellSize * 0.5f;
+			var length = properties.totalSize - viewSize;
+			var normalized = (itemCenter - viewSize * 0.5f) / length;
+			normalized = Clamp( normalized, Vector2.zero, Vector2.one );
+
+			normalized.y = 1 - normalized.y;
+			view.normalizedPosition = normalized;
+		}
+
+		private static Vector2 Clamp( Vector2 value, Vector2 min, Vector2 max ) {
+			value.x = Mathf.Clamp( value.x, min.x, max.x );
+			value.y = Mathf.Clamp( value.y, min.y, max.y );
+			return value;
 		}
 
 		private class Properties {
@@ -210,7 +235,7 @@ namespace Summoner.UI {
 				var margin = padding - outer.spacing;
 				this.itemSize = outer.cellSize + outer.spacing;
 
-				var viewSize = outer.view.viewport.GetComponent<RectTransform>().rect.size;
+				var viewSize = outer.CalculateViewSize();
 				var visibleCount = (viewSize - margin + extra) / itemSize;
 
 				if ( outer.direction == Axis.Vertical ) {
