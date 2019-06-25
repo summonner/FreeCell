@@ -1,0 +1,10 @@
+﻿using UnityEngine;
+using UnityEditor;
+using System.Collections.Generic;
+
+namespace Summoner.#PROJECTNAME# {
+	[CustomPropertyDrawer( typeof(#TARGETNAME#Attribute) )]
+	public class #SCRIPTNAME# : PropertyDrawer {
+
+	}
+}

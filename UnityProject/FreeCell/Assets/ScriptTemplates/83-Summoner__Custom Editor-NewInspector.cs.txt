@@ -1,0 +1,10 @@
+﻿using UnityEngine;
+using UnityEditor;
+using System.Collections.Generic;
+
+namespace Summoner.#PROJECTNAME# {
+	[CustomEditor( typeof(#TARGETNAME#) )]
+	public class #SCRIPTNAME# : Editor {
+
+	}
+}

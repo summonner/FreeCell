@@ -1,0 +1,8 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+namespace Summoner.#PROJECTNAME# {
+	public class #SCRIPTNAME# : PropertyAttribute {
+
+	}
+}

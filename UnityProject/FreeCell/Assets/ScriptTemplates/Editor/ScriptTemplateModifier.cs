@@ -10,18 +10,43 @@ namespace Summoner.Util.ScriptTemplates {
 	public class KeywordReplace : UnityEditor.AssetModificationProcessor {
 
 		private static string ReplaceContent( string content, string path ) {
-			content = content.Replace( "#PROJECTNAME#", PlayerSettings.productName );
-			content = content.Replace( "#NAMESPACE#", AsNameSpace( path ) );
+			content = content.Replace( "#PROJECTNAME#", GetProjectName( path ) );
+			content = content.Replace( "#NAMESPACE#", ToNameSpace( path ) );
+			content = content.Replace( "#TARGETNAME#", GetTargetName( path ) );
 			return content;
 		}
 
-		private static string AsNameSpace( string path ) {
+		private static string GetProjectName( string path ) {
+			if ( path.Contains( "Common" ) == true ) {
+				return ToNameSpace( path );
+			}
+			else {
+				return PlayerSettings.productName;
+			}
+		}
+
+		private static string ToNameSpace( string path ) {
 			path = System.IO.Path.GetDirectoryName( path );
 			const string toFind = "Scripts";
 			var index = path.LastIndexOf( toFind );
 			path = path.Substring( index + toFind.Length );
+			path = Remove( path, "/Common", "/Editor" );
+			path = path.Trim( '/' );
 			path = path.Replace( '/', '.' );
 			return path;
+		}
+
+		private static string Remove( string path, params string[] values ) {
+			foreach ( var toRemove in values ) {
+				path = path.Replace( toRemove, string.Empty );
+			}
+
+			return path;
+		}
+
+		private static string GetTargetName( string path ) {
+			var fileName = System.IO.Path.GetFileNameWithoutExtension( path );
+			return Remove( fileName, "Inspector", "Editor", "Drawer" );
 		}
 
 		public static void OnWillCreateAsset( string path ) {
