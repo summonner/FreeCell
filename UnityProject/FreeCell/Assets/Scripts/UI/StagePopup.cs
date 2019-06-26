@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Summoner.UI;
 
 namespace Summoner.FreeCell {
-	public class StagePopup : BasePopup {
+	public class StagePopup : SimplePopup {
 		[SerializeField] private DynamicGridLayoutGroup grid;
 		[SerializeField] private PresentRatio presentCleared;
 		private StageStates stages;

@@ -13,40 +13,61 @@ namespace Summoner.UI.Popups {
 
 		private readonly Stack<IPopup> stack = new Stack<IPopup>( 2 );
 
-		public void Open( BasePopup target ) {
-			Open( (IPopup)target );
-		}
-
 		public void Open( IPopup target ) {
-			target.OnOpen();
+			Debug.Assert( target != null );
+			if ( target.DoOpen() == false ) {
+				return;
+			}
 			stack.Push( target );
 		}
 
-		public void Close( BasePopup target ) {
-			Close( (IPopup)target );
-		}
-
 		public void Close( IPopup target ) {
-			target.OnClose();
+			Debug.Assert( target != null );
 			if ( stack.Peek() != target ) {
 				Debug.LogError( "Invalid order of close popup.\nCurrent stack : " + stack.Join() );
 			}
-			stack.Pop();
+
+			CloseLastPopup();
 		}
 
 		void Update() {
 			if ( Input.GetKeyDown( KeyCode.Escape ) == true ) {
-				OnBackButtonPressed();
+				CloseLastPopup();
 			}
 		}
 
-		private void OnBackButtonPressed() {
+		public void CloseLastPopup() {
 			if ( stack.Count <= 0 ) {
 				return;
 			}
 
 			var last = stack.Pop();
-			last.OnClose();
+			last.DoClose();
 		}
+
+		public void OpenPopup( GameObject gameObject ) {
+			SendEvent( gameObject, Open );
+		}
+
+		public void ClosePopup( GameObject gameObject ) {
+			SendEvent( gameObject, Close );
+		}
+
+		private delegate void PopupEvent( IPopup popup );
+		private static void SendEvent( GameObject gameObject, PopupEvent eventFunc ) {
+			var popup = gameObject.GetComponent<IPopup>();
+			if ( popup == null ) {
+				Debug.LogError( gameObject.name + " is not a popup object", gameObject );
+				return;
+			}
+
+			eventFunc( popup );
+		}
+
+#if UNITY_EDITOR
+		public Stack<IPopup> GetStack() {
+			return stack;
+		}
+#endif
 	}
 }

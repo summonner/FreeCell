@@ -7,4 +7,5 @@ namespace Summoner.UI {
 	[System.Serializable] public class PresentString : UnityEvent<string> { }
 	[System.Serializable] public class PresentRatio : UnityEvent<int, int> { }
 	[System.Serializable] public class PresentToggle : UnityEvent<bool> { }
+	[System.Serializable] public class PresentEvent : UnityEvent { }
 }

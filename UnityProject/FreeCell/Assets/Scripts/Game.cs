@@ -18,7 +18,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.OnNoMoreMoves += delegate { Debug.Log( "No More Moves" ); };
 			InGameEvents.OnGameClear += OnClear;
 			InGameUIEvents.OnReset += OnReset;
-			InGameUIEvents.OnNewGame += OnNewGame;
+			InGameUIEvents.OnCloseTitle += OnNewGame;
 
 			board = new Board( layout );
 			cards.Init( board, sheet );
@@ -29,7 +29,7 @@ namespace Summoner.FreeCell {
 			board.Dispose();
 			InGameEvents.OnGameClear -= OnClear;
 			InGameUIEvents.OnReset -= OnReset;
-			InGameUIEvents.OnNewGame -= OnNewGame;
+			InGameUIEvents.OnCloseTitle -= OnNewGame;
 		}
 
 		void Reset() {

@@ -14,15 +14,28 @@ namespace Summoner.Util.Singleton {
 			}
 		}
 		
+		private static readonly string alreadyExist = "Another instance already exists";
 		private static T FindOrCreateInstance() {
-			var found = FindObjectOfType<T>();
-			if ( found != null ) {
-				return found;
+			var found = FindObjectsOfType<T>();
+			if ( found.IsNullOrEmpty() == true ) {
+				var gameObject = new GameObject( typeof(T).Name );
+				gameObject.transform.Reset();
+				return gameObject.AddComponent<T>();
 			}
+			else if ( found.Length == 1 ) {
+				return found[0];
+			}
+			else {
+				Debug.LogError( alreadyExist, found[1] );
+				throw new System.Exception( alreadyExist );
+			}
+		}
 
-			var gameObject = new GameObject( typeof(T).Name );
-			gameObject.transform.Reset();
-			return gameObject.AddComponent<T>();
+		protected virtual void OnEnable() {
+			if ( instance != this ) {
+				Debug.LogError( alreadyExist + " : " + instance, instance );
+				throw new System.Exception( alreadyExist );
+			}
 		}
 	}
 }

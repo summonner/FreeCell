@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Summoner.UI.Popups;
 
 namespace Summoner.FreeCell {
 	public class InGameUIEvents : MonoBehaviour {
@@ -13,9 +14,9 @@ namespace Summoner.FreeCell {
 			OnReset();
 		}
 
-		public static event System.Action OnNewGame = delegate { };
-		public void NewGame() {
-			OnNewGame();
+		public static event System.Action OnCloseTitle = delegate { };
+		public void CloseTitle() {
+			OnCloseTitle();
 		}
 
 		private static readonly Util.Event.Backup initialValues = null;

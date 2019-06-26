@@ -1,34 +1,39 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Summoner.UI.Popups;
 
-namespace Summoner.UI {
-	public class BasePopup : MonoBehaviour, IPopup {
-		public PresentToggle onOpenAndClose = null;
-
-		private PopupStack stack {
-			get {
-				return PopupStack.Instance;
-			}
-		}
-
+namespace Summoner.UI.Popups {
+	public abstract class BasePopup : MonoBehaviour, IPopup {
+		[SerializeField] private bool opened = false;
 
 		public void Open() {
-			stack.Open( this );
+			PopupStack.Instance.Open( this );
 		}
 
 		public void Close() {
-			stack.Close( this );
+			PopupStack.Instance.Close( this );
 		}
 
-		void IPopup.OnOpen() {
-			onOpenAndClose.Invoke( true );
+		bool IPopup.DoOpen() {
+			if ( opened == true ) {
+				return false;
+			}
 
+			this.OnOpen();
+			opened = true;
+			return true;
 		}
 
-		void IPopup.OnClose() {
-			onOpenAndClose.Invoke( false );
+		bool IPopup.DoClose() {
+			if ( opened == false ) {
+				return false;
+			}
 
+			this.OnClose();
+			opened = false;
+			return true;
 		}
+
+		protected abstract void OnOpen();
+		protected abstract void OnClose();
 	}
 }
