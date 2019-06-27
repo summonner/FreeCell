@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Summoner.UI.Popups;
+using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
-	public class InGameUIEvents : MonoBehaviour {
+	public class InGameUIEvents : SingletonBehaviour<InGameUIEvents> {
 		public static event System.Action OnUndo = delegate { };
 		public void Undo() {
 			OnUndo();
@@ -17,6 +17,11 @@ namespace Summoner.FreeCell {
 		public static event System.Action OnCloseTitle = delegate { };
 		public void CloseTitle() {
 			OnCloseTitle();
+		}
+
+		public static event System.Action OnQuickGame = delegate { };
+		public void QuickGame() {
+			OnQuickGame();
 		}
 
 		private static readonly Util.Event.Backup initialValues = null;

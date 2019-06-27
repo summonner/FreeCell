@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Summoner.UI.Popups {
 	public abstract class BasePopup : MonoBehaviour, IPopup {
-		[SerializeField] private bool opened = false;
+		private bool opened = false;
 
 		public void Open() {
 			PopupStack.Instance.Open( this );

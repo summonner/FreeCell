@@ -27,6 +27,7 @@ namespace Summoner.Animation {
 					}
 				}
 			}
+			anim.Update( Time.deltaTime );
 
 			serializedObject.ApplyModifiedProperties();
 		}

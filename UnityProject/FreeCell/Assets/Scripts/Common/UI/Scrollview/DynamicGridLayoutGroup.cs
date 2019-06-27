@@ -1,13 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Summoner.UI {
-	[System.Serializable]	public class InitGridItem : UnityEvent<int, GameObject> { }
-
 	public class DynamicGridLayoutGroup : LayoutGroup, ILayoutSelfController {
 		public enum Axis { Horizontal = 0, Vertical = 1 }
 
@@ -18,7 +15,9 @@ namespace Summoner.UI {
 		[SerializeField] private int constraintCount = 0;
 		[SerializeField] private GameObject gridItem = null;
 		public int numItems = 1;
-		public InitGridItem onInitGridItem = null;
+
+		public delegate void InitGridItem( int index, GameObject item );
+		public event InitGridItem onInitGridItem = delegate { };
 
 		private Properties properties;
 		private IDictionary<int, RectTransform> visibles = new Dictionary<int, RectTransform>();
@@ -139,6 +138,7 @@ namespace Summoner.UI {
 
 			foreach ( var child in visibles ) {
 				SetChildPosition( child.Key, child.Value );
+				onInitGridItem.Invoke( child.Key, child.Value.gameObject );
 			}
 		}
 
@@ -159,7 +159,6 @@ namespace Summoner.UI {
 
 				var invisible = invisibles.Current;
 				visibles.Add( index, invisible );
-				onInitGridItem.Invoke( index, invisible.gameObject );
 			}
 		}
 
@@ -173,9 +172,6 @@ namespace Summoner.UI {
 		}
 
 		private void SetChildPosition( int index, RectTransform child ) {
-#if UNITY_EDITOR
-			child.name = index.ToString();
-#endif
 			var position = properties.IndexToPosition( index );
 			SetChildAlongAxis( child, 0, position.x, cellSize.x );
 			SetChildAlongAxis( child, 1, position.y, cellSize.y );
@@ -194,6 +190,10 @@ namespace Summoner.UI {
 		}
 
 		public void Show( int index ) {
+			if ( properties == null ) {
+				return;
+			}
+
 			var viewSize = CalculateViewSize();
 			var itemCenter = properties.IndexToPosition( index ) + cellSize * 0.5f;
 			var length = properties.totalSize - viewSize;
@@ -208,6 +208,15 @@ namespace Summoner.UI {
 			value.x = Mathf.Clamp( value.x, min.x, max.x );
 			value.y = Mathf.Clamp( value.y, min.y, max.y );
 			return value;
+		}
+
+		public T GetItem<T>( int index ) where T : Component {
+			RectTransform item = null;
+			if ( visibles.TryGetValue( index, out item ) == false ) {
+				return null;
+			}
+
+			return item.GetComponent<T>();
 		}
 
 		private class Properties {

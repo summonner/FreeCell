@@ -70,6 +70,12 @@ namespace Summoner.FreeCell {
 		}
 
 
+		public delegate void NewGameEvent( StageNumber stageNumber );
+		public static event NewGameEvent OnNewGame = delegate { };
+		public static void NewGame( StageNumber stageNumber ) {
+			OnNewGame( stageNumber );
+		}
+
 
 		private static readonly Util.Event.Backup initialValues = null;
 		static InGameEvents() {

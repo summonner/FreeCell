@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Summoner.FreeCell {
-	[RequireComponent( typeof(GameSeed) )]
+	[RequireComponent( typeof(StageSelector) )]
 	public class Game : MonoBehaviour {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardObjectHolder cards;
 		[SerializeField] private BoardLayout layout;
-		[SerializeField] private GameSeed seed;
+		[SerializeField] private StageSelector stageSelector;
 		[SerializeField] private DemoPlayer demo;
 		private IBoardPreset preset;
 
@@ -16,31 +16,31 @@ namespace Summoner.FreeCell {
 
 		void Start () {
 			InGameEvents.OnNoMoreMoves += delegate { Debug.Log( "No More Moves" ); };
-			InGameEvents.OnGameClear += OnClear;
+			InGameEvents.OnNewGame += NewGame;
 			InGameUIEvents.OnReset += OnReset;
-			InGameUIEvents.OnCloseTitle += OnNewGame;
+			InGameUIEvents.OnCloseTitle += OnCloseTitle;
 
 			board = new Board( layout );
 			cards.Init( board, sheet );
-			NewGame();
+			stageSelector.PlayRandomGame();
 		}
 
 		void OnDestroy() {
 			board.Dispose();
-			InGameEvents.OnGameClear -= OnClear;
+			InGameEvents.OnNewGame -= NewGame;
 			InGameUIEvents.OnReset -= OnReset;
-			InGameUIEvents.OnCloseTitle -= OnNewGame;
+			InGameUIEvents.OnCloseTitle -= OnCloseTitle;
 		}
 
 		void Reset() {
 			sheet = null;
 			cards = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
-			seed = GetComponent<GameSeed>();
+			stageSelector = GetComponent<StageSelector>();
 		}
 
-		private void NewGame() {
-			preset = new MSShuffler( seed.Generate() );
+		private void NewGame( StageNumber stageNumber ) {
+			preset = new MSShuffler( stageNumber );
 			board.Reset( preset );
 
 			if ( demo != null ) {
@@ -48,18 +48,20 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void OnClear() {
-			Invoke( "NewGame", 1f );
-		}
-
 		private void OnReset() {
 			board.Reset( preset );
 		}
 
-		private void OnNewGame() {
+		private void OnCloseTitle() {
 			Destroy( demo );
 			demo = null;
-			NewGame();
+		}
+
+		private void OnGUI() {
+			GUILayout.Space( 50 );
+			if ( GUILayout.Button( "Cheat.Clear" ) == true ) {
+				InGameEvents.GameClear();
+			}
 		}
 
 #if UNITY_EDITOR

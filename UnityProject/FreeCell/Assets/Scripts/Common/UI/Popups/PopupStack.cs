@@ -41,8 +41,12 @@ namespace Summoner.UI.Popups {
 				return;
 			}
 
-			var last = stack.Pop();
-			last.DoClose();
+			var last = stack.Peek();
+			if ( last.DoClose() == false ) {
+				 return;
+			}
+
+			stack.Pop();
 		}
 
 		public void OpenPopup( GameObject gameObject ) {

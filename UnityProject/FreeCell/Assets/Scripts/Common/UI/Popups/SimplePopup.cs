@@ -4,8 +4,8 @@ using Summoner.UI.Popups;
 
 namespace Summoner.UI {
 	public class SimplePopup : BasePopup {
-		public PresentEvent onOpen = null;
-		public PresentEvent onClose = null;
+		public UnityEvent onOpen = null;
+		public UnityEvent onClose = null;
 
 		protected override void OnOpen() {
 			onOpen.Invoke();

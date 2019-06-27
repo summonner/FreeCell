@@ -11,10 +11,12 @@ namespace Summoner.FreeCell {
 		
 		void OnEnable() {
 			InGameEvents.OnGameClear += OnClear;
+			InGameEvents.OnNewGame += OnNewGame;
 		}
 
 		void OnDisable() {
 			InGameEvents.OnGameClear -= OnClear;
+			InGameEvents.OnNewGame -= OnNewGame;
 		}
 
 		private IBoardLookup board;
@@ -92,6 +94,10 @@ namespace Summoner.FreeCell {
 
 		private void OnClear() {
 			isCleared = true;
+		}
+
+		private void OnNewGame( StageNumber _ ) {
+			StopAllCoroutines();
 		}
 
 		private struct MoveForDemo {

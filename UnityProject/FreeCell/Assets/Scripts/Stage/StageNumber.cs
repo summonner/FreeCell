@@ -24,5 +24,9 @@ namespace Summoner.FreeCell {
 		public static implicit operator int( StageNumber number ) {
 			return number.value;
 		}
+
+		public override string ToString() {
+			return value.ToString();
+		}
 	}
 }

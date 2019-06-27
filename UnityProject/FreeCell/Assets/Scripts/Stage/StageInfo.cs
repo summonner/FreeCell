@@ -27,7 +27,6 @@ namespace Summoner.FreeCell {
 		}
 
 		public static int IndexToStageNumber( int index ) {
-			var test = Vector2.one / Vector2.zero;
 			var stageNumber = index + range.min;
 			foreach ( var unwinnable in unwinnables ) {
 				if ( range.min > unwinnable ) {
