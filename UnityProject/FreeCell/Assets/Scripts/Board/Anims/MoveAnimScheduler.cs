@@ -57,7 +57,9 @@ namespace Summoner.FreeCell.Anims {
 
 		private void OnClear() {
 			autoPlayQueue.ResetDelays( shortInterval );
+			autoPlayQueue.Enqueue( 1f );
 			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
+			autoPlayQueue.Enqueue( InGameEvents.AnimFinished, 0 );
 		}
 
 		private void OnReset() {

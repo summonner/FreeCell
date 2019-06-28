@@ -52,15 +52,35 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnClear() {
-			stages.Clear( currentStage.index );
 			StartCoroutine( PlayClearAnim() );
 		}
 
 		private IEnumerator PlayClearAnim() {
+			stages.Clear( currentStage.index );
 			popup.SetScroll( currentStage );
+			yield return new WaitUntilAnimFinish();
 			yield return popup.PlayClearAnim( currentStage );
 
 			PlayRandomGame();
+		}
+
+		private class WaitUntilAnimFinish : CustomYieldInstruction {
+			public override bool keepWaiting {
+				get {
+					return isFinished == false;
+				}
+			}
+
+			private bool isFinished = false;
+
+			public WaitUntilAnimFinish() {
+				InGameEvents.OnAnimFinished += OnFinishAnim;
+			}
+
+			private void OnFinishAnim() {
+				isFinished = true;
+				InGameEvents.OnAnimFinished -= OnFinishAnim;
+			}
 		}
 	}
 }

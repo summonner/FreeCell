@@ -24,14 +24,10 @@ namespace Summoner.FreeCell {
 
 		public void Init( StageStates stages ) {
 			this.stages = stages;
+			PresentCleared();
 
 			grid.onInitGridItem += OnInitButton;
 			grid.numItems = stages.Count;
-		}
-
-		void OnEnable() {
-			SetScroll( currentStage );
-			PresentCleared();
 		}
 
 		private void PresentCleared() {
@@ -64,6 +60,7 @@ namespace Summoner.FreeCell {
 			popupAnim.SetInteger( animParam, 2 );
 			yield return new WaitWhile( () => ( popupAnim.IsInTransition( 3 ) ) );
 			yield return item.PlayClearAnim();
+			PresentCleared();
 			popupAnim.SetInteger( animParam, -1 );
 			blocker.raycastTarget = false;
 		}
