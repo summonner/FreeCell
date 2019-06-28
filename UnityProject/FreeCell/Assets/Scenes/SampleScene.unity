@@ -2046,7 +2046,7 @@ GameObject:
   - component: {fileID: 550955359}
   - component: {fileID: 550955358}
   m_Layer: 5
-  m_Name: Generals
+  m_Name: 0. Generals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2484,7 +2484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7da3e1db016e241bc9cea8c9854ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testSeed: 1
+  testSeed: -1
   popup: {fileID: 1285839169}
   onChangeSeed:
     m_PersistentCalls:
@@ -3028,7 +3028,7 @@ GameObject:
   - component: {fileID: 811161005}
   - component: {fileID: 811161007}
   m_Layer: 5
-  m_Name: Credits
+  m_Name: 1. Credits
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3902,7 +3902,7 @@ GameObject:
   - component: {fileID: 1285839167}
   - component: {fileID: 1285839169}
   m_Layer: 5
-  m_Name: StageWindow
+  m_Name: 2. StageWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -56,9 +56,11 @@ namespace Summoner.FreeCell {
 		private IEnumerator PlayClearAnim( StageButton item ) {
 			blocker.raycastTarget = true;
 			popupAnim.SetInteger( animParam, 2 );
+			item.ReadyForClearAnim();
+			yield return null;
 			yield return new WaitWhile( () => ( popupAnim.IsInTransition( 3 ) ) );
-			yield return item.PlayClearAnim();
 			PresentCleared();
+			yield return item.PlayClearAnim();
 			popupAnim.SetInteger( animParam, -1 );
 			blocker.raycastTarget = false;
 		}

@@ -28,6 +28,10 @@ namespace Summoner.FreeCell {
 			InGameUIEvents.OnQuickGame -= PlayRandomGame;
 		}
 
+		public void OnClear() {
+			stages.Clear( currentStage );
+		}
+
 		private void OnNewGame( StageNumber stageNumber ) {
 			currentStage = stageNumber;
 			onChangeSeed.Invoke( stageNumber );

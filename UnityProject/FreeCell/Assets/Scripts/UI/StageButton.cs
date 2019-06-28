@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using System.Collections.Generic;
+using System.Collections;
 using Summoner.UI;
 using Summoner.UI.Tween;
 using Summoner.Util.Extension;
@@ -21,6 +21,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private TweenAlpha alpha = null;
 		public PresentInt presentStageNumber;
 		private IContents info;
+		private bool doesReadyForAnim;
 
 		void Reset() {
 			symbol = GetComponentInChildren<SVGImageEx>();
@@ -52,17 +53,30 @@ namespace Summoner.FreeCell {
 			symbol.rectTransform.rotation = Quaternion.Euler( 0, 0, degree );
 			symbol.SetNativeSize();
 
-			anim.value = 1;
-			alpha.value = isCleared ? 1 : 0;
+			if ( doesReadyForAnim == false ) {
+				anim.value = 1;
+				alpha.value = isCleared ? 1 : 0;
+			}
 		}
 
 		private void OnClick() {
 			info.OnClick();
 		}
 
+		public void ReadyForClearAnim() {
+			anim.value = 0;
+			alpha.value = 0;
+			doesReadyForAnim = true;
+		}
+
 		public Coroutine PlayClearAnim() {
+			return StartCoroutine( PlayClearAnimAux() );
+		}
+
+		private IEnumerator PlayClearAnimAux() {
 			alpha.Play();
-			return anim.Play();
+			yield return anim.Play();
+			doesReadyForAnim = false;
 		}
 	}
 }

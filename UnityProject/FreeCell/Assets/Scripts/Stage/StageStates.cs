@@ -33,13 +33,7 @@ namespace Summoner.FreeCell {
 
 		public bool this[StageNumber stageNumber] {
 			get {
-				return this[stageNumber.index];
-			}
-		}
-
-		public bool this[int stageIndex] {
-			get {
-				var index = new Index( stageIndex );
+				var index = new Index( stageNumber );
 				if ( map.ContainsKey( index.page ) == false ) {
 					Load( index.page );
 				}
@@ -47,12 +41,12 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public void Clear( int stageIndex ) {
-			if ( this[stageIndex] == true ) {
+		public void Clear( StageNumber stageNumber ) {
+			if ( this[stageNumber] == true ) {
 				return;
 			}
 
-			var index = new Index( stageIndex );
+			var index = new Index( stageNumber );
 			var page = map[index.page];
 			page[index.bitMask] = true;
 			map[index.page] = page;
@@ -77,7 +71,8 @@ namespace Summoner.FreeCell {
 			public readonly int page;
 			public readonly int bitMask;
 
-			public Index( int stageIndex ) {
+			public Index( StageNumber stageNumber ) {
+				var stageIndex = stageNumber.index;
 				this.page = stageIndex / pageSize;
 				this.bitMask = 1 << stageIndex % pageSize;
 			}

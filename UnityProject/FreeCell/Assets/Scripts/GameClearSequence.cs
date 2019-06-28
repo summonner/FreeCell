@@ -32,6 +32,7 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator PlaySequence() {
 			stagePopup.SetScroll( stageSelector.currentStage );
+			stageSelector.OnClear();
 			yield return scheduler.OnClear();
 			yield return congraturation.Play();
 			yield return new WaitForSeconds( 1f );
