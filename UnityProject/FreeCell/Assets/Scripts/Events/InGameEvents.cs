@@ -69,11 +69,6 @@ namespace Summoner.FreeCell {
 			OnNotEnoughFreeCells();
 		}
 
-		public static event System.Action OnAnimFinished = delegate { };
-		public static void AnimFinished() {
-			OnAnimFinished();
-		}
-
 
 		public delegate void NewGameEvent( StageNumber stageNumber );
 		public static event NewGameEvent OnNewGame = delegate { };

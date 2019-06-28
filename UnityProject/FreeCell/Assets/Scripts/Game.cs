@@ -15,7 +15,6 @@ namespace Summoner.FreeCell {
 		private Board board;
 
 		void Start () {
-			InGameEvents.OnNoMoreMoves += delegate { Debug.Log( "No More Moves" ); };
 			InGameEvents.OnNewGame += NewGame;
 			InGameUIEvents.OnReset += OnReset;
 			InGameUIEvents.OnCloseTitle += OnCloseTitle;
@@ -57,12 +56,12 @@ namespace Summoner.FreeCell {
 			demo = null;
 		}
 
-		private void OnGUI() {
+/*		private void OnGUI() {
 			GUILayout.Space( 50 );
 			if ( GUILayout.Button( "Cheat.Clear" ) == true ) {
 				InGameEvents.GameClear();
 			}
-		}
+		}*/
 
 #if UNITY_EDITOR
 		[ContextMenu( "Take Board Snapshot" )]

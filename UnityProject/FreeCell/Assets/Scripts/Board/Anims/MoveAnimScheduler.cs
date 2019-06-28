@@ -20,7 +20,6 @@ namespace Summoner.FreeCell.Anims {
 			InGameEvents.OnMoveCards += OnMoveCards;
 			InGameEvents.OnUndoCards += OnMoveCards;
 			InGameEvents.OnAutoPlay += OnAutoPlay;
-			InGameEvents.OnGameClear += OnClear;
 
 			autoPlayQueue = new AnimQueue( this );
 		}
@@ -31,7 +30,6 @@ namespace Summoner.FreeCell.Anims {
 			InGameEvents.OnMoveCards -= OnMoveCards;
 			InGameEvents.OnUndoCards -= OnMoveCards;
 			InGameEvents.OnAutoPlay -= OnAutoPlay;
-			InGameEvents.OnGameClear -= OnClear;
 		}
 
 		private void OnMoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
@@ -55,11 +53,9 @@ namespace Summoner.FreeCell.Anims {
 			autoPlayQueue.Enqueue( longInterval - shortInterval );
 		}
 
-		private void OnClear() {
+		public CustomYieldInstruction OnClear() {
 			autoPlayQueue.ResetDelays( shortInterval );
-			autoPlayQueue.Enqueue( 1f );
-			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
-			autoPlayQueue.Enqueue( InGameEvents.AnimFinished, 0 );
+			return new WaitWhile( () => ( autoPlayQueue.isPlaying ) );
 		}
 
 		private void OnReset() {

@@ -32,10 +32,12 @@ namespace Summoner.UI {
 			}
 		}
 
+#if UNITY_EDITOR
 		protected override void Reset() {
 			base.Reset();
 			view = GetComponentInParent<ScrollRect>();
 		}
+#endif
 
 		protected override void Awake() {
 			base.Awake();

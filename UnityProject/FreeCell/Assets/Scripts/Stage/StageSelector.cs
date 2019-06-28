@@ -9,14 +9,13 @@ namespace Summoner.FreeCell {
 		[SerializeField] private PresentInt onChangeSeed = null;
 
 		private StageStates stages = null;
-		private StageNumber currentStage;
+		public StageNumber currentStage { get; private set; }
 
 		void Awake() {
 			stages = new StageStates();
 			popup.Init( stages );
 
 			InGameEvents.OnNewGame += OnNewGame;
-			InGameEvents.OnGameClear += OnClear;
 			InGameUIEvents.OnCloseTitle += PlayRandomGame;
 			InGameUIEvents.OnQuickGame += PlayRandomGame;
 		}
@@ -25,7 +24,6 @@ namespace Summoner.FreeCell {
 			stages.Dispose();
 
 			InGameEvents.OnNewGame -= OnNewGame;
-			InGameEvents.OnGameClear -= OnClear;
 			InGameUIEvents.OnCloseTitle -= PlayRandomGame;
 			InGameUIEvents.OnQuickGame -= PlayRandomGame;
 		}
@@ -49,38 +47,6 @@ namespace Summoner.FreeCell {
 #endif
 			var randomIndex = Random.Range( 0, StageInfo.numStages );
 			return StageNumber.FromIndex( randomIndex );
-		}
-
-		private void OnClear() {
-			StartCoroutine( PlayClearAnim() );
-		}
-
-		private IEnumerator PlayClearAnim() {
-			stages.Clear( currentStage.index );
-			popup.SetScroll( currentStage );
-			yield return new WaitUntilAnimFinish();
-			yield return popup.PlayClearAnim( currentStage );
-
-			PlayRandomGame();
-		}
-
-		private class WaitUntilAnimFinish : CustomYieldInstruction {
-			public override bool keepWaiting {
-				get {
-					return isFinished == false;
-				}
-			}
-
-			private bool isFinished = false;
-
-			public WaitUntilAnimFinish() {
-				InGameEvents.OnAnimFinished += OnFinishAnim;
-			}
-
-			private void OnFinishAnim() {
-				isFinished = true;
-				InGameEvents.OnAnimFinished -= OnFinishAnim;
-			}
 		}
 	}
 }

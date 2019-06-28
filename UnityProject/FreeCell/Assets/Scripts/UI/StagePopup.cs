@@ -15,7 +15,6 @@ namespace Summoner.FreeCell {
 		private static readonly int animParam = Animator.StringToHash( "Current" );
 
 		private StageStates stages;
-		private StageNumber currentStage;
 
 		void Reset() {
 			grid = GetComponentInChildren<DynamicGridLayoutGroup>();
@@ -40,7 +39,6 @@ namespace Summoner.FreeCell {
 		}
 
 		public void SetScroll( StageNumber stageNumber ) {
-			currentStage = stageNumber;
 			grid.Show( stageNumber.index );
 		}
 

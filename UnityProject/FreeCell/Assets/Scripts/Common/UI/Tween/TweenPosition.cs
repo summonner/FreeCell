@@ -4,17 +4,17 @@ using Summoner.Util.Extension;
 
 namespace Summoner.UI.Tween {
 	[RequireComponent( typeof(RectTransform) )]
-	public class TweenScale : TweenBase {
+	public class TweenPosition : TweenBase {
 		public Vector2 from;
 		public Vector2 to;
 
 		void Reset() {
-			from = rectTransform.localScale;
-			to = rectTransform.localScale;
+			from = rectTransform.localPosition;
+			to = rectTransform.localPosition;
 		}
 
 		protected override void SetFrame( float t ) {
-			rectTransform.localScale = Vector2.Lerp( from, to, t );
+			rectTransform.localPosition = Vector2.Lerp( from, to, t );
 		}
 
 		[ContextMenu( "Swap" )]
