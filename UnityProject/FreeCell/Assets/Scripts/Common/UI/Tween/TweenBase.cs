@@ -13,17 +13,6 @@ namespace Summoner.UI.Tween {
 			}
 		}
 
-		private RectTransform _rectTransform;
-		protected RectTransform rectTransform {
-			get {
-				if ( _rectTransform == null ) {
-					_rectTransform = GetComponent<RectTransform>();
-				}
-
-				return _rectTransform;
-			}
-		}
-
 		public Coroutine Play() {
 			return StartCoroutine( Play( curve.EvaluateWithTime() ) );
 		}

@@ -15,7 +15,9 @@ namespace Summoner.UI.Tween {
 
 		private void OnDisable() {
 			value = 0;
-			tweener.value = 0;
+			if ( Application.isPlaying == false ) {
+				tweener.value = 0;
+			}
 		}
 
 		public override void OnInspectorGUI() {

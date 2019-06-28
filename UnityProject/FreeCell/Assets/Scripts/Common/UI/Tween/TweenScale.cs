@@ -8,6 +8,13 @@ namespace Summoner.UI.Tween {
 		public Vector2 from;
 		public Vector2 to;
 
+		private RectTransform _rectTransform;
+		private RectTransform rectTransform {
+			get {
+				return _rectTransform ?? (_rectTransform = GetComponent<RectTransform>());
+			}
+		}
+
 		void Reset() {
 			from = rectTransform.localScale;
 			to = rectTransform.localScale;

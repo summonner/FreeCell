@@ -18,12 +18,14 @@ namespace Summoner.FreeCell {
 		[SerializeField] private SVGImageEx symbol = null;
 		[SerializeField] private Sprite[] sprites = null;
 		[SerializeField] private TweenScale anim = null;
+		[SerializeField] private TweenAlpha alpha = null;
 		public PresentInt presentStageNumber;
 		private IContents info;
 
 		void Reset() {
 			symbol = GetComponentInChildren<SVGImageEx>();
 			anim = GetComponentInChildren<TweenScale>();
+			alpha = GetComponentInChildren<TweenAlpha>();
 		}
 
 		void Awake() {
@@ -50,7 +52,8 @@ namespace Summoner.FreeCell {
 			symbol.rectTransform.rotation = Quaternion.Euler( 0, 0, degree );
 			symbol.SetNativeSize();
 
-			symbol.color = isCleared ? new Color( 1f, 1f, 1f, 0.4f ) : new Color( 0f, 0f, 0f, 0f );
+			anim.value = 1;
+			alpha.value = isCleared ? 1 : 0;
 		}
 
 		private void OnClick() {
@@ -58,7 +61,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public Coroutine PlayClearAnim() {
-			symbol.color = new Color( 1f, 1f, 1f, 0.4f );
+			alpha.Play();
 			return anim.Play();
 		}
 	}
