@@ -6,6 +6,10 @@ namespace Summoner.FreeCell.Anims {
 	public class MoveAnimScheduler : MonoBehaviour {
 		[SerializeField][Range( 0.01f, 1f )] private float longInterval = 0.1f;
 		[SerializeField][Range( 0f, 0.1f )]  private float shortInterval = 0.01f;
+		[SerializeField][Range( 0f, 0.1f )] private float groupInterval = 0f;
+		[SerializeField][Range( 0f, 1f )] private float waitAfterReset = 0.2f;
+		[SerializeField][Range( 0f, 0.1f )] private float clearInterval = 0.03f;
+		[SerializeField][Range( 0f, 1f )] private float initVolume = 0.5f;
 
 		[SerializeField] private CardObjectHolder placer;
 		private AnimQueue autoPlayQueue;
@@ -35,7 +39,7 @@ namespace Summoner.FreeCell.Anims {
 		private void OnMoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
 			var userQueue = new AnimQueue( this );
 			var trigger = placer.MoveCard( targets, to );
-			userQueue.Enqueue( trigger, shortInterval );
+			userQueue.Enqueue( trigger, groupInterval );
 			
 			if ( autoPlayQueue.isPlaying == false ) {
 				autoPlayQueue.Enqueue( longInterval );
@@ -43,25 +47,25 @@ namespace Summoner.FreeCell.Anims {
 		}
 
 		private void OnInitBoard( Card target, PileId to ) {
-			var trigger = placer.MoveCard( target, to );
+			var trigger = placer.MoveCard( target, to, initVolume );
 			autoPlayQueue.Enqueue( trigger, shortInterval );
 		}
 
 		private void OnAutoPlay( ICollection<Card> targets, PileId from, PileId to ) {
 			var trigger = placer.MoveCard( targets, to );
-			autoPlayQueue.Enqueue( trigger, shortInterval );
-			autoPlayQueue.Enqueue( longInterval - shortInterval );
+			autoPlayQueue.Enqueue( trigger, groupInterval );
+			autoPlayQueue.Enqueue( longInterval - groupInterval );
 		}
 
 		public CustomYieldInstruction OnClear() {
-			autoPlayQueue.ResetDelays( shortInterval );
+			autoPlayQueue.ResetDelays( clearInterval );
 			return new WaitWhile( () => ( autoPlayQueue.isPlaying ) );
 		}
 
 		private void OnReset() {
 			autoPlayQueue.Clear();
 			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
-			autoPlayQueue.Enqueue( longInterval );
+			autoPlayQueue.Enqueue( waitAfterReset );
 		}
 	}
 }

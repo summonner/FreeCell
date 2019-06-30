@@ -14,18 +14,18 @@ namespace Summoner.FreeCell {
 			floater = GetComponentInChildren<FloatEffect>();
 		}
 
-		public System.Action SetDestination( Vector3 worldPosition ) {
+		public System.Action SetDestination( Vector3 worldPosition, float effectVolume ) {
 			isPlaying = true;
 
 			return () => {
 				if ( anim != null ) {
 					StopCoroutine( anim );
 				}
-				anim = StartCoroutine( Play( worldPosition ) );
+				anim = StartCoroutine( Play( worldPosition, effectVolume ) );
 			};
 		}
 
-		private IEnumerator Play( Vector3 destination ) {
+		private IEnumerator Play( Vector3 destination, float effectVolume ) {
 			var start = floater.Begin();
 
 			foreach ( var t in curve.EvaluateWithTime() ) {
@@ -33,6 +33,9 @@ namespace Summoner.FreeCell {
 				yield return null;
 			}
 
+			if ( effectVolume > 0f ) {
+				SoundPlayer.Instance.Play( SoundType.MoveCard, effectVolume );
+			}
 			floater.End();
 			anim = null;
 			isPlaying = false;

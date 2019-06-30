@@ -41,18 +41,19 @@ namespace Summoner.FreeCell {
 		}
 		
 		private static readonly Vector3 offset = Vector3.back * 0.01f; 
-		public System.Action MoveCard( Card target, PileId to ) {
+		public System.Action MoveCard( Card target, PileId to, float volume ) {
 			var card = cards[target];
 			var row = board[to].IndexOf( target );
 			card.position = new PositionOnBoard( to, row );
 			var position = layout.GetWorldPosition( card.position ) + offset;
 
-			return card.SetDestination( position );
+			return card.SetDestination( position, volume );
 		}
 
 		public IEnumerable<System.Action> MoveCard( IEnumerable<Card> targets, PileId to ) {
-			foreach ( var target in targets ) {
-				yield return MoveCard( target, to );
+			foreach ( var target in targets.WithIndex() ) {
+				var volume = target.Key == 0 ? 1f : 0f;
+				yield return MoveCard( target.Value, to, volume );
 			}
 		}
 
@@ -81,16 +82,19 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnEndFloatCards( IEnumerable<Card> subjects ) {
-			foreach ( var card in Find( subjects ) ) {
-				card.EndFloat();
+			foreach ( var card in Find( subjects ).WithIndex() ) {
+				var volume = card.Key == 0 ? 1f : 0f;
+				card.Value.EndFloat( volume );
 			}
 		}
 
 		public IEnumerable<System.Action> OnReset() {
 			var position = transform.position;
 			foreach ( var card in cards.Values ) {
-				yield return card.SetDestination( position );
+				yield return card.SetDestination( position, 0f );
 			}
+			yield return () => { SoundPlayer.Instance.Play( SoundType.ResetCards ); };
 		}
+
 	}
 }

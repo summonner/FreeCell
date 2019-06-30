@@ -36,8 +36,8 @@ namespace Summoner.FreeCell {
 			vibrateAnim.StartAnim();
 		}
 
-		public System.Action SetDestination( Vector3 worldPosition ) {
-			return moveAnim.SetDestination( worldPosition );
+		public System.Action SetDestination( Vector3 worldPosition, float effectVolume ) {
+			return moveAnim.SetDestination( worldPosition, effectVolume );
 		}
 
 		public void OnPointerClick( PointerEventData eventData ) {
@@ -83,9 +83,9 @@ namespace Summoner.FreeCell {
 			floater.Move( displacement );
 		}
 
-		public void EndFloat() {
+		public void EndFloat( float effectVolume ) {
 			var destination = floater.End();
-			SetDestination( destination )();
+			SetDestination( destination, effectVolume )();
 		}
 	}
 }
