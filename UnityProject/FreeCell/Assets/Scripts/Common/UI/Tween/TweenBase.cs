@@ -21,6 +21,15 @@ namespace Summoner.UI.Tween {
 			return StartCoroutine( Play( curve.EvaluateWithTimeReverse() ) );
 		}
 
+		public void Play( bool forward ) {
+			if ( forward == true ) {
+				Play();
+			}
+			else {
+				PlayReverse();
+			}
+		}
+
 		private IEnumerator Play( IEnumerable<float> iterator ) {
 			foreach ( var t in iterator ) {
 				SetFrame( t );

@@ -10,11 +10,20 @@ namespace Summoner.UI.Tween {
 
 		private void OnEnable() {
 			value = 0;
-			tweener = target as TweenBase;
+			if ( Application.isPlaying == false ) {
+				tweener = target as TweenBase;
+			}
+			else {
+				tweener = null;
+			}
 		}
 
 		private void OnDisable() {
 			value = 0;
+			if ( tweener == null ) {
+				return;
+			}
+
 			if ( Application.isPlaying == false ) {
 				tweener.value = 0;
 			}
@@ -39,10 +48,6 @@ namespace Summoner.UI.Tween {
 			}
 
 			base.OnInspectorGUI();
-		}
-
-		private void Update() {
-
 		}
 	}
 }

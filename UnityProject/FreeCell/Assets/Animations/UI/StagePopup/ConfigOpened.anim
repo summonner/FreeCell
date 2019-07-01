@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: GeneralOpened
+  m_Name: ConfigOpened
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -32,7 +32,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: Popups/0. Generals
+    path: Popups/3.Config
     classID: 1
     script: {fileID: 0}
   - curve:
@@ -42,7 +42,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -50,7 +50,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -355
+        value: -25
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -61,7 +61,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.y
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -71,7 +71,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.z
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   m_PPtrCurves: []
@@ -83,14 +83,14 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 3247029766
+      path: 3442404038
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 3247029766
+      path: 3559238336
       attribute: 538195251
       script: {fileID: 0}
       typeID: 224
@@ -134,7 +134,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: Popups/0. Generals
+    path: Popups/3.Config
     classID: 1
     script: {fileID: 0}
   - curve:
@@ -144,7 +144,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -152,7 +152,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -355
+        value: -25
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -163,7 +163,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.y
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -173,7 +173,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.z
-    path: Popups/0. Generals
+    path: Popups/3. Config
     classID: 224
     script: {fileID: 0}
   m_EulerEditorCurves: []
