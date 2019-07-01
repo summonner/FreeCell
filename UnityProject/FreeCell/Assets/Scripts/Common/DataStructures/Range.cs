@@ -28,5 +28,9 @@ namespace Summoner {
 		public float Lerp( float t ) {
 			return (1 - t) * min + t * max;
 		}
+
+		public float Ratio( float value ) {
+			return (value - min) / (max - min);
+		}
 	}
 }
