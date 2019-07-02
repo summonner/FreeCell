@@ -6,6 +6,7 @@ namespace Summoner.FreeCell {
 	public class FloatEffect : MonoBehaviour {
 		[SerializeField] private new Renderer renderer;
 		[SerializeField] private new Collider2D collider;
+		[SerializeField] private GameObject shadow = null;
 		[SerializeField] private ContactFilter2D contactFilter;
 		private new Transform transform;
 		private Vector3 startPosition;
@@ -15,6 +16,7 @@ namespace Summoner.FreeCell {
 			enabled = false;
 			renderer = GetComponentInChildren<Renderer>();
 			collider = GetComponent<Collider2D>();
+			shadow = base.transform.Find( "Shadow" ).gameObject;
 			contactFilter = new ContactFilter2D {
 				useLayerMask = true,
 				layerMask = LayerMask.GetMask( "Card", "Board" ),
@@ -28,11 +30,13 @@ namespace Summoner.FreeCell {
 		void OnEnable() {
 			renderer.sortingOrder = 1;
 			collider.enabled = false;
+			shadow.SetActive( true );
 		}
 
 		void OnDisable() {
 			renderer.sortingOrder = 0;
 			collider.enabled = true;
+			shadow.SetActive( false );
 		}
 
 		public Vector3 Begin() {
