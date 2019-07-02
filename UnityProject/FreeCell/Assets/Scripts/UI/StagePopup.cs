@@ -13,6 +13,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private UnityEvent onSelectStage = null;
 
 		private static readonly int animParam = Animator.StringToHash( "Current" );
+		private static readonly int readyParam = Animator.StringToHash( "Ready" );
 
 		private StageStates stages;
 
@@ -27,6 +28,12 @@ namespace Summoner.FreeCell {
 
 			grid.onInitGridItem += OnInitButton;
 			grid.numItems = stages.Count;
+			StartCoroutine( Ready() );
+		}
+
+		private IEnumerator Ready() {
+			yield return new WaitUntil( () => ( grid.isReady ) );
+			popupAnim.SetBool( readyParam, true );
 		}
 
 		private void PresentCleared() {
@@ -42,7 +49,7 @@ namespace Summoner.FreeCell {
 			grid.Show( stageNumber.index );
 		}
 
-		public Coroutine PlayClearAnim( StageNumber stageNumber ) {
+		public IEnumerator PlayClearAnim( StageNumber stageNumber ) {
 			grid.Show( stageNumber.index );
 			var item = grid.GetItem<StageButton>( stageNumber.index );
 			if ( item == null ) {
@@ -50,7 +57,7 @@ namespace Summoner.FreeCell {
 				return null;
 			}
 
-			return StartCoroutine( PlayClearAnim( item ) );
+			return PlayClearAnim( item );
 		}
 
 		private IEnumerator PlayClearAnim( StageButton item ) {

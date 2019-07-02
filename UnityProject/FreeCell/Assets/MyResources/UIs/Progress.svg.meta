@@ -1,15 +1,18 @@
 fileFormatVersion: 2
-guid: 7b7a9acb136f2cf469b6c589bd957878
+guid: 35dc8134d5897384cb4382bb33de2a91
 ScriptedImporter:
   fileIDToRecycleName:
-    2800000: tex
+    100002: gameObject/Progress
+    400002: gameObject/Progress/Transform
+    21200002: gameObject/Progress/SpriteRenderer
     21300000: sprite
+    100100000: gameObject
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: a57477913897c46af95d590f580878bd, type: 3}
-  svgType: 1
+  svgType: 0
   texturedSpriteMeshType: 0
   svgPixelsPerUnit: 100
   gradientResolution: 128
@@ -28,25 +31,25 @@ ScriptedImporter:
   maxTangentAngleEnabled: 0
   maxTangentAngle: 5
   keepTextureAspectRatio: 1
-  textureSize: 70
+  textureSize: 256
   textureWidth: 256
   textureHeight: 256
-  wrapMode: 1
+  wrapMode: 0
   filterMode: 1
-  sampleCount: 1
+  sampleCount: 4
   spriteData:
     TessellationDetail: 0
     SpriteRect:
-      name: Progress
+      name: 
       originalName: 
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       alignment: 0
-      border: {x: 35, y: 35, z: 35, w: 35}
+      border: {x: 0, y: 0, z: 0, w: 0}
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 70
-        height: 70
-      spriteID: 2d791987e9b449647b97255e0b756318
+        width: 0
+        height: 0
+      spriteID: 25f59d0af6778ea42b9d5e974b3e6ec2
     PhysicsOutlines: []

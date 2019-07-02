@@ -7,7 +7,7 @@ using Summoner.Util.Singleton;
 namespace Summoner.FreeCell {
 
 	public class SoundPlayer : SingletonBehaviour<SoundPlayer> {
-		[SerializeField] private SoundList[] lists;
+		[SerializeField] private SoundList[] lists = null;
 		
 		public static SoundPlayer Instance {
 			get {
@@ -72,6 +72,7 @@ namespace Summoner.FreeCell {
 			All,
 		}
 
+#pragma warning disable 0649
 		[System.Serializable]
 		private struct SoundList {
 			[SerializeField] private SoundType _type;
@@ -102,5 +103,6 @@ namespace Summoner.FreeCell {
 				}
 			}
 		}
+#pragma warning restore 0649
 	}
 }

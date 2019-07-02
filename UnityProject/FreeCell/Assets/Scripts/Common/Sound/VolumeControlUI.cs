@@ -7,9 +7,9 @@ using Summoner.Util.UnityEvents;
 
 namespace Summoner.Sound {
 	public class VolumeControlUI : MonoBehaviour {
-		[SerializeField] private Slider slider;
-		[SerializeField] private Toggle button;
-		[SerializeField] private VolumeController controller;
+		[SerializeField] private Slider slider = null;
+		[SerializeField] private Toggle button = null;
+		[SerializeField] private VolumeController controller = null;
 
 #if UNITY_EDITOR
 		void Reset() {

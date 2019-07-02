@@ -1,23 +1,27 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using Summoner.Util;
 
 namespace Summoner.Sound {
 	public class VolumeController : MonoBehaviour {
-		[SerializeField] private AudioMixer mixer;
-		[SerializeField] private string parameterName;
-		private ISavedValue saved;
+		[SerializeField] private AudioMixer mixer = null;
+		[SerializeField] private string parameterName = null;
+		private ISavedValue<float> saved;
 		private float defaultValue;
 		
 		private const float min = -80f;
 
 		void Start() {
-			var key = mixer.name + "." + parameterName;
-			mixer.GetFloat( parameterName, out this.defaultValue );
-			saved = new PlayerPrefsValue( key, defaultValue );
 			Load();
 		}
 
 		public void Load() {
+			if ( saved == null ) {
+				var key = mixer.name + "." + parameterName;
+				mixer.GetFloat( parameterName, out this.defaultValue );
+				saved = PlayerPrefsValue.Float( key, defaultValue );
+			}
+
 			// UNITY_BUG : does not works on Awake() or OnEnable().
 			mixer.SetFloat( parameterName, saved.value );
 		}
@@ -56,31 +60,6 @@ namespace Summoner.Sound {
 		public bool isMuted {
 			get {
 				return decibel <= min;
-			}
-		}
-
-		private interface ISavedValue {
-			float value { get; set; }
-		}
-
-		private class PlayerPrefsValue : ISavedValue {
-			private readonly string key;
-			private readonly float defaultValue;
-
-			public PlayerPrefsValue( string key, float defaultValue ) {
-				this.key = key;
-				this.defaultValue = defaultValue;
-			}
-
-			public float value {
-				get {
-					return PlayerPrefs.GetFloat( key, defaultValue );
-				}
-
-				set {
-					PlayerPrefs.SetFloat( key, value );
-					PlayerPrefs.Save();
-				}
 			}
 		}
 	}

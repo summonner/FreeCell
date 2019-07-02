@@ -32,6 +32,16 @@ namespace Summoner.UI {
 			}
 		}
 
+		public bool isReady {
+			get {
+				if ( properties == null ) {
+					return false;
+				}
+
+				return properties.numChildren == rectChildren.Count;
+			}
+		}
+
 #if UNITY_EDITOR
 		protected override void Reset() {
 			base.Reset();
@@ -204,6 +214,10 @@ namespace Summoner.UI {
 
 			normalized.y = 1 - normalized.y;
 			view.normalizedPosition = normalized;
+
+			if ( isActiveAndEnabled == false ) {
+				SetLayoutVertical();
+			}
 		}
 
 		private static Vector2 Clamp( Vector2 value, Vector2 min, Vector2 max ) {

@@ -8,9 +8,16 @@ namespace Summoner.UI.Tween {
 		private float value = 0f;
 		TweenBase tweener = null;
 
+		private bool canPreview {
+			get {
+				return EditorApplication.isPlaying
+					|| PrefabUtility.GetPrefabType( target ) == PrefabType.Prefab;
+			}
+		}
+
 		private void OnEnable() {
 			value = 0;
-			if ( Application.isPlaying == false ) {
+			if ( canPreview == false ) {
 				tweener = target as TweenBase;
 			}
 			else {
@@ -24,15 +31,15 @@ namespace Summoner.UI.Tween {
 				return;
 			}
 
-			if ( Application.isPlaying == false ) {
+			if ( canPreview == false ) {
 				tweener.value = 0;
 			}
 		}
 
 		public override void OnInspectorGUI() {
-			using ( new EnableScope( Application.isPlaying == false ) ) {
+			using ( new EnableScope( canPreview == false ) ) {
 				value = EditorGUILayout.Slider( "Preview", value, 0, 1 );
-				if ( Application.isPlaying == false ) {
+				if ( canPreview == false ) {
 					tweener.value = value;
 				}
 

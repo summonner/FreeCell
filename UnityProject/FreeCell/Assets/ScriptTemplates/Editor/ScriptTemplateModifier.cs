@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEditor;
 using Summoner.Util.Extension;
+using System.IO;
 using System.Collections.Generic;
 
 namespace Summoner.Util.ScriptTemplates {
@@ -25,14 +26,16 @@ namespace Summoner.Util.ScriptTemplates {
 			}
 		}
 
+		private const char nameSpaceSeparator = '.';
 		private static string ToNameSpace( string path ) {
-			path = System.IO.Path.GetDirectoryName( path );
+			path = Path.GetDirectoryName( path );
 			const string toFind = "Scripts";
 			var index = path.LastIndexOf( toFind );
 			path = path.Substring( index + toFind.Length );
-			path = Remove( path, "/Common", "/Editor" );
-			path = path.Trim( '/' );
-			path = path.Replace( '/', '.' );
+			path = path.Replace( Path.DirectorySeparatorChar, nameSpaceSeparator );
+			path = path.Replace( Path.AltDirectorySeparatorChar, nameSpaceSeparator );
+			path = Remove( path, ".Common", ".Editor" );
+			path = path.Trim( nameSpaceSeparator );
 			return path;
 		}
 
