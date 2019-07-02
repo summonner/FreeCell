@@ -31,18 +31,16 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		public bool this[StageNumber stageNumber] {
-			get {
-				var index = new Index( stageNumber );
-				if ( map.ContainsKey( index.page ) == false ) {
-					Load( index.page );
-				}
-				return map[index.page][index.bitMask];
+		public bool IsCleared( StageNumber stageNumber ) {
+			var index = new Index( stageNumber );
+			if ( map.ContainsKey( index.page ) == false ) {
+				Load( index.page );
 			}
+			return map[index.page][index.bitMask];
 		}
 
 		public void Clear( StageNumber stageNumber ) {
-			if ( this[stageNumber] == true ) {
+			if ( IsCleared( stageNumber ) == true ) {
 				return;
 			}
 

@@ -31,12 +31,19 @@ namespace Summoner.FreeCell {
 		}
 
 		private IEnumerator PlaySequence() {
-			stageSelector.OnClear();
+			var doesShowPopup = stageSelector.OnClear();
 			yield return scheduler.OnClear();
 			yield return congraturation.Play();
 			yield return new WaitForSeconds( 1f );
-			yield return StartCoroutine( stagePopup.PlayClearAnim( stageSelector.currentStage ) );
-			congraturation.value = 0;
+
+			if ( doesShowPopup == true ) {
+				yield return StartCoroutine( stagePopup.PlayClearAnim( stageSelector.currentStage ) );
+				congraturation.value = 0;
+			}
+			else {
+				congraturation.PlayReverse();
+			}
+
 			stageSelector.PlayRandomGame();
 		}
 	}

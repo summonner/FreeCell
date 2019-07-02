@@ -77,7 +77,7 @@ namespace Summoner.FreeCell {
 			public StageNumber stageNumber { get; private set; }
 			public bool isCleared {
 				get {
-					return outer.stages[stageNumber];
+					return outer.stages.IsCleared( stageNumber );
 				}
 			}
 

@@ -19,7 +19,7 @@ namespace Summoner.FreeCell.Test {
 			using ( var info = new StageStates( new TestData() ) ) {
 				Assert.AreEqual( 0, info.numCleared, "initial numCleared must be 0" );
 				foreach ( var stageIndex in GetRandomStages( 5 ) ) {
-					Assert.AreEqual( false, info[stageIndex], "initial state must be false" );
+					Assert.AreEqual( false, info.IsCleared( stageIndex ), "initial state must be false" );
 				}
 			}
 		}
@@ -41,7 +41,7 @@ namespace Summoner.FreeCell.Test {
 			Assert.AreEqual( clears.Count, info.numCleared, "numCleared mismatch" );
 			var randomStages = clears.Concat( GetRandomStages( 20 ) );
 			foreach ( var stage in randomStages ) {
-				Assert.AreEqual( clears.Contains( stage ), info[stage], stage + " stage's state is mismatch" );
+				Assert.AreEqual( clears.Contains( stage ), info.IsCleared( stage ), stage + " stage's state is mismatch" );
 			}
 		}
 

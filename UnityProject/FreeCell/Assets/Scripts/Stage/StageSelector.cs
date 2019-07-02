@@ -4,9 +4,11 @@ using Summoner.UI;
 
 namespace Summoner.FreeCell {
 	public class StageSelector : MonoBehaviour {
-		[SerializeField] private int testSeed = -1;
+		[SerializeField] private int testStage = -1;
 		[SerializeField] private StagePopup popup = null;
-		[SerializeField] private PresentInt onChangeSeed = null;
+		[UnityEngine.Serialization.FormerlySerializedAs( "onChangeSeed" )]
+		[SerializeField] private PresentInt presentStageNumber = null;
+		[SerializeField] private PresentToggle presentCleared = null;
 
 		private StageStates stages = null;
 		public StageNumber currentStage { get; private set; }
@@ -28,13 +30,19 @@ namespace Summoner.FreeCell {
 			InGameUIEvents.OnQuickGame -= PlayRandomGame;
 		}
 
-		public void OnClear() {
+		public bool OnClear() {
+			if ( stages.IsCleared( currentStage ) == true ) {
+				return false;
+			}
+
 			stages.Clear( currentStage );
+			return true;
 		}
 
 		private void OnNewGame( StageNumber stageNumber ) {
 			currentStage = stageNumber;
-			onChangeSeed.Invoke( stageNumber );
+			presentCleared.Invoke( stages.IsCleared( stageNumber ) );
+			presentStageNumber.Invoke( stageNumber );
 			popup.SetScroll( stageNumber );
 		}
 
@@ -45,8 +53,8 @@ namespace Summoner.FreeCell {
 
 		private StageNumber DrawRandomStage() {
 #if UNITY_EDITOR
-			if ( testSeed > 0 ) {
-				return StageNumber.FromStageNumber( testSeed );
+			if ( testStage > 0 ) {
+				return StageNumber.FromStageNumber( testStage );
 			}
 #endif
 			var randomIndex = Random.Range( 0, StageInfo.numStages );
