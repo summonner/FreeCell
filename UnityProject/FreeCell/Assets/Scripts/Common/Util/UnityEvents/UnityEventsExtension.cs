@@ -1,3 +1,6 @@
+#if UNITY_EDITOR
+using UnityEditor.Events;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
@@ -18,5 +21,15 @@ namespace Summoner {
 
 			return -1;
 		}
+
+#if UNITY_EDITOR
+		public static void AddListenerIfNotExist<T>( this UnityEvent<T> evt, UnityAction<T> action ) {
+			if ( evt.IndexOf( action ) >= 0 ) {
+				return;
+			}
+
+			UnityEventTools.AddPersistentListener( evt, action );
+		}
+#endif
 	}
 }

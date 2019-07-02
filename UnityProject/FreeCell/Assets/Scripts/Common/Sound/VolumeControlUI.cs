@@ -20,16 +20,12 @@ namespace Summoner.Sound {
 
 		[ContextMenu("AddListeners")]
 		private void AddListeners() {
-			var doesNeed = slider != null
-						&& slider.onValueChanged.IndexOf( Set ) < 0;
-			if ( doesNeed == true ) {
-				UnityEventTools.AddPersistentListener( slider.onValueChanged, Set );
+			if ( slider != null ) {
+				slider.onValueChanged.AddListenerIfNotExist( Set );
 			}
 
-			doesNeed = button != null
-					&& button.onValueChanged.IndexOf( Set ) < 0;
-			if ( doesNeed == true ) {
-				UnityEventTools.AddPersistentListener( button.onValueChanged, Set );
+			if ( button != null ) {
+				button.onValueChanged.AddListenerIfNotExist( Set );
 			}
 		}
 #endif

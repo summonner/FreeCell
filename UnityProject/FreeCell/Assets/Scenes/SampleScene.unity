@@ -1541,7 +1541,6 @@ GameObject:
   - component: {fileID: 321017200}
   - component: {fileID: 321017202}
   - component: {fileID: 321017201}
-  - component: {fileID: 321017203}
   m_Layer: 5
   m_Name: Unchecked
   m_TagString: Untagged
@@ -1594,43 +1593,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 321017199}
   m_CullTransparentMesh: 0
---- !u!114 &321017203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 321017199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a07e07a364b6c240acde99eca1c2cac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.75
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  from: 1
-  to: 0
 --- !u!1 &372284249
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,7 +2136,7 @@ GameObject:
   - component: {fileID: 526855058}
   - component: {fileID: 526855057}
   - component: {fileID: 526855056}
-  - component: {fileID: 526855059}
+  - component: {fileID: 526855060}
   m_Layer: 5
   m_Name: KeepAwake
   m_TagString: Untagged
@@ -2238,14 +2200,14 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 526855057}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 839878989}
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 321017203}
-        m_MethodName: Play
+      - m_Target: {fileID: 526855060}
+        m_MethodName: Set
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2255,12 +2217,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 526855059}
+      - m_Target: {fileID: 1293448840}
         m_MethodName: Set
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2296,7 +2258,7 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 526855054}
   m_CullTransparentMesh: 0
---- !u!114 &526855059
+--- !u!114 &526855060
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2304,9 +2266,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 526855054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87ad0a272da640e4e8e5d5a7dcf0eb6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 12bb4667dca37ea4bbbafea1d7b5b7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 321017199}
+        m_MethodName: SetActive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: Summoner.UI.PresentToggle, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!1 &535395962
 GameObject:
   m_ObjectHideFlags: 0
@@ -4895,6 +4873,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1293448839}
   - component: {fileID: 1293448841}
+  - component: {fileID: 1293448840}
   m_Layer: 5
   m_Name: Popups
   m_TagString: Untagged
@@ -4925,6 +4904,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -1280}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1293448840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1293448838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ad0a272da640e4e8e5d5a7dcf0eb6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 526855056}
+  sleepDuringInMenu: 1
 --- !u!114 &1293448841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7362,7 +7354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -47.460022}
+  m_AnchoredPosition: {x: 0, y: -47.460083}
   m_SizeDelta: {x: -74, y: -170.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1934997042
