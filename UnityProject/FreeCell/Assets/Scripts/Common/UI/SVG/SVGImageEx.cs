@@ -7,6 +7,10 @@ namespace Summoner.UI {
 
 		public override void SetNativeSize() {
 			base.SetNativeSize();
+			if ( sprite == null ) {
+				return;
+			}
+
 			var size = sprite.rect.size;
 			rectTransform.SetSizeWithCurrentAnchors( RectTransform.Axis.Horizontal, size.x );
 			rectTransform.SetSizeWithCurrentAnchors( RectTransform.Axis.Vertical, size.y );
