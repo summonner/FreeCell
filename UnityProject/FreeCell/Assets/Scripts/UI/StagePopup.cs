@@ -15,14 +15,14 @@ namespace Summoner.FreeCell {
 		private static readonly int animParam = Animator.StringToHash( "Current" );
 		private static readonly int readyParam = Animator.StringToHash( "Ready" );
 
-		private StageStates stages;
+		private IStageStatesReader stages;
 
 		void Reset() {
 			grid = GetComponentInChildren<DynamicGridLayoutGroup>();
 			popupAnim = GetComponentInParent<Animator>();
 		}
 
-		public void Init( StageStates stages ) {
+		public void Init( IStageStatesReader stages ) {
 			this.stages = stages;
 			PresentCleared();
 

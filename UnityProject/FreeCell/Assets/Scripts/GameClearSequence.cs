@@ -8,14 +8,13 @@ namespace Summoner.FreeCell {
 		[SerializeField] private MoveAnimScheduler scheduler = null;
 		[SerializeField] private TweenBase congraturation = null;
 		[SerializeField] private StagePopup stagePopup = null;
-		[SerializeField] private StageSelector stageSelector = null;
+		[SerializeField] private StageManager stageSelector = null;
 
 		void Reset() {
 			scheduler = FindObjectOfType<MoveAnimScheduler>();
 			stagePopup = FindObjectOfType<StagePopup>();
 			congraturation = GameObject.Find( "Canvas/GameUI/Messages/Congraturation" ).GetComponent<TweenBase>();
-			stageSelector = FindObjectOfType<StageSelector>();
-			
+			stageSelector = FindObjectOfType<StageManager>();
 		}
 
 		void Awake() {
@@ -37,14 +36,14 @@ namespace Summoner.FreeCell {
 			yield return new WaitForSeconds( 1f );
 
 			if ( doesShowPopup == true ) {
-				yield return StartCoroutine( stagePopup.PlayClearAnim( stageSelector.currentStage ) );
+				yield return StartCoroutine( stagePopup.PlayClearAnim( stageSelector.current ) );
 				congraturation.value = 0;
 			}
 			else {
 				congraturation.PlayReverse();
 			}
 
-			stageSelector.PlayRandomGame();
+			stageSelector.PlayQuickGame();
 		}
 	}
 }

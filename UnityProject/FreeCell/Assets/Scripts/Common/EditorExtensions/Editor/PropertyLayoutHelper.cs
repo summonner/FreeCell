@@ -4,8 +4,19 @@ using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Summoner.EditorExtension {
+namespace Summoner.EditorExtensions {
 	public class PropertyLayoutHelper {
+		public static Rect AdjustRect( Rect rect, float height ) {
+			return AdjustRect( rect, height, 0.5f );
+		}
+
+		public static Rect AdjustRect( Rect rect, float height, float pivot ) {
+			var margin = rect.height - height;
+			rect.yMin += margin * pivot;
+			rect.yMax -= margin * (1 - pivot);
+			return rect;
+		}
+
 		private Stack<SubRectList> stack = new Stack<SubRectList>();
 
 		public PropertyLayoutHelper() {

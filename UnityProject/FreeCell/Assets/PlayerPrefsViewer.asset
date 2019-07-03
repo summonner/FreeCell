@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c19a2f609365bc4ea7d826d42ed4102, type: 3}
+  m_Name: PlayerPrefsViewer
+  m_EditorClassIdentifier: 
+  values:
+  - key: QuickPlay.UseRandom
+    type: 1
+  - key: QuickPlay.IncludeCleared
+    type: 1
+  - key: lastPlayed
+    type: 1
+  - key: AudioMixer.SfxVol
+    type: 2
+  - key: keepAwake
+    type: 1

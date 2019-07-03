@@ -6,7 +6,8 @@ namespace Summoner.#PROJECTNAME# {
 	[CustomEditor( typeof(#TARGETNAME#) )]
 	public class #SCRIPTNAME# : Editor {
 		public override void OnInspectorGUI() {
-			
+			base.OnInspectorGUI();
+
 		}
 	}
 }

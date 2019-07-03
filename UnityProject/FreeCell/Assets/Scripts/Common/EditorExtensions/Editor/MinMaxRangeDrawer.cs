@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Summoner.EditorExtension {
+namespace Summoner.EditorExtensions {
 	[CustomPropertyDrawer( typeof(MinMaxRangeAttribute) )]
 	[CustomPropertyDrawer( typeof(Range) )]
 	public class MinMaxRangeDrawer : PropertyDrawer {

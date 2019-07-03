@@ -5,7 +5,7 @@ using Summoner.Util;
 
 namespace Summoner.UI.Config {
 	public class KeepAwake : MonoBehaviour {
-		[SerializeField] private Toggle button;
+		[SerializeField] private Toggle button = null;
 		[SerializeField] private bool sleepDuringInMenu = true;
 		private ISavedValue<bool> saved = null;
 

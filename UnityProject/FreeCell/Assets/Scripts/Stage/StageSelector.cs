@@ -1,64 +1,78 @@
 using UnityEngine;
-using System.Collections;
-using Summoner.UI;
+using System.Collections.Generic;
+using Summoner.Util;
 
 namespace Summoner.FreeCell {
-	public class StageSelector : MonoBehaviour {
-		[SerializeField] private int testStage = -1;
-		[SerializeField] private StagePopup popup = null;
-		[UnityEngine.Serialization.FormerlySerializedAs( "onChangeSeed" )]
-		[SerializeField] private PresentInt presentStageNumber = null;
-		[SerializeField] private PresentToggle presentCleared = null;
+	public class StageSelector {
+		private readonly IStageStatesReader stages;
+		private readonly ISavedValue<bool> useRandom;
+		private readonly ISavedValue<bool> includeCleared;
 
-		private StageStates stages = null;
-		public StageNumber currentStage { get; private set; }
-
-		void Awake() {
-			stages = new StageStates();
-			popup.Init( stages );
-
-			InGameEvents.OnNewGame += OnNewGame;
-			InGameUIEvents.OnCloseTitle += PlayRandomGame;
-			InGameUIEvents.OnQuickGame += PlayRandomGame;
+		public StageSelector( IStageStatesReader stages ) {
+			this.stages = stages;
+			this.useRandom = PlayerPrefsValue.ReadOnlyBool( "QuickPlay.UseRandom", true );
+			this.includeCleared = PlayerPrefsValue.ReadOnlyBool( "QuickPlay.IncludeCleared", true );
 		}
 
-		void OnDestroy() {
-			stages.Dispose();
-
-			InGameEvents.OnNewGame -= OnNewGame;
-			InGameUIEvents.OnCloseTitle -= PlayRandomGame;
-			InGameUIEvents.OnQuickGame -= PlayRandomGame;
+		public StageNumber SelectNewStage( SavedStageNumber currentStage ) {
+			var randomStage = useRandom.value == true
+						   || currentStage == null;
+			if ( randomStage == true ) {
+				return DrawRandomStage();
+			}
+			else {
+				return DrawNextStage( currentStage );
+			}
 		}
 
-		public bool OnClear() {
-			if ( stages.IsCleared( currentStage ) == true ) {
-				return false;
+		public SavedStageNumber GetLastStage() {
+			var savedIndex = PlayerPrefsValue.Int( "lastPlayed", -1 );
+			if ( savedIndex.value == -1 ) {
+				savedIndex.value = DrawRandomStage().index;
 			}
 
-			stages.Clear( currentStage );
-			return true;
-		}
-
-		private void OnNewGame( StageNumber stageNumber ) {
-			currentStage = stageNumber;
-			presentCleared.Invoke( stages.IsCleared( stageNumber ) );
-			presentStageNumber.Invoke( stageNumber );
-			popup.SetScroll( stageNumber );
-		}
-
-		public void PlayRandomGame() {
-			var randomStage = DrawRandomStage();
-			InGameEvents.NewGame( randomStage );
+			return new SavedStageNumber( savedIndex );
 		}
 
 		private StageNumber DrawRandomStage() {
-#if UNITY_EDITOR
-			if ( testStage > 0 ) {
-				return StageNumber.FromStageNumber( testStage );
+			var randomIndex = -1;
+			if ( includeCleared.value == false ) {
+				randomIndex = SelectFromNotCleared();
 			}
-#endif
-			var randomIndex = Random.Range( 0, StageInfo.numStages );
+
+			if ( randomIndex < 0 ) {
+				randomIndex = Random.Range( 0, stages.Count );
+			}
+
 			return StageNumber.FromIndex( randomIndex );
+		}
+
+		private int SelectFromNotCleared() {
+			var numNotCleared = stages.Count - stages.numCleared;
+			if ( numNotCleared <= 0 ) {
+				return -1;
+			}
+
+			var notClearedIndex = Random.Range( 0, numNotCleared );
+			return stages.IndexOfNotCleared( notClearedIndex );
+		}
+
+		private StageNumber DrawNextStage( StageNumber currentStage ) {
+			var nextStage = GetNext( currentStage );
+			if ( includeCleared.value == true ) {
+				return StageNumber.FromIndex( nextStage.index );
+			}
+
+			while ( stages.IsCleared( nextStage ) == true ) {
+				nextStage = GetNext( nextStage );
+			}
+
+			return nextStage;
+		}
+
+		private static StageNumber GetNext( StageNumber stageNumber ) {
+			var nextIndex = stageNumber.index + 1;
+			return StageNumber.FromIndex( nextIndex );
 		}
 	}
 }

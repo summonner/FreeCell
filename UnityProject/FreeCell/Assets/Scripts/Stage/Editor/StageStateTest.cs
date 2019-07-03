@@ -50,7 +50,7 @@ namespace Summoner.FreeCell.Test {
 			var data = new TestData();
 			data.map.Add( 0, 0x0000170f );	// 0, 1, 2, 3, 8, 9, 10, 12
 			data.map.Add( 7, 0x00c00001 );	// 224, 246, 247
-			data.map.Add( 135, -0x10000000 );	// 4351, 4348
+			data.map.Add( 135, unchecked((int)0x90000000) );	// 4351, 4348
 			var clears = GetStageNumbers( 0, 1, 2, 3, 8, 9, 10, 12, 224, 246, 247, 4351, 4348 );
 			data.numCleared = clears.Length;
 
@@ -70,7 +70,7 @@ namespace Summoner.FreeCell.Test {
 
 			public int Load( int pageIndex ) {
 				if ( map.ContainsKey( pageIndex ) == false ) {
-					map.Add( pageIndex, 0 );
+					return 0;
 				}
 
 				return map[pageIndex];

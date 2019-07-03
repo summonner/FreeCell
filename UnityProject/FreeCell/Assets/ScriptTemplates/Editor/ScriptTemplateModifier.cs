@@ -5,6 +5,7 @@ using UnityEditor;
 using Summoner.Util.Extension;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Summoner.Util.ScriptTemplates {
 
@@ -41,7 +42,8 @@ namespace Summoner.Util.ScriptTemplates {
 
 		private static string Remove( string path, params string[] values ) {
 			foreach ( var toRemove in values ) {
-				path = path.Replace( toRemove, string.Empty );
+				var pattern = string.Format( @"{0}\b", Regex.Escape( toRemove ) );
+				path = Regex.Replace( path, pattern, "" );
 			}
 
 			return path;

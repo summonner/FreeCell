@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Summoner.FreeCell {
-	[RequireComponent( typeof(StageSelector) )]
+	[RequireComponent( typeof(StageManager) )]
 	public class Game : MonoBehaviour {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardObjectHolder cards;
 		[SerializeField] private BoardLayout layout;
-		[SerializeField] private StageSelector stageSelector;
+		[SerializeField] private InGameUIEvents uiEvents;
 		[SerializeField] private DemoPlayer demo;
 		private IBoardPreset preset;
 
@@ -23,7 +23,7 @@ namespace Summoner.FreeCell {
 			cards.Init( board, sheet );
 
 			yield return null;
-			stageSelector.PlayRandomGame();
+			uiEvents.QuickGame();
 		}
 
 		void OnDestroy() {
@@ -37,7 +37,6 @@ namespace Summoner.FreeCell {
 			sheet = null;
 			cards = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
-			stageSelector = GetComponent<StageSelector>();
 		}
 
 		private void NewGame( StageNumber stageNumber ) {
