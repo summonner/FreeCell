@@ -37,6 +37,7 @@ namespace Summoner.FreeCell {
 			sheet = null;
 			cards = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
+			uiEvents = FindObjectOfType<InGameUIEvents>();
 		}
 
 		private void NewGame( StageNumber stageNumber ) {

@@ -21,6 +21,9 @@ namespace Summoner.FreeCell {
 			}
 		}
 
+#if UNITY_EDITOR
+		private const int defaultSaved = 0;
+#endif
 		private const int pageSize = 32;
 		private IDictionary<int, BitArray> map = null;
 		private static readonly int numPages = Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
@@ -44,7 +47,20 @@ namespace Summoner.FreeCell {
 				}
 			}
 
+			ClearOutOfRangeValues();
 			this.numCleared = CountCleared( map );
+		}
+
+		private void ClearOutOfRangeValues() {
+			var lastIndex = numPages - 1;
+			BitArray lastPage;
+			if ( map.TryGetValue( lastIndex, out lastPage ) == false ) {
+				return;
+			}
+
+			var numOutOfRanges = (pageSize * numPages - StageInfo.numStages);
+			var lastPageMask = (int)(uint.MaxValue >> numOutOfRanges);
+			map[lastIndex] = new BitArray( lastPage.Data & lastPageMask );
 		}
 
 		private static int CountCleared( IDictionary<int, BitArray> map ) {
@@ -181,7 +197,10 @@ namespace Summoner.FreeCell {
 
 		private class PlayerPrefsData : IStorageData {
 			public int Load( int pageIndex ) {
-				return PlayerPrefs.GetInt( ToKey( pageIndex ), 0 );
+#if !UNITY_EDITOR
+				var defaultSaved = 0;
+#endif
+				return PlayerPrefs.GetInt( ToKey( pageIndex ), defaultSaved );
 			}
 
 			public void Save( int pageIndex, int values, int numCleared ) {
