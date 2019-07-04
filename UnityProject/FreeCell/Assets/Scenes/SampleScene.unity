@@ -1674,7 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7da3e1db016e241bc9cea8c9854ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testStage: 1
+  testStage: -1
   popup: {fileID: 1285839169}
   presentStageNumber:
     m_PersistentCalls:

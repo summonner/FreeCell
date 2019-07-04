@@ -52,9 +52,9 @@ namespace Summoner.FreeCell {
 				return Result.ImmovableCardSelected;
 			}
 
-			if ( subjects.Length > numMovables.value ) {
+/*			if ( subjects.Length > numMovables.value ) {
 				return Result.NotEnoughFreeCell;
-			}
+			}*/
 
 			var pile = board[destination];
 			if ( pile.IsAcceptable( subjects ) == false ) {
