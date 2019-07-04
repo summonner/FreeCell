@@ -25,7 +25,7 @@ namespace Summoner.FreeCell {
 			popup.Init( stages );
 			selector = new StageSelector( stages );
 
-			InGameEvents.OnNewGame += OnNewGame;
+			InGameEvents.OnNewGame += PresentStageInfos;
 			InGameUIEvents.OnCloseTitle += PlayLastGame;
 			InGameUIEvents.OnQuickGame += PlayQuickGame;
 		}
@@ -33,7 +33,7 @@ namespace Summoner.FreeCell {
 		void OnDestroy() {
 			stages.Dispose();
 
-			InGameEvents.OnNewGame -= OnNewGame;
+			InGameEvents.OnNewGame -= PresentStageInfos;
 			InGameUIEvents.OnCloseTitle -= PlayLastGame;
 			InGameUIEvents.OnQuickGame -= PlayQuickGame;
 		}
@@ -47,7 +47,7 @@ namespace Summoner.FreeCell {
 			return true;
 		}
 
-		private void OnNewGame( StageNumber stageNumber ) {
+		private void PresentStageInfos( StageNumber stageNumber ) {
 			if ( currentStage != null ) {
 				currentStage.value = stageNumber;
 			}
@@ -59,21 +59,21 @@ namespace Summoner.FreeCell {
 
 		private void PlayLastGame() {
 			currentStage = selector.GetLastStage();
-			InGameEvents.NewGame( currentStage.value );
+			PlayNewGame( currentStage.value );
 		}
 
 		public void PlayQuickGame() {
-#if UNITY_EDITOR
-			if ( testStage > 0 ) {
-				var stage = StageNumber.FromStageNumber( testStage );
-				InGameEvents.NewGame( stage );
-				return;
-			}
-#endif
 			var newStage = selector.SelectNewStage( currentStage );
-			InGameEvents.NewGame( newStage );
+			PlayNewGame( newStage );
 		}
 
-		
+		private void PlayNewGame( StageNumber newStage ) {
+#if UNITY_EDITOR
+			if ( testStage > 0 ) {
+				newStage = StageNumber.FromStageNumber( testStage );
+			}
+#endif
+			InGameEvents.NewGame( newStage );
+		}
 	}
 }

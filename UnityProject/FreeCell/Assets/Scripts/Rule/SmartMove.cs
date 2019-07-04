@@ -5,18 +5,18 @@ using Summoner.Util.Extension;
 using PileType = Summoner.FreeCell.PileId.Type;
 
 namespace Summoner.FreeCell {
-	public class AutoMove : IRuleComponent {
+	public class SmartMove : IRuleComponent {
 		private readonly IBoardController board;
 		private readonly CardMover mover;
-		public AutoMove( IBoardController board ) {
+		public SmartMove( IBoardController board ) {
 			this.board = board;
 			this.mover = new CardMover( board );
 
-			PlayerInputEvents.OnClick += OnAutoMove;
+			PlayerInputEvents.OnClick += MoveSmart;
 		}
 
 		public void Dispose() {
-			PlayerInputEvents.OnClick -= OnAutoMove;
+			PlayerInputEvents.OnClick -= MoveSmart;
 		}
 
 		public void Reset() {
@@ -26,7 +26,7 @@ namespace Summoner.FreeCell {
 		private Card lastClicked = Card.Blank;
 		private PileTraverser traverser = null;
 
-		private void OnAutoMove( PositionOnBoard selected ) {
+		private void MoveSmart( PositionOnBoard selected ) {
 			if ( mover.SetSource( selected ) == false ) {
 				return;
 			}

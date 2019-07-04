@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell.Anims {
 	public class AnimTrigger {
-		public float delay;
+		public readonly float delay;
 		public readonly System.Action play;
 
 		public AnimTrigger( System.Action trigger, float delay ) {

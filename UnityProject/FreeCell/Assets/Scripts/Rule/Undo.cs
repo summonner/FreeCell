@@ -21,13 +21,11 @@ namespace Summoner.FreeCell {
 		public Undo( IBoardController board ) {
 			this.board = board;
 			InGameEvents.OnMoveCards += OnMoveCards;
-			InGameEvents.OnAutoPlay += OnMoveCards;
 			InGameUIEvents.OnUndo += OnUndo;
 		}
 
 		public void Dispose() {
 			InGameEvents.OnMoveCards -= OnMoveCards;
-			InGameEvents.OnAutoPlay -= OnMoveCards;
 			InGameUIEvents.OnUndo -= OnUndo;
 		}
 
@@ -57,7 +55,7 @@ namespace Summoner.FreeCell {
 			var source = board[from];
 
 			var index = source.IndexOf( cards[0] );
-			Debug.Assert( index >= 0, "cannot find cards to undo" );
+			Debug.Assert( index >= 0, "cannot find cards to undo : " + cards[0] + " from " + from );
 			var poped = source.Pop( index );
 			Debug.Assert( cards.Count == poped.Length, "board state mismatch" );
 			var destination = board[to];

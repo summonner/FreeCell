@@ -1674,7 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7da3e1db016e241bc9cea8c9854ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testStage: -1
+  testStage: 1
   popup: {fileID: 1285839169}
   presentStageNumber:
     m_PersistentCalls:
@@ -3888,6 +3888,7 @@ Transform:
   - {fileID: 1592688772}
   - {fileID: 1832854812}
   - {fileID: 2026971550}
+  - {fileID: 1851028325}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4013,7 +4014,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.00001509946}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &764369568
@@ -5500,7 +5501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1731e296b69ac414685a46f6daef5eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scheduler: {fileID: 2042625290}
+  scheduler: {fileID: 1851028326}
   congraturation: {fileID: 1722923016}
   stagePopup: {fileID: 1285839169}
   stageSelector: {fileID: 291042133}
@@ -8632,6 +8633,53 @@ Transform:
   m_Father: {fileID: 743470657}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1851028324
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1851028325}
+  - component: {fileID: 1851028326}
+  m_Layer: 0
+  m_Name: MoveAnimScheduler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1851028325
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1851028324}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 743470657}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1851028326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1851028324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee0558e7d6ced4948a90e4c26904f164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  longInterval: 0.1
+  shortInterval: 0.01
+  groupInterval: 0.01
+  waitAfterReset: 0.2
+  clearInterval: 0.017
+  initVolume: 0.6
+  placer: {fileID: 2042625289}
 --- !u!1 &1934554284
 GameObject:
   m_ObjectHideFlags: 0
@@ -9156,7 +9204,6 @@ GameObject:
   - component: {fileID: 2042625288}
   - component: {fileID: 2042625287}
   - component: {fileID: 2042625289}
-  - component: {fileID: 2042625290}
   - component: {fileID: 2042625291}
   - component: {fileID: 2042625292}
   m_Layer: 0
@@ -9237,24 +9284,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layout: {fileID: 2042625287}
---- !u!114 &2042625290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2042625286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee0558e7d6ced4948a90e4c26904f164, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  longInterval: 0.1
-  shortInterval: 0.01
-  groupInterval: 0
-  waitAfterReset: 0.2
-  clearInterval: 0.017
-  initVolume: 0.6
-  placer: {fileID: 2042625289}
 --- !u!61 &2042625291
 BoxCollider2D:
   m_ObjectHideFlags: 0

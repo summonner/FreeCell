@@ -16,9 +16,11 @@ namespace Summoner.FreeCell {
 		}
 
 		public delegate void MoveEvent( ICollection<Card> subjects, PileId from, PileId to );
+		public static event MoveEvent OnPlayerMove = delegate { };
 		public static event MoveEvent OnMoveCards = delegate { };
 		public static void MoveCards( ICollection<Card> subjects, PileId from, PileId to ) {
 			OnMoveCards( subjects, from, to );
+			OnPlayerMove( subjects, from, to );
 		}
 
 		public static event MoveEvent OnUndoCards = delegate { };
@@ -28,7 +30,13 @@ namespace Summoner.FreeCell {
 
 		public static event MoveEvent OnAutoPlay = delegate { };
 		public static void AutoPlay( ICollection<Card> subjects, PileId from, PileId to ) {
+			OnMoveCards( subjects, from, to );
 			OnAutoPlay( subjects, from, to );
+		}
+
+		public static event System.Action OnCheckAutoPlay = delegate { };
+		public static void CheckAutoPlay() {
+			OnCheckAutoPlay();
 		}
 
 		public delegate void CannotMoveEvent( ICollection<Card> subjects );

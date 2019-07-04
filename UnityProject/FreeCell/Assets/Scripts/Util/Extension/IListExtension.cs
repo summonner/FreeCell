@@ -3,7 +3,7 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Summoner.Util.Extension {
+namespace Summoner {
 	public static class IListExtension {
 		public static bool IsOutOfRange<T>( this ICollection<T> list, int index ) {
 			return list == null

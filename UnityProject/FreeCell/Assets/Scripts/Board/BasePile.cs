@@ -85,7 +85,7 @@ namespace Summoner.FreeCell {
 		}
 
 		void ICollection<Card>.CopyTo( Card[] array, int arrayIndex ) {
-			throw new System.NotSupportedException();
+			stack.CopyTo( array, arrayIndex );
 		}
 
 		bool ICollection<Card>.Remove( Card item ) {

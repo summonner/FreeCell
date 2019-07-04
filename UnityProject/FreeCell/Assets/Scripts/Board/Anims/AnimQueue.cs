@@ -10,6 +10,7 @@ namespace Summoner.FreeCell.Anims {
 
 		private Queue<AnimTrigger> anims = new Queue<AnimTrigger>( 52 );
 		private CoroutineController scheduler = CoroutineController.Emptied;
+		public float overrideDelay = 0f;
 
 		public bool isPlaying {
 			get	{
@@ -21,7 +22,9 @@ namespace Summoner.FreeCell.Anims {
 			var animTrigger = new AnimTrigger( trigger, delay );
 			anims.Enqueue( animTrigger );
 
-			Play();
+			if ( isPlaying == false ) {
+				Play();
+			}
 		}
 
 		public void Enqueue( IEnumerable<System.Action> triggers, float delay ) {
@@ -35,27 +38,20 @@ namespace Summoner.FreeCell.Anims {
 		}
 
 		private void Play() {
-			if ( isPlaying == true ) {
-				return;
-			}
-
 			scheduler = new CoroutineController( ScheduleAnim( anims ) );
 			StartCoroutine( scheduler );
 		}
 
-		private static IEnumerator ScheduleAnim( Queue<AnimTrigger> triggers ) {
+		private IEnumerator ScheduleAnim( Queue<AnimTrigger> triggers ) {
 			while ( triggers.Count > 0 ) {
 				var anim = triggers.Dequeue();
 				anim.play();
-				if ( anim.delay > 0f ) {
-					yield return new WaitForSeconds( anim.delay );
+				if ( anim.delay <= 0f ) {
+					continue;
 				}
-			}
-		}
 
-		public void ResetDelays( float interval ) {
-			foreach ( var anim in anims ) {
-				anim.delay = interval;
+				float delay = overrideDelay > 0f ? overrideDelay : anim.delay;
+				yield return new WaitForSeconds( delay );
 			}
 		}
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell.Anims {
 	public class MoveAnimScheduler : MonoBehaviour {
@@ -21,8 +22,8 @@ namespace Summoner.FreeCell.Anims {
 		void Awake() {
 			InGameEvents.OnInitBoard += OnInitBoard;
 			InGameEvents.OnClearBoard += OnReset;
-			InGameEvents.OnMoveCards += OnMoveCards;
-			InGameEvents.OnUndoCards += OnMoveCards;
+			InGameEvents.OnPlayerMove += MoveCardAndCheckAutoPlay;
+			InGameEvents.OnUndoCards += MoveCards;
 			InGameEvents.OnAutoPlay += OnAutoPlay;
 
 			autoPlayQueue = new AnimQueue( this );
@@ -31,19 +32,23 @@ namespace Summoner.FreeCell.Anims {
 		void OnDestroy() {
 			InGameEvents.OnInitBoard -= OnInitBoard;
 			InGameEvents.OnClearBoard -= OnReset;
-			InGameEvents.OnMoveCards -= OnMoveCards;
-			InGameEvents.OnUndoCards -= OnMoveCards;
+			InGameEvents.OnPlayerMove -= MoveCardAndCheckAutoPlay;
+			InGameEvents.OnUndoCards -= MoveCards;
 			InGameEvents.OnAutoPlay -= OnAutoPlay;
 		}
 
-		private void OnMoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
+		private void MoveCardAndCheckAutoPlay( IEnumerable<Card> targets, PileId from, PileId to ) {
+			MoveCards( targets, from, to );
+			if ( autoPlayQueue.isPlaying == false ) {
+				autoPlayQueue.Enqueue( longInterval );
+				autoPlayQueue.Enqueue( InGameEvents.CheckAutoPlay, 0 );
+			}
+		}
+
+		private void MoveCards( IEnumerable<Card> targets, PileId from, PileId to ) {
 			var userQueue = new AnimQueue( this );
 			var trigger = placer.MoveCard( targets, to );
 			userQueue.Enqueue( trigger, groupInterval );
-			
-			if ( autoPlayQueue.isPlaying == false ) {
-				autoPlayQueue.Enqueue( longInterval );
-			}
 		}
 
 		private void OnInitBoard( Card target, PileId to ) {
@@ -55,11 +60,17 @@ namespace Summoner.FreeCell.Anims {
 			var trigger = placer.MoveCard( targets, to );
 			autoPlayQueue.Enqueue( trigger, groupInterval );
 			autoPlayQueue.Enqueue( longInterval - groupInterval );
+			autoPlayQueue.Enqueue( InGameEvents.CheckAutoPlay, 0 );
 		}
 
-		public CustomYieldInstruction OnClear() {
-			autoPlayQueue.ResetDelays( clearInterval );
-			return new WaitWhile( () => ( autoPlayQueue.isPlaying ) );
+		public Coroutine OnClear() {
+			return StartCoroutine( OverrideAnimDelay() );
+		}
+
+		private IEnumerator OverrideAnimDelay() {
+			autoPlayQueue.overrideDelay = clearInterval;
+			yield return new WaitWhile( () => ( autoPlayQueue.isPlaying ) );
+			autoPlayQueue.overrideDelay = 0f;
 		}
 
 		private void OnReset() {

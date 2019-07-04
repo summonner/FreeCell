@@ -31,6 +31,7 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator PlaySequence() {
 			var doesShowPopup = stageSelector.OnClear();
+			yield return null;
 			yield return scheduler.OnClear();
 			yield return congraturation.Play();
 			yield return new WaitForSeconds( 1f );

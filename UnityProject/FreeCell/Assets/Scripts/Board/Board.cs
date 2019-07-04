@@ -24,7 +24,7 @@ namespace Summoner.FreeCell {
 			Debug.Assert( piles.Count == homes.Count + frees.Count + tables.Count );
 
 			ruleComponents = new IRuleComponent[] {
-				new AutoMove( this ),
+				new SmartMove( this ),
 				new Undo( this ),
 				new ClearCheck( this ),
 				new AutoPlayToHome( this ),

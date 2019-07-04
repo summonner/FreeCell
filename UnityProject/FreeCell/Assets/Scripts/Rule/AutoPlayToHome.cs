@@ -12,20 +12,18 @@ namespace Summoner.FreeCell {
 			this.board = board;
 			this.moveFinder = new PossibleMoveFinder( board.AsReadOnly() );
 
-			InGameEvents.OnMoveCards += OnMoveCards;
-			InGameEvents.OnAutoPlay += OnMoveCards;
+			InGameEvents.OnCheckAutoPlay += CheckAutoPlay;
 		}
 
 		public void Dispose() {
-			InGameEvents.OnMoveCards -= OnMoveCards;
-			InGameEvents.OnAutoPlay -= OnMoveCards;
+			InGameEvents.OnCheckAutoPlay -= CheckAutoPlay;
 		}
 
 		public void Reset() {
 			// do nothing
 		}
 
-		private void OnMoveCards( IEnumerable<Card> _does, PileId _not, PileId _use ) {
+		private void CheckAutoPlay() {
 			if ( FindMoveToHome() == true ) {
 				return;
 			}
