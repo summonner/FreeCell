@@ -58,18 +58,20 @@ namespace Summoner.FreeCell {
 			demo = null;
 		}
 
+#if UNITY_EDITOR
 		private void OnGUI() {
-			GUILayout.Space( 50 );
-			if ( GUILayout.Button( "Cheat.Clear" ) == true ) {
-				var dummy = new PileId( PileId.Type.Table, 0 );
-				foreach ( var card in Card.NewDeck() ) {
-					InGameEvents.AutoPlay( new [] { card }, dummy, new PileId( PileId.Type.Home, (int)card.suit - 1 ) );
+			using ( new GUILayout.HorizontalScope() ) {
+				GUILayout.Space( 200 );
+				if ( GUILayout.Button( "Cheat.Clear" ) == true ) {
+					var dummy = new PileId( PileId.Type.Table, 0 );
+					foreach ( var card in Card.NewDeck() ) {
+						InGameEvents.AutoPlay( new [] { card }, dummy, new PileId( PileId.Type.Home, (int)card.suit - 1 ) );
+					}
+					InGameEvents.GameClear();
 				}
-				InGameEvents.GameClear();
 			}
 		}
 
-#if UNITY_EDITOR
 		[ContextMenu( "Take Board Snapshot" )]
 		public void TakeBoardSnapshot() {
 			// to check deal number from

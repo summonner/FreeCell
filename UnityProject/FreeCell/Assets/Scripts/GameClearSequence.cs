@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Summoner.UI.Tween;
 using Summoner.FreeCell.Anims;
+using Summoner.Util.Coroutine;
 
 namespace Summoner.FreeCell {
 	public class GameClearSequence : MonoBehaviour {
@@ -9,6 +10,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private TweenBase congraturation = null;
 		[SerializeField] private StagePopup stagePopup = null;
 		[SerializeField] private StageManager stageSelector = null;
+		private CoroutineController sequence = CoroutineController.Emptied;
 
 		void Reset() {
 			scheduler = FindObjectOfType<MoveAnimScheduler>();
@@ -26,7 +28,12 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnClear() {
-			StartCoroutine( PlaySequence() );
+			if ( sequence.isRunning == true ) {
+				return;
+			}
+
+			sequence = new CoroutineController( PlaySequence() );
+			StartCoroutine( sequence );
 		}
 
 		private IEnumerator PlaySequence() {
