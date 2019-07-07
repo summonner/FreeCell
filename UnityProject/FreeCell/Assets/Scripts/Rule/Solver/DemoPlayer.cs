@@ -7,7 +7,13 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class DemoPlayer : MonoBehaviour {
 		[SerializeField] private InGameUIEvents ui = null;
+		[SerializeField] private Anims.MoveAnimScheduler scheduler = null;
 		private bool isCleared;
+
+		void Reset() {
+			ui = FindObjectOfType<InGameUIEvents>();
+			scheduler = FindObjectOfType<Anims.MoveAnimScheduler>();
+		}
 		
 		void OnEnable() {
 			InGameEvents.OnGameClear += OnClear;
@@ -46,7 +52,6 @@ namespace Summoner.FreeCell {
 				}
 
 				var moves = map[hash];
-				yield return wait;
 
 				if ( moves.IsNullOrEmpty() == true ) {
 					ui.Undo();
@@ -56,6 +61,8 @@ namespace Summoner.FreeCell {
 					ApplyMove( last );
 				}
 
+				yield return new WaitWhile( () => ( scheduler.isPlaying ) );
+				yield return wait;
 			}
 		}
 
@@ -107,6 +114,10 @@ namespace Summoner.FreeCell {
 			public MoveForDemo( IBoardLookup board, Move move ) {
 				from = new CardToMove( move.cards.FirstOrDefault(), move.from.type );
 				to = new CardToMove( board[move.to].LastOrDefault(), move.to.type );
+			}
+
+			public override string ToString() {
+				return from + " -> " + to;
 			}
 		}
 

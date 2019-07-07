@@ -73,6 +73,12 @@ namespace Summoner.FreeCell.Anims {
 			autoPlayQueue.overrideDelay = 0f;
 		}
 
+		public bool isPlaying {
+			get {
+				return autoPlayQueue.isPlaying;
+			}
+		}
+
 		private void OnReset() {
 			autoPlayQueue.Clear();
 			autoPlayQueue.Enqueue( placer.OnReset(), 0 );
