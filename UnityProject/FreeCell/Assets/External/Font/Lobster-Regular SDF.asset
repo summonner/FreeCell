@@ -18,7 +18,7 @@ MonoBehaviour:
   m_fontInfo:
     Name: Lobster
     PointSize: 31
-    Scale: 0
+    Scale: 1
     CharacterCount: 8
     LineHeight: 38.75
     Baseline: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 1.5500001
     strikethrough: 8.454545
     strikethroughThickness: 1.5500001
-    TabWidth: 0
+    TabWidth: 67.5
     Padding: 1
     AtlasWidth: 64
     AtlasHeight: 64
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 2
     y: 65
-    width: 0
-    height: 0
+    width: 6.75
+    height: 38.75
     xOffset: 0
-    yOffset: 0
+    yOffset: 31
     xAdvance: 6.75
     scale: 1
   - id: 77
@@ -179,7 +179,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Lobster-Regular SDF Material
-  m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
+  m_Shader: {fileID: 4800000, guid: fe393ace9b354375a9cb14cdbbc28be4, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
