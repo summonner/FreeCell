@@ -6,30 +6,37 @@ using Summoner.Util.Extension;
 namespace Summoner.FreeCell {
 	public class ClearCheck : IRuleComponent {
 		private readonly IBoardLookup board;
-		private bool isCleared = false;
 
 		public ClearCheck( IBoardLookup board ) {
 			this.board = board;
-			InGameEvents.OnPlayerMove += OnMoveCards;
-			InGameEvents.OnGameClear += OnClear;
-			InGameEvents.OnNewGame += OnNewGame;
+			Register();
+			InGameEvents.OnGameClear += Unregister;
+			InGameEvents.OnNewGame += Register;
 		}
 
 		public void Dispose() {
-			InGameEvents.OnPlayerMove -= OnMoveCards;
-			InGameEvents.OnGameClear -= OnClear;
-			InGameEvents.OnNewGame -= OnNewGame;
+			Unregister();
+			InGameEvents.OnGameClear -= Unregister;
+			InGameEvents.OnNewGame -= Register;
 		}
 
 		public void Reset() {
 			// do nothing
 		}
 
-		public void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
-			if ( isCleared == true ) {
-				return;
-			}
+		private void Register( StageNumber _ ) {
+			Register();
+		}
 
+		private void Register() {
+			InGameEvents.OnMoveCards += OnMoveCards;
+		}
+
+		private void Unregister() {
+			InGameEvents.OnMoveCards -= OnMoveCards;
+		}
+
+		public void OnMoveCards( IEnumerable<Card> cards, PileId from, PileId to ) {
 			var piles = board[PileId.Type.Table, PileId.Type.Free];
 			foreach ( var pile in piles ) {
 				if ( IsSortedByDecendingRank( pile ) == false ) {
@@ -47,14 +54,6 @@ namespace Summoner.FreeCell {
 				}
 			}
 			return true;
-		}
-
-		private void OnNewGame( StageNumber _ ) {
-			isCleared = false;
-		}
-
-		private void OnClear() {
-			isCleared = true;
 		}
 	}
 }
