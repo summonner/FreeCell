@@ -12,11 +12,11 @@ namespace Summoner.FreeCell {
 			this.board = board;
 			this.mover = new CardMover( board );
 
-			Util.Event.SubscribeHelper.Subscribe( this );
+			PlayerInputEvents.Subscribe( this );
 		}
 
 		public void Dispose() {
-			Util.Event.SubscribeHelper.Unsubscribe( this );
+			PlayerInputEvents.Unsubscribe( this );
 		}
 
 		public void Reset() {

@@ -24,13 +24,11 @@ namespace Summoner.FreeCell {
 			OnQuickGame();
 		}
 
-		private static readonly Util.Event.Backup initialValues = null;
-		static InGameUIEvents() {
-			initialValues = new Util.Event.Backup( typeof( InGameUIEvents ) );
-		}
-
 		public static void Flush() {
-			initialValues.Apply();
+			OnUndo = delegate { };
+			OnReset = delegate { };
+			OnCloseTitle = delegate { };
+			OnQuickGame = delegate { };
 		}
 	}
 }

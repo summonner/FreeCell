@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
 	public class DeadLockFinder {
-		private readonly IBoardLookup board;
+		private readonly IBoardLookup board = null;
 		private IDictionary<Card, Card> remains = new SortedList<Card, Card>( 52, new DecendingRank() );
 		private Stack<Card> stack = new Stack<Card>();
 		private void FindDeadLock() {

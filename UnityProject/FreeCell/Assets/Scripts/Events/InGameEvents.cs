@@ -84,14 +84,22 @@ namespace Summoner.FreeCell {
 			OnNewGame( stageNumber );
 		}
 
-
-		private static readonly Util.Event.Backup initialValues = null;
-		static InGameEvents() {
-			initialValues = new Util.Event.Backup( typeof( InGameEvents ) );
-		}
-
 		public static void Flush() {
-			initialValues.Apply();
+			OnInitBoard = delegate { };
+			OnClearBoard = delegate { };
+			OnPlayerMove = delegate { };
+			OnMoveCards = delegate { };
+			OnUndoCards = delegate { };
+			OnAutoPlay = delegate { };
+			OnCheckAutoPlay = delegate { };
+			OnCannotMove = delegate { };
+			OnBeginFloatCards = delegate { };
+			OnFloatCards = delegate { };
+			OnEndFloatCards = delegate { };
+			OnGameClear = delegate { };
+			OnNoMoreMoves = delegate { };
+			OnNotEnoughFreeCells = delegate { };
+			OnNewGame = delegate { };
 		}
 	}
 }

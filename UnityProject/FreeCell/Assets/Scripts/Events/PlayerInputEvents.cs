@@ -40,14 +40,26 @@ namespace Summoner.FreeCell {
 			EndDrag( selected );
 		}
 
-		private static readonly System.Type type = typeof( PlayerInputEvents );
-		private static readonly Util.Event.Backup initialValues = null;
-		static PlayerInputEvents() {
-			initialValues = new Util.Event.Backup( type );
+		public static void Flush() {
+			OnClick = delegate { };
+			OnBeginDrag = delegate { };
+			OnDrag = delegate { };
+			OnEndDrag = delegate { };
+			OnDrop = delegate { };
 		}
 
-		public static void Flush() {
-			initialValues.Apply();
+		public static void Subscribe( IDragAndDropListener listener ) {
+			OnBeginDrag += listener.OnBeginDrag;
+			OnDrag += listener.OnDrag;
+			OnEndDrag += listener.OnEndDrag;
+			OnDrop += listener.OnDrop;
+		}
+
+		public static void Unsubscribe( IDragAndDropListener listener ) {
+			OnBeginDrag -= listener.OnBeginDrag;
+			OnDrag -= listener.OnDrag;
+			OnEndDrag -= listener.OnEndDrag;
+			OnDrop -= listener.OnDrop;
 		}
 	}
 }
