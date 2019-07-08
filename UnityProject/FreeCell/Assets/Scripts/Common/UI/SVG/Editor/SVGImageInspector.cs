@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Summoner.UI.SVG {
 	[CustomEditor( typeof(SVGImageEx) )]
+	[CanEditMultipleObjects]
 	public class SVGImageInspector : SVGImageEditor {
 		public override void OnInspectorGUI() {
 			base.OnInspectorGUI();
