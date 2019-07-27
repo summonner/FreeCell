@@ -9,7 +9,6 @@ namespace Summoner.FreeCell {
 		[SerializeField] private GameObject shadow = null;
 		[SerializeField] private ContactFilter2D contactFilter;
 		private new Transform transform;
-		private Vector3 startPosition;
 		private Collider2D[] overlapped = new Collider2D[10];
 
 		public void Reset() {
@@ -39,29 +38,27 @@ namespace Summoner.FreeCell {
 			shadow.SetActive( false );
 		}
 
-		public Vector3 Begin() {
+		public void Begin() {
 			Debug.Assert( transform != null, this );
 			enabled = true;
-			return startPosition = transform.position;
 		}
 
-		public void Move( Vector3 displacement ) {
+		public Vector3 position {
+			get {
+				return transform.position;
+			}
+			set {
+				transform.position = value;
+			}
+		}
+
+		public void End() {
 			Debug.Assert( transform != null, this );
 			if ( isActiveAndEnabled == false ) {
 				return;
 			}
 
-			transform.position = startPosition + displacement;
-		}
-
-		public Vector3 End() {
-			Debug.Assert( transform != null, this );
-			if ( isActiveAndEnabled == false ) {
-				return transform.position;
-			}
-
 			enabled = false;
-			return startPosition;
 		}
 
 		public IList<PileId> CheckOverlapped() {

@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
+	public interface ICardPosition {
+		Vector3 origin { get; }
+		Vector3 displacement { set; }
+	}
+
 	[SelectionBase]
 	[RequireComponent( typeof( BoxCollider2D ) )]
 	public class CardObject : MonoBehaviour, IBoardObject, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
@@ -12,6 +17,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private VibrateAnim vibrateAnim;
 		[SerializeField] private MoveAnim moveAnim;
 		[SerializeField] private FloatEffect floater;
+		private DragAnim dragAnim;
 
 		public PositionOnBoard position { get; set; }
 
@@ -32,11 +38,16 @@ namespace Summoner.FreeCell {
 			floater = GetComponentInChildren<FloatEffect>();
 		}
 
+		void Awake() {
+			dragAnim = new DragAnim( moveAnim, floater );
+		}
+
 		public void Vibrate() {
 			vibrateAnim.StartAnim();
 		}
 
 		public System.Action SetDestination( Vector3 worldPosition, float effectVolume ) {
+			dragAnim.startPosition = worldPosition;
 			return moveAnim.SetDestination( worldPosition, effectVolume );
 		}
 
@@ -57,7 +68,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnDrag( PointerEventData eventData ) {
-			var isDraggingOverUi = eventData.enterEventCamera == null;
+			var isDraggingOverUi = eventData.enterEventCamera != Camera.main;
 			if ( isDraggingOverUi ) {
 				return;
 			}
@@ -76,16 +87,15 @@ namespace Summoner.FreeCell {
 		}
 
 		public void BeginFloat() {
-			floater.Begin();
+			dragAnim.Begin();
 		}
 
 		public void Float( Vector3 displacement ) {
-			floater.Move( displacement );
+			dragAnim.Move( displacement );
 		}
 
 		public void EndFloat( float effectVolume ) {
-			var destination = floater.End();
-			SetDestination( destination, effectVolume )();
+			dragAnim.End( effectVolume );
 		}
 	}
 }

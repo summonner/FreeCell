@@ -69,6 +69,9 @@ namespace Summoner.FreeCell {
 					}
 					InGameEvents.GameClear();
 				}
+				if ( GUILayout.Button( "Slow" ) == true ) {
+					Time.timeScale = Time.timeScale == 1f ? 0.1f : 1f;
+				}
 			}
 		}
 
