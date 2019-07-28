@@ -5,11 +5,6 @@ using System.Collections.Generic;
 using Summoner.Util.Extension;
 
 namespace Summoner.FreeCell {
-	public interface ICardPosition {
-		Vector3 origin { get; }
-		Vector3 displacement { set; }
-	}
-
 	[SelectionBase]
 	[RequireComponent( typeof( BoxCollider2D ) )]
 	public class CardObject : MonoBehaviour, IBoardObject, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
@@ -19,7 +14,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private FloatEffect floater;
 		private DragAnim dragAnim;
 
-		public PositionOnBoard position { get; set; }
+		public PositionOnBoard position { get; private set; }
 
 		public Sprite sprite {
 			set {
@@ -40,15 +35,17 @@ namespace Summoner.FreeCell {
 
 		void Awake() {
 			dragAnim = new DragAnim( moveAnim, floater );
+			moveAnim.target = this;
 		}
 
 		public void Vibrate() {
 			vibrateAnim.StartAnim();
 		}
 
-		public System.Action SetDestination( Vector3 worldPosition, float effectVolume ) {
+		public System.Action SetDestination( PositionOnBoard boardPosition, Vector3 worldPosition, float effectVolume ) {
+			position = boardPosition;
 			dragAnim.startPosition = worldPosition;
-			return moveAnim.SetDestination( worldPosition, effectVolume );
+			return moveAnim.SetDestination( boardPosition, worldPosition, effectVolume );
 		}
 
 		public void OnPointerClick( PointerEventData eventData ) {

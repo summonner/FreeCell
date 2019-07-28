@@ -44,10 +44,10 @@ namespace Summoner.FreeCell {
 		public System.Action MoveCard( Card target, PileId to, float volume ) {
 			var card = cards[target];
 			var row = board[to].IndexOf( target );
-			card.position = new PositionOnBoard( to, row );
-			var position = layout.GetWorldPosition( card.position ) + offset;
+			var boardPosition = new PositionOnBoard( to, row );
+			var worldPosition = layout.GetWorldPosition( boardPosition ) + offset;
 
-			return card.SetDestination( position, volume );
+			return card.SetDestination( boardPosition, worldPosition, volume );
 		}
 
 		public IEnumerable<System.Action> MoveCard( IEnumerable<Card> targets, PileId to ) {
@@ -91,7 +91,7 @@ namespace Summoner.FreeCell {
 		public IEnumerable<System.Action> OnReset() {
 			var position = transform.position;
 			foreach ( var card in cards.Values ) {
-				yield return card.SetDestination( position, 0f );
+				yield return card.SetDestination( default( PositionOnBoard ), position, 0f );
 			}
 			yield return () => { SoundPlayer.Instance.Play( SoundType.ResetCards ); };
 		}

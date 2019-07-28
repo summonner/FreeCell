@@ -35,7 +35,7 @@ namespace Summoner.FreeCell {
 		public void End( float effectVolume ) {
 			floater.End();
 			moveAnim.displacement = Vector3.zero;
-			moveAnim.SetDestination( startPosition, effectVolume )();
+			moveAnim.SetDestinationImmediate( startPosition, effectVolume );
 		}
 	}
 }

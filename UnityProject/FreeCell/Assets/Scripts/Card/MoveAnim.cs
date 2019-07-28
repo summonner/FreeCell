@@ -10,18 +10,28 @@ namespace Summoner.FreeCell {
 		[SerializeField] private FloatEffect floater;
 		[SerializeField] private AnimationCurve curve = AnimationCurve.Linear( 0f, 0f, 0.1f, 1f );
 		public bool isPlaying { get; private set; }
+		public IBoardObject target;
 
 		void Reset() {
 			floater = GetComponentInChildren<FloatEffect>();
 		}
 
-		public System.Action SetDestination( Vector3 worldPosition, float effectVolume ) {
+		public void SetDestinationImmediate( Vector3 worldPosition, float effectVolume ) {
+			SetDestination( target.position, worldPosition, effectVolume)();
+		}
+
+		public System.Action SetDestination( PositionOnBoard position, Vector3 worldPosition, float effectVolume ) {
 			isPlaying = true;
 
 			return () => {
+				if ( position != target.position ) {
+					return;
+				}
+
 				if ( anim != null ) {
 					StopCoroutine( anim );
 				}
+
 				anim = StartCoroutine( Play( worldPosition, effectVolume ) );
 			};
 		}
