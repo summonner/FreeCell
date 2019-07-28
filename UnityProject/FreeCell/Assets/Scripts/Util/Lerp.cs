@@ -11,5 +11,13 @@ namespace Summoner.Util {
 			}
 			yield return seconds;
 		}
+
+		public static IEnumerable<float> ElapsedTime() {
+			var elapsed = 0f;
+			while ( true ) {
+				yield return elapsed;
+				elapsed += Time.deltaTime;
+			}
+		}
 	}
 }

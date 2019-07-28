@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
@@ -44,12 +44,16 @@ namespace Summoner.UI.Tween {
 				}
 
 				using ( new EditorGUILayout.HorizontalScope() ) {
-					if ( GUILayout.Button( "PlayForward" ) == true ) {
-						tweener.Play();
+					if ( GUILayout.Button( "◀" ) == true ) {
+						tweener.PlayReverse();
 					}
 
-					if ( GUILayout.Button( "PlayBackward" ) == true ) {
-						tweener.PlayReverse();
+					if ( GUILayout.Button( "■" ) == true ) {
+						tweener.Stop();
+					}
+
+					if ( GUILayout.Button( "▶" ) == true ) {
+						tweener.Play();
 					}
 				}
 			}

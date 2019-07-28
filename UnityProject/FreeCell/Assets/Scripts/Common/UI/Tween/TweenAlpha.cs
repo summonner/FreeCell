@@ -21,7 +21,7 @@ namespace Summoner.UI.Tween {
 			to = image.color.a;
 		}
 
-		protected override void SetFrame( float t ) {
+		protected override void LerpValue( float t ) {
 			var color = image.color;
 			color.a = Mathf.Lerp( from, to, t );
 			image.color = color;

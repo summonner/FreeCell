@@ -20,7 +20,7 @@ namespace Summoner.UI.Tween {
 			to = rectTransform.localPosition;
 		}
 
-		protected override void SetFrame( float t ) {
+		protected override void LerpValue( float t ) {
 			rectTransform.localPosition = Vector2.Lerp( from, to, t );
 		}
 

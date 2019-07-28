@@ -1,14 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Summoner.UI.Tween;
+using Summoner.UI;
 
 namespace Summoner.FreeCell {
 	public class NoMoreMoveMessage : MonoBehaviour {
-		[SerializeField] private TweenBase tweener;
-
-		void Reset() {
-			tweener = GetComponent<TweenBase>();
-		}
+		public PresentToggle onPlay;
 
 		void OnEnable() {
 			InGameEvents.OnNoMoreMoves += Play;
@@ -19,14 +15,14 @@ namespace Summoner.FreeCell {
 		}
 
 		private void Play() {
-			tweener.Play();
+			onPlay.Invoke( true );
 			InGameEvents.OnNewGame += Back;
 			InGameUIEvents.OnUndo += Back;
 			InGameUIEvents.OnReset += Back;
 		}
 
 		private void Back() {
-			tweener.PlayReverse();
+			onPlay.Invoke( false );
 			InGameEvents.OnNewGame -= Back;
 			InGameUIEvents.OnUndo -= Back;
 			InGameUIEvents.OnReset -= Back;

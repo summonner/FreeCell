@@ -9,7 +9,7 @@ namespace Summoner.UI.Tween {
 
 		public float value {
 			set {
-				SetFrame( value );
+				LerpValue( value );
 			}
 		}
 
@@ -21,7 +21,12 @@ namespace Summoner.UI.Tween {
 			return StartCoroutine( Play( curve.EvaluateWithTimeReverse() ) );
 		}
 
-		public void Play( bool forward ) {
+		public void Stop() {
+			StopAllCoroutines();
+			value = 0;
+		}
+
+		public void PingPong( bool forward ) {
 			if ( forward == true ) {
 				Play();
 			}
@@ -30,14 +35,23 @@ namespace Summoner.UI.Tween {
 			}
 		}
 
+		public void PlayAndStop( bool play ) {
+			if ( play == true ) {
+				Play();
+			}
+			else {
+				Stop();
+			}
+		}
+
 		private IEnumerator Play( IEnumerable<float> iterator ) {
 			foreach ( var t in iterator ) {
-				SetFrame( t );
+				LerpValue( t );
 				yield return null;
 			}
 		}
 
-		protected abstract void SetFrame( float t );
+		protected abstract void LerpValue( float t );
 
 		protected void Swap<T>( ref T from, ref T to ) {
 			var temp = from;

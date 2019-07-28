@@ -4,9 +4,9 @@ using Summoner.Util.Extension;
 
 namespace Summoner.UI.Tween {
 	[RequireComponent( typeof(RectTransform) )]
-	public class TweenScale : TweenBase {
-		public Vector2 from;
-		public Vector2 to;
+	public class TweenRotation : TweenBase {
+		public float fromDegree;
+		public float toDegree;
 
 		private RectTransform _rectTransform;
 		private RectTransform rectTransform {
@@ -16,17 +16,18 @@ namespace Summoner.UI.Tween {
 		}
 
 		void Reset() {
-			from = rectTransform.localScale;
-			to = rectTransform.localScale;
+			fromDegree = rectTransform.localRotation.z;
+			toDegree = rectTransform.localRotation.z;
 		}
 
 		protected override void LerpValue( float t ) {
-			rectTransform.localScale = Vector2.Lerp( from, to, t );
+			var value = Mathf.LerpAngle( fromDegree, toDegree, t );
+			rectTransform.localRotation = Quaternion.Euler( 0, 0, value );
 		}
 
 		[ContextMenu( "Swap" )]
 		private void Swap() {
-			Swap( ref from, ref to );
+			Swap( ref fromDegree, ref toDegree );
 		}
 	}
 }
