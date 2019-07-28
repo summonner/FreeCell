@@ -10,19 +10,23 @@ namespace Summoner.FreeCell {
 		[SerializeField] private BoardLayout layout;
 		[SerializeField] private InGameUIEvents uiEvents;
 		[SerializeField] private DemoPlayer demo;
+		[SerializeField] private UnityEngine.UI.Button title;
 		private IBoardPreset preset;
 
 		private Board board;
 
-		void Start() {
+		IEnumerator Start() {
 			InGameEvents.OnNewGame += NewGame;
 			InGameUIEvents.OnReset += OnReset;
 			InGameUIEvents.OnCloseTitle += OnCloseTitle;
 
+			title.interactable = false;
 			board = new Board( layout );
 			cards.Init( board, sheet );
 
+			yield return null;
 			uiEvents.QuickGame();
+			title.interactable = true;
 		}
 
 		void OnDestroy() {
