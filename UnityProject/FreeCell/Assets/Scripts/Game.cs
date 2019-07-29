@@ -38,6 +38,7 @@ namespace Summoner.FreeCell {
 
 		void Reset() {
 			sheet = null;
+			title = null;
 			cards = FindObjectOfType<CardObjectHolder>();
 			layout = FindObjectOfType<BoardLayout>();
 			uiEvents = FindObjectOfType<InGameUIEvents>();

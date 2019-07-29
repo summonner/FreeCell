@@ -39,17 +39,17 @@ namespace Summoner.FreeCell {
 #if UNITY_EDITOR
 			name = info.stageNumber.ToString();
 #endif
-			var random = new System.Random( info.stageNumber.GetHashCode() );
-			
+			var random = CalculateRandom( info );
+			var index = random % sprites.Length;
+			var degree = random / 256f * 360f;
+
 			this.info = info;
 			presentStageNumber.Invoke( info.stageNumber );
-			ShowSymbol( random, info.isCleared );
+			ShowSymbol( index, degree, info.isCleared );
 		}
 
-		private void ShowSymbol( System.Random random, bool isCleared ) {
-			var index = (int)(random.NextDouble() * sprites.Length);
-			var degree = (float)(random.NextDouble() * 360);
-			symbol.sprite = sprites.ElementAtOrDefault( index ); ;
+		private void ShowSymbol( int index, float degree, bool isCleared ) {
+			symbol.sprite = sprites.ElementAtOrDefault( index );
 			symbol.rectTransform.rotation = Quaternion.Euler( 0, 0, degree );
 			symbol.SetNativeSize();
 
@@ -77,6 +77,28 @@ namespace Summoner.FreeCell {
 			alpha.Play();
 			yield return anim.Play();
 			doesReadyForAnim = false;
+		}
+
+		private int CalculateRandom( IContents info ) {
+			var rect = GetComponent<RectTransform>();
+			var x = GetMantissa( rect.localPosition.x * info.stageNumber.index );
+			var y = GetMantissa( rect.localPosition.y );
+			var value = x * y;
+			var reversed = 0;
+			var length = 32;
+			for ( int i=0; i < length; ++i ) {
+				reversed |= ((value >> i) & 1) << (length - 1 - i);
+			}
+			
+			if ( reversed < 0 ) {
+				reversed *= -1;
+			}
+			return reversed;
+		}
+
+		private int GetMantissa( float x ) {
+			var bytes = System.BitConverter.GetBytes( x );
+			return System.BitConverter.ToInt32( bytes, 0 ) & 0x007fffff;
 		}
 	}
 }
