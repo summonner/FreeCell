@@ -7,7 +7,7 @@ namespace Summoner.Sound {
 		[SerializeField] private AudioMixer mixer = null;
 		[SerializeField] private string parameterName = null;
 		private ISavedValue<float> saved;
-		private float defaultValue;
+		private float defaultValue = 0f;
 		
 		private const float min = -80f;
 
@@ -18,7 +18,7 @@ namespace Summoner.Sound {
 		public void Load() {
 			if ( saved == null ) {
 				var key = mixer.name + "." + parameterName;
-				mixer.GetFloat( parameterName, out this.defaultValue );
+//				mixer.GetFloat( parameterName, out this.defaultValue );
 				saved = PlayerPrefsValue.Float( key, defaultValue );
 			}
 
