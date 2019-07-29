@@ -41,6 +41,7 @@ namespace Summoner.FreeCell {
 			yield return null;
 			yield return scheduler.OnClear();
 			yield return congraturation.Play();
+			SoundPlayer.Instance.Play( SoundType.Congraturation );
 			yield return new WaitForSeconds( 1f );
 
 			if ( doesShowPopup == true ) {

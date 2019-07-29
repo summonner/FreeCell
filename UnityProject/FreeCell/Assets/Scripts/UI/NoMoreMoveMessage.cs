@@ -15,6 +15,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void Play() {
+			SoundPlayer.Instance.Play( SoundType.NoMoreMove );
 			onPlay.Invoke( true );
 			InGameEvents.OnNewGame += Back;
 			InGameUIEvents.OnUndo += Back;

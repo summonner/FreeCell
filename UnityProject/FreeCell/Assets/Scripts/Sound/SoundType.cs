@@ -11,5 +11,6 @@ namespace Summoner.FreeCell {
 
 		MenuButton,
 		MenuOpenAndClose,
+		Stamp,
 	}
 }

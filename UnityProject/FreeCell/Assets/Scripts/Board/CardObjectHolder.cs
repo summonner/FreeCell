@@ -64,6 +64,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void OnCannotMove( IEnumerable<Card> subjects ) {
+			SoundPlayer.Instance.Play( SoundType.CannotMove );
 			foreach ( var card in Find( subjects ) ) {
 				card.Vibrate();
 			}

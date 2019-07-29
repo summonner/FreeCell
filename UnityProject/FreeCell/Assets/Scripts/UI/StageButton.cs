@@ -75,7 +75,10 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator PlayClearAnimAux() {
 			alpha.Play();
-			yield return anim.Play();
+			var waitAnim = anim.Play();
+			yield return new WaitForSeconds( 0.7f );
+			SoundPlayer.Instance.Play( SoundType.Stamp );
+			yield return waitAnim;
 			doesReadyForAnim = false;
 		}
 
