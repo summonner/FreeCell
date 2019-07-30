@@ -5,21 +5,16 @@ using Summoner.UI;
 using Summoner.UI.Popups;
 
 namespace Summoner.FreeCell {
-	public class StagePopup : SimplePopup {
+	public class StagePopup : SlidePopup {
 		[SerializeField] private DynamicGridLayoutGroup grid = null;
-		[SerializeField] private Animator popupAnim = null;
 		[SerializeField] private Graphic blocker = null;
 		[SerializeField] private PresentRatio presentCleared = null;
 		[SerializeField] private UnityEvent onSelectStage = null;
-
-		private static readonly int animParam = Animator.StringToHash( "Current" );
-		private static readonly int readyParam = Animator.StringToHash( "Ready" );
 
 		private IStageStatesReader stages;
 
 		void Reset() {
 			grid = GetComponentInChildren<DynamicGridLayoutGroup>();
-			popupAnim = GetComponentInParent<Animator>();
 		}
 
 		public void Init( IStageStatesReader stages ) {
@@ -33,7 +28,7 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator Ready() {
 			yield return new WaitUntil( () => ( grid.isReady ) );
-			popupAnim.SetBool( readyParam, true );
+			animController.Show( -1 );
 		}
 
 		private void PresentCleared() {
@@ -62,13 +57,13 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator PlayClearAnim( StageButton item ) {
 			blocker.raycastTarget = true;
-			popupAnim.SetInteger( animParam, 2 );
+			animController.Show( key );
 			item.ReadyForClearAnim();
 			yield return null;
-			yield return new WaitWhile( () => ( popupAnim.IsInTransition( 3 ) ) );
+			yield return new WaitWhile( () => ( animController.isPlaying ) );
 			PresentCleared();
 			yield return item.PlayClearAnim();
-			popupAnim.SetInteger( animParam, -1 );
+			animController.Show( -1 );
 			blocker.raycastTarget = false;
 		}
 

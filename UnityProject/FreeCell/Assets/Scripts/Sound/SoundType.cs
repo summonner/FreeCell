@@ -10,7 +10,7 @@ namespace Summoner.FreeCell {
 		Congraturation,
 
 		MenuButton,
-		MenuOpenAndClose,
+		MenuOpen,
 		Stamp,
 	}
 }
