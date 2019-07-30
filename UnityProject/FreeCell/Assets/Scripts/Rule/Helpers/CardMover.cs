@@ -21,12 +21,11 @@ namespace Summoner.FreeCell {
 			return tester.SetSource( selected ) != MoveTester.Result.ImmovableCardSelected;
 		}
 
-		public bool Execute( IEnumerable<PileId> destinations ) {
+		public bool ExecuteAndResult( IEnumerable<PileId> destinations ) {
 			bool notEnoughFreeCell = false;
 			foreach ( var pile in destinations ) {
 				switch ( tester.SetDestination( pile ) ) {
 					case MoveTester.Result.ImmovableCardSelected:
-						InGameEvents.CannotMove( tester.subjects );
 						return false;
 
 					case MoveTester.Result.CouldnotFindDestination:
@@ -46,8 +45,13 @@ namespace Summoner.FreeCell {
 				InGameEvents.NotEnoughFreeCells();
 			}
 
-			InGameEvents.CannotMove( tester.subjects );
 			return false;
+		}
+
+		public void Execute( IEnumerable<PileId> destinations ) {
+			if ( ExecuteAndResult( destinations ) == false ) {
+				InGameEvents.CannotMove( tester.subjects );
+			}
 		}
 
 		private void Move( PositionOnBoard selected, PileId destination ) {

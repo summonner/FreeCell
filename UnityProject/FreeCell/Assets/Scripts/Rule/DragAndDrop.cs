@@ -74,7 +74,7 @@ namespace Summoner.FreeCell {
 				return;
 			}
 			
-			if ( mover.Execute( receivers ) == true ) {
+			if ( mover.ExecuteAndResult( receivers ) == true ) {
 				selectedCards = null;
 			}
 		}
