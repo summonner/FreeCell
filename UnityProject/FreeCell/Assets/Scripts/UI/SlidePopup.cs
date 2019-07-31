@@ -43,7 +43,8 @@ namespace Summoner.FreeCell {
 				animController.Show( key > 0 ? 0 : -1 );
 			}
 			else {
-				animController.Show( key - 1 );
+				var backKey = key - 1;
+				animController.Show( backKey == 0 ? -1 : backKey );
 			}
 		}
 
@@ -57,8 +58,8 @@ namespace Summoner.FreeCell {
 			var startPosition = transform.anchoredPosition;
 			var destination = new Vector2( startPosition.x, y + offset );
 
-			foreach ( var elapsed in Lerp.Duration( duration ) ) {
-				transform.anchoredPosition = Vector2.Lerp( startPosition, destination, elapsed / duration );
+			foreach ( var t in Lerp.NormalizedDuration( duration ) ) {
+				transform.anchoredPosition = Vector2.Lerp( startPosition, destination, t );
 				yield return null;
 			}
 

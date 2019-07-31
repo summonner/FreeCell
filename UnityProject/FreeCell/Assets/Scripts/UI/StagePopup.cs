@@ -10,11 +10,13 @@ namespace Summoner.FreeCell {
 		[SerializeField] private Graphic blocker = null;
 		[SerializeField] private PresentRatio presentCleared = null;
 		[SerializeField] private UnityEvent onSelectStage = null;
+		[SerializeField] private BondUI follower = null;
 
 		private IStageStatesReader stages;
 
 		void Reset() {
 			grid = GetComponentInChildren<DynamicGridLayoutGroup>();
+			follower = GetComponent<BondUI>();
 		}
 
 		public void Init( IStageStatesReader stages ) {
@@ -28,7 +30,8 @@ namespace Summoner.FreeCell {
 
 		private IEnumerator Ready() {
 			yield return new WaitUntil( () => ( grid.isReady ) );
-			animController.Show( -1 );
+			animController.Ready();
+			follower.Init();
 		}
 
 		private void PresentCleared() {

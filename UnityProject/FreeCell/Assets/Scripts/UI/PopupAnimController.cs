@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Linq;
 using System.Collections.Generic;
-using Summoner.Util;
+using Summoner.Util.DraggableObject;
 using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
@@ -53,23 +54,29 @@ namespace Summoner.FreeCell {
 				current = key;
 			}
 
-			Show();
+			Show( animDuration );
 		}
 
-		private void Show() {
-			SoundPlayer.Instance.Play( SoundType.MenuOpen );
+		public void Ready() {
+			Show( 0f );
+		}
+
+		private void Show( float animDuration ) {
+			if ( animDuration > 0f ) {
+				SoundPlayer.Instance.Play( SoundType.MenuOpen );
+			}
 
 			var isClose = popups.IsOutOfRange( current );
-			Play( 0, height * (isClose ? -1f : 0f), isClose );
+			Play( 0, height * (isClose ? -1f : 0f), isClose, animDuration );
 
 			for ( var i=1; i < popups.Length; ++i ) {
 				var hide = false;
 				var destination = GetDestination( i, out hide );
-				Play( i, destination, hide );
+				Play( i, destination, hide, animDuration );
 			}
 		}
 
-		private void Play( int index, float destination, bool hide ) {
+		private void Play( int index, float destination, bool hide, float animDuration ) {
 			popups[index].MoveTo( animDuration, destination, hide );
 		}
 
@@ -84,17 +91,6 @@ namespace Summoner.FreeCell {
 			else {
 				hide = true;
 				return (index - 1) * spacing - height;
-			}
-		}
-
-		public IEnumerable<IDraggableObject> OnBeginDrag( int key ) {
-			if ( key == 0 ) {
-				yield return popups[0].GetDraggableObject();
-			}
-			else {
-				for ( var i=key; i < popups.Length; ++i ) {
-					yield return popups[i].GetDraggableObject();
-				}
 			}
 		}
 
@@ -113,6 +109,41 @@ namespace Summoner.FreeCell {
 		void Update() {
 			if ( Input.GetKeyDown( KeyCode.Escape ) == true ) {
 				CloseLastPopup();
+			}
+		}
+
+		public IEnumerable<IDraggableObject> OnBeginDrag( int key ) {
+			if ( key == 0 ) {
+				var root = popups[0];
+				yield return root.GetDraggableObject();
+				if ( root.gameObject.activeSelf == false ) {
+					yield return new ActivatePopup( root );
+				}
+			}
+			else {
+				for ( var i = key; i < popups.Length; ++i ) {
+					yield return popups[i].GetDraggableObject();
+				}
+			}
+		}
+
+		private class ActivatePopup : IDraggableObject {
+			private readonly GameObject gameObject;
+			public ActivatePopup( SlidePopup popup ) {
+				this.gameObject = popup.gameObject;
+				gameObject.SetActive( true );
+			}
+
+			public Vector3 OnDrag( PointerEventData eventData ) {
+				throw new System.NotImplementedException();
+			}
+
+			public Vector3 OnDrag( PointerEventData eventData, Vector3 mask ) {
+				throw new System.NotImplementedException();
+			}
+
+			public void OnDrag( Vector3 displacement ) {
+				gameObject.SetActive( displacement.y > 0f );
 			}
 		}
 	}

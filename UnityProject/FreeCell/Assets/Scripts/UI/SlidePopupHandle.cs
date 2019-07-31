@@ -3,15 +3,17 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using Summoner.Util;
+using Summoner.Util.DraggableObject;
 
 namespace Summoner.FreeCell {
 	public class SlidePopupHandle : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 		[SerializeField] private SlidePopup target;
-		[SerializeField] private bool ignoreOpen = false;
+		[SerializeField] private bool cannotOpen = false;
 		
 		private static float finishDuration = 0.1f;
-		private static float threshold = 50f;
+		private static float threshold = 60f;
 		private IList<IDraggableObject> dragObjects;
+		private Vector3 displacement = Vector3.zero;
 
 		void Reset() {
 			target = GetComponent<SlidePopup>();
@@ -22,7 +24,7 @@ namespace Summoner.FreeCell {
 				return;
 			}
 
-			Open( target, Vector3.zero );
+			Open();
 		}
 
 		public void OnBeginDrag( PointerEventData eventData ) {
@@ -31,6 +33,7 @@ namespace Summoner.FreeCell {
 			}
 
 			dragObjects = target.OnBeginDrag();
+			displacement = Vector3.zero;
 		}
 
 		public void OnDrag( PointerEventData eventData ) {
@@ -38,17 +41,37 @@ namespace Summoner.FreeCell {
 				return;
 			}
 
-			var displacement = eventData.GetScreenDisplacement( Vector2.up );
+			displacement = eventData.GetScreenDisplacement( Vector2.up );
+			displacement = AdjustDisplacement( displacement );
 			foreach ( var dragObject in dragObjects ) {
 				dragObject.OnDrag( displacement );
 			}
 
 			if ( displacement.y < -threshold ) {
-				Close( target );
+				Close();
 			}
 			else if ( displacement.y > threshold ) {
-				Open( target, displacement );
+				Open();
 			}
+		}
+
+		private Vector3 AdjustDisplacement( Vector3 displacement ) {
+			if ( target == null ) {
+				return displacement;
+			}
+
+			if ( displacement.y > 0f ) {
+				if ( target.isOpen || cannotOpen ) {
+					displacement.y = 0f;
+				}
+			}
+			else if ( displacement.y < 0f ) {
+				if ( target.isActiveAndEnabled == false ) {
+					displacement.y = 0f;
+				}
+			}
+
+			return displacement;
 		}
 
 		public void OnEndDrag( PointerEventData eventData ) {
@@ -56,35 +79,37 @@ namespace Summoner.FreeCell {
 				return;
 			}
 
-			FinishDrag( eventData.GetScreenDisplacement( Vector2.up ) );
+			FinishDrag( displacement );
+			displacement = Vector3.zero;
 		}
 
-		private void Open( SlidePopup popup, Vector3 lastDisplacement ) {
-			if ( popup == null ) {
-				return;
-			}
-
-			var donotOpen = ignoreOpen == true
-						 || popup.isOpen == true;
-			if ( donotOpen == true ) {
-				FinishDrag( lastDisplacement );
-				return;
-			}
-
-			popup.Open();
-			dragObjects = null;
+		private void Open() {
+			SafeOpenClose( true );
 		}
 
-		private void Close( SlidePopup popup ) {
-			if ( popup == null ) {
+		private void Close() {
+			SafeOpenClose( false );
+		}
+
+		private void SafeOpenClose( bool open ) {
+			if ( target == null ) {
 				return;
 			}
 
-			popup.Close();
+			if ( open ) {
+				target.Open();
+			}
+			else {
+				target.Close();
+			}
+
 			dragObjects = null;
 		}
 
 		private void FinishDrag( Vector3 lastDisplacement ) {
+			if ( dragObjects == null ) {
+				return;
+			}
 			StartCoroutine( FinishDragAux( lastDisplacement ) );
 		}
 

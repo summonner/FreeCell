@@ -6,6 +6,9 @@ namespace Summoner.Util.DraggableObject {
 		private readonly RectTransform transform;
 		private readonly Vector2 startPosition;
 
+		public DraggableRectTransform( Component component ) 
+			: this( component.GetComponent<RectTransform>() ) { }
+
 		public DraggableRectTransform( RectTransform transform ) {
 			this.transform = transform;
 			this.startPosition = transform.anchoredPosition;
