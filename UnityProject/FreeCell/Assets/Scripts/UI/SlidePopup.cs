@@ -1,14 +1,20 @@
 using UnityEngine;
 using System.Collections;
-using Summoner.UI.Popups;
+using System.Collections.Generic;
 using Summoner.Util;
+using Summoner.Util.DraggableObject;
 
 namespace Summoner.FreeCell {
-	public class SlidePopup : BasePopup {
+	public class SlidePopup : MonoBehaviour {
 		[SerializeField] protected PopupAnimController animController;
 		[SerializeField] private float offset = -15f;
 		protected int key;
 		public bool isInTransition { get; private set; }
+		public bool isOpen {
+			get {
+				return animController.IsOpen( key );
+			}
+		}
 
 		private new RectTransform transform;
 
@@ -24,13 +30,21 @@ namespace Summoner.FreeCell {
 			this.key = key;
 		}
 
-		protected override void OnOpen() {
+		public void Open() {
+			if ( isOpen == true ) {
+				return;
+			}
+
 			animController.Show( key );
-			SoundPlayer.Instance.Play( SoundType.MenuOpen );
 		}
 
-		protected override void OnClose() {
-			animController.Show( key > 0 ? 0 : -1 );
+		public void Close() {
+			if ( isOpen == true ) {
+				animController.Show( key > 0 ? 0 : -1 );
+			}
+			else {
+				animController.Show( key - 1 );
+			}
 		}
 
 		public void MoveTo( float duration, float y, bool hide ) {
@@ -52,6 +66,14 @@ namespace Summoner.FreeCell {
 				transform.gameObject.SetActive( false );
 			}
 			isInTransition = false;
+		}
+
+		public IList<IDraggableObject> OnBeginDrag() {
+			return new List<IDraggableObject>( animController.OnBeginDrag( key ) );
+		}
+
+		public IDraggableObject GetDraggableObject() {
+			return new DraggableRectTransform( transform );
 		}
 	}
 }

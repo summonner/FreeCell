@@ -1,14 +1,16 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using Summoner.Util;
+using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
-	public class PopupAnimController : MonoBehaviour {
+	public class PopupAnimController : SingletonBehaviour<PopupAnimController> {
 		[SerializeField] private SlidePopup[] popups = null;
-		[SerializeField] private int current = -1;
 		[SerializeField] private float animDuration = 0.25f;
 		[SerializeField] private float spacing = -110f;
 		private new RectTransform transform;
+		private int current = -1;
 
 		public bool isPlaying {
 			get {
@@ -34,12 +36,29 @@ namespace Summoner.FreeCell {
 			popups = GetComponentsInChildren<SlidePopup>();
 		}
 
+		public bool IsOpen( int key ) {
+			if ( current == key ) {
+				return true;
+			}
+
+			return key == 0
+				&& current >= 0;
+		}
+
 		public void Show( int key ) {
-			current = key;
+			if ( popups.IsOutOfRange( key ) == true ) {
+				current = -1;
+			}
+			else {
+				current = key;
+			}
+
 			Show();
 		}
 
 		private void Show() {
+			SoundPlayer.Instance.Play( SoundType.MenuOpen );
+
 			var isClose = popups.IsOutOfRange( current );
 			Play( 0, height * (isClose ? -1f : 0f), isClose );
 
@@ -59,12 +78,41 @@ namespace Summoner.FreeCell {
 			if ( current == index ) {
 				return 0;
 			}
-			else if ( current <= 0 || current >= popups.Length ) {
+			else if ( current <= 0 ) {
 				return (index - 1) * spacing;
 			}
 			else {
 				hide = true;
 				return (index - 1) * spacing - height;
+			}
+		}
+
+		public IEnumerable<IDraggableObject> OnBeginDrag( int key ) {
+			if ( key == 0 ) {
+				yield return popups[0].GetDraggableObject();
+			}
+			else {
+				for ( var i=key; i < popups.Length; ++i ) {
+					yield return popups[i].GetDraggableObject();
+				}
+			}
+		}
+
+		public void CloseLastPopup() {
+			if ( current < 0 ) {
+				return;
+			}
+			else if ( current == 0 ) {
+				Show( -1 );
+			}
+			else {
+				Show( 0 );
+			}
+		}
+
+		void Update() {
+			if ( Input.GetKeyDown( KeyCode.Escape ) == true ) {
+				CloseLastPopup();
 			}
 		}
 	}

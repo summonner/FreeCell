@@ -3,13 +3,19 @@ using System.Collections.Generic;
 
 namespace Summoner.UI.Popups {
 	public abstract class BasePopup : MonoBehaviour, IPopup {
-		private bool opened = false;
+		protected bool opened { get; private set; }
 
 		public void Open() {
+			if ( opened == true ) {
+				return;
+			}
 			PopupStack.Instance.Open( this );
 		}
 
 		public void Close() {
+			if ( opened == false ) {
+				return;
+			}
 			PopupStack.Instance.Close( this );
 		}
 
