@@ -34,5 +34,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Custom Ignores
 Resource/States.uml
 *.ttf*
