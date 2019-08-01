@@ -10,6 +10,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private SlidePopup[] popups = null;
 		[SerializeField] private float animDuration = 0.25f;
 		[SerializeField] private float spacing = -110f;
+		[SerializeField] private float offset = 0f;
 		private new RectTransform transform;
 		private int current = -1;
 
@@ -67,12 +68,22 @@ namespace Summoner.FreeCell {
 			}
 
 			var isClose = popups.IsOutOfRange( current );
-			Play( 0, height * (isClose ? -1f : 0f), isClose, animDuration );
+			var rootPosition = CalculateRootPosition( isClose );
+			Play( 0, rootPosition, isClose, animDuration );
 
 			for ( var i=1; i < popups.Length; ++i ) {
 				var hide = false;
 				var destination = GetDestination( i, out hide );
 				Play( i, destination, hide, animDuration );
+			}
+		}
+
+		private float CalculateRootPosition( bool isClose ) {
+			if ( isClose == true ) {
+				return -height;
+			}
+			else {
+				return -offset;
 			}
 		}
 
@@ -82,14 +93,14 @@ namespace Summoner.FreeCell {
 
 		private float GetDestination( int index, out bool hide ) {
 			hide = false;
-			if ( current == index ) {
+			if ( current == index ) {	// open
 				return 0;
 			}
-			else if ( current <= 0 ) {
+			else if ( current <= 0 ) {	// wait
 				return (index - 1) * spacing;
 			}
 			else {
-				hide = true;
+				hide = true;			// close
 				return (index - 1) * spacing - height;
 			}
 		}

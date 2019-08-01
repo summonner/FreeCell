@@ -51,12 +51,8 @@ namespace Summoner.Util.StatusBar {
 			private static float CalculateTop( RectTransform transform, Camera uiCamera ) {
 				var corners = new Vector3[4];
 				transform.GetWorldCorners( corners );
-
-				for ( int i = 0; i < corners.Length; ++i ) {
-					corners[i] = uiCamera.WorldToScreenPoint( corners[i] );
-				}
-
-				return corners.Max( ( vector ) => (vector.y) );
+				var leftTop = uiCamera.WorldToScreenPoint( corners[1] );
+				return leftTop.y;
 			}
 
 			public float Adjust( float statusBarHeight ) {

@@ -22,3 +22,5 @@ MonoBehaviour:
     type: 2
   - key: keepAwake
     type: 1
+  - key: statusBar
+    type: 1

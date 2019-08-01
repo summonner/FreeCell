@@ -7,12 +7,17 @@ namespace Summoner.Util.StatusBar {
 	public class StatusBar : MonoBehaviour {
 		public PresentInt onChange;
 
-		private IStatusBarController nativeModule;
-		void Awake() {
+		private IStatusBarController _nativeModule = null;
+		private IStatusBarController nativeModule {
+			get {
+				return _nativeModule ?? (_nativeModule = Generate());
+			}
+		}
+		private static IStatusBarController Generate() {
 	#if UNITY_EDITOR
-			nativeModule = new ProxyStatusBarController();
+			return new ProxyStatusBarController();
 	#elif UNITY_ANDROID
-			nativeModule = new AndroidStatusBarController();
+			return new AndroidStatusBarController();
 	#endif
 		}
 
@@ -23,17 +28,19 @@ namespace Summoner.Util.StatusBar {
 		}
 
 		void OnDestroy() {
-			nativeModule.Dispose();
+			if ( nativeModule != null ) {
+				nativeModule.Dispose();
+			}
 		}
 
-		void OnEnable() {
-			nativeModule.Show( true );
-			StartCoroutine( UpdateHeight() );
-		}
-
-		void OnDisable() {
-			nativeModule.Show( false );
-			onChange.Invoke( 0 );
+		public void Show( bool enable ) {
+			nativeModule.Show( enable );
+			if ( enable == true ) {
+				StartCoroutine( UpdateHeight() );
+			}
+			else {
+				onChange.Invoke( 0 );
+			}
 		}
 
 		private IEnumerator UpdateHeight() {
