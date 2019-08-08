@@ -18,11 +18,11 @@ namespace Summoner.FreeCell {
 		}
 
 		static StageInfo() {
-			range = new RangeInt( 1, 32001 );
+			SetRange( 1, 32000 );
 		}
 
-		public void SetRange( int min, int max ) {
-			Mathf.Clamp( min, 1, max + 1 );
+		public static void SetRange( int min, int max ) {
+			min = Mathf.Clamp( min, 1, max + 1 );
 			range = new RangeInt( min, max + 1 );
 		}
 

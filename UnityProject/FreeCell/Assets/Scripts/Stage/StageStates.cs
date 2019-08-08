@@ -22,14 +22,14 @@ namespace Summoner.FreeCell {
 		}
 
 #if UNITY_EDITOR
-		private const int defaultSaved = 0;
+		public const int defaultSaved = 0;
 #endif
 		private const int pageSize = 32;
 		private IDictionary<int, BitArray> map = null;
-		private static readonly int numPages = Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
+		public static readonly int numPages = Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
 
 		public StageStates() 
-			: this( new PlayerPrefsData() )
+			: this( new CloudData() )
 		{ }
 
 		public StageStates( IStorageData storage ) {
@@ -110,7 +110,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void Save( int pageIndex ) {
-			storage.Save( pageIndex, map[pageIndex].Data, numCleared );
+			storage.Save( pageIndex, map[pageIndex].Data );
 		}
 
 		public int IndexOfNotCleared( int notClearedIndex ) {
@@ -187,29 +187,6 @@ namespace Summoner.FreeCell {
 				var stageIndex = stageNumber.index;
 				this.page = stageIndex / pageSize;
 				this.bitMask = 1 << (stageIndex % pageSize);
-			}
-		}
-
-		public interface IStorageData {
-			int Load( int pageIndex );
-			void Save( int pageIndex, int values, int numCleared );
-		}
-
-		private class PlayerPrefsData : IStorageData {
-			public int Load( int pageIndex ) {
-#if !UNITY_EDITOR
-				var defaultSaved = 0;
-#endif
-				return PlayerPrefs.GetInt( ToKey( pageIndex ), defaultSaved );
-			}
-
-			public void Save( int pageIndex, int values, int numCleared ) {
-				PlayerPrefs.SetInt( ToKey( pageIndex ), values );
-				PlayerPrefs.Save();
-			}
-
-			private static string ToKey( int pageIndex ) {
-				return pageIndex.ToString();
 			}
 		}
 	}

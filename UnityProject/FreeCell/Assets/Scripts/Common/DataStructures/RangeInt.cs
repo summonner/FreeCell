@@ -34,5 +34,9 @@ namespace Summoner {
 				yield return i;
 			}
 		}
+
+		public override string ToString() {
+			return "[" + min + ", " + max + ")";
+		}
 	}
 }

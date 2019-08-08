@@ -38,3 +38,4 @@ sysinfo.txt
 # Custom Ignores
 Resource/States.uml
 *.ttf*
+UnityProject/FreeCell/Assets/freecell.saved*

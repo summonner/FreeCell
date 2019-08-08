@@ -46,11 +46,11 @@ namespace Summoner.FreeCell.Test {
 				: this( 1, 1000000 ) { }
 
 			public TestStageRange( int min, int max ) {
-				controller.SetRange( min, max );
+				StageInfo.SetRange( min, max );
 			}
 
 			public void Dispose() {
-				controller.SetRange( 1, 32000 );
+				StageInfo.SetRange( 1, 32000 );
 			}
 		}
 

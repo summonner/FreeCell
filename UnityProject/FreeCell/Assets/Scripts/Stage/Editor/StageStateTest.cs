@@ -10,7 +10,7 @@ namespace Summoner.FreeCell.Test {
 		private static readonly RangeInt range = StageInfo.range;
 		public static IEnumerable<StageNumber> GetRandomStages( int numStages ) {
 			for ( int i = 0; i < numStages; ++i ) {
-				yield return StageNumber.FromIndex( Random.Range( range.min, range.max ) );
+				yield return StageNumber.FromStageNumber( Random.Range( range.min, range.max ) );
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace Summoner.FreeCell.Test {
 						  .ToArray();
 		}
 
-		private class TestData : StageStates.IStorageData {
+		private class TestData : IStorageData {
 			public readonly IDictionary<int, int> map = new Dictionary<int, int>();
 			public int numCleared { get; set; }
 
@@ -76,9 +76,8 @@ namespace Summoner.FreeCell.Test {
 				return map[pageIndex];
 			}
 
-			public void Save( int pageIndex, int values, int numCleared ) {
+			public void Save( int pageIndex, int values ) {
 				map[pageIndex] = values;
-				this.numCleared = numCleared;
 			}
 		}
 	}
