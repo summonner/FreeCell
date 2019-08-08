@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Summoner.UI;
+using UnityEngine.Events;
 
 namespace Summoner.Util.StatusBar {
 	public class StatusBar : MonoBehaviour {
-		public PresentInt onChange;
+		public OnChangeStatusBar onChange;
 
 		private IStatusBarController _nativeModule = null;
 		private IStatusBarController nativeModule {
@@ -21,11 +21,7 @@ namespace Summoner.Util.StatusBar {
 	#endif
 		}
 
-		public int height {
-			get {
-				return nativeModule.height;
-			}
-		}
+		private int height = 0;
 
 		void OnDestroy() {
 			if ( nativeModule != null ) {
@@ -36,16 +32,25 @@ namespace Summoner.Util.StatusBar {
 		public void Show( bool enable ) {
 			nativeModule.Show( enable );
 			if ( enable == true ) {
-				StartCoroutine( UpdateHeight() );
+				StartCoroutine( UpdateHeightDelayed() );
 			}
 			else {
-				onChange.Invoke( 0 );
+				UpdateHeight( 0 );
 			}
 		}
 
-		private IEnumerator UpdateHeight() {
+		private IEnumerator UpdateHeightDelayed() {
 			yield return null;
-			onChange.Invoke( height );
+			UpdateHeight( nativeModule.height );
 		}
+
+		private void UpdateHeight( int newHeight ) {
+			var prevHeight = height;
+			height = newHeight;
+			onChange.Invoke( height, prevHeight );
+		}
+
+		[System.Serializable]
+		public class OnChangeStatusBar : UnityEvent<int, int> { }
 	}
 }
