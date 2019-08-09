@@ -12,10 +12,14 @@ namespace Summoner.Util.PlayerPrefs {
 		}
 
 		void OnDisable() {
-			list.Dispose();
+			list?.Dispose();
 		}
 
 		public override void OnInspectorGUI() {
+			if ( list == null ) {
+				return;
+			}
+
 			list.DoLayoutList();
 
 			using ( new EditorGUILayout.HorizontalScope() ) {

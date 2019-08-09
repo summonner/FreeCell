@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.IO;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Summoner.SavedGame {
 	public class SaveFile : ISavedGame {
@@ -25,18 +25,17 @@ namespace Summoner.SavedGame {
 			this.filePath += filename;
 		}
 
-		public byte[] data {
-			get {
-				if ( File.Exists( filePath ) == false ) {
-					return null;
-				}
+		public Task SaveAsync( byte[] data ) {
+			File.WriteAllBytes( filePath, data );
+			return Task.FromResult( false );
+		}
 
-				return File.ReadAllBytes( filePath );
+		public async Task<byte[]> LoadAsync() {
+			if ( File.Exists( filePath ) == false ) {
+				return null;
 			}
 
-			set {
-				File.WriteAllBytes( filePath, value );
-			}
+			return await Task.FromResult( File.ReadAllBytes( filePath ) );
 		}
 	}
 }

@@ -32,6 +32,7 @@ namespace Summoner.FreeCell {
 			yield return new WaitUntil( () => ( grid.isReady ) );
 			animController.Ready();
 			follower.Init();
+			InGameEvents.Ready( this );
 		}
 
 		private void PresentCleared() {

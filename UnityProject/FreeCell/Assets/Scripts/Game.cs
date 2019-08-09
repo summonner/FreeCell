@@ -15,21 +15,22 @@ namespace Summoner.FreeCell {
 
 		private Board board;
 
-		void Start() {
+		IEnumerator Start() {
 			InGameEvents.OnNewGame += NewGame;
 			InGameUIEvents.OnReset += OnReset;
 			InGameUIEvents.OnCloseTitle += OnCloseTitle;
 
 			title.interactable = false;
+			yield return new WaitUntil( InGameEvents.IsReadyToStart );
+
 			board = new Board( layout );
 			cards.Init( board, sheet );
-
 			uiEvents.QuickGame();
 			title.interactable = true;
 		}
 
 		void OnDestroy() {
-			board.Dispose();
+			board?.Dispose();
 			InGameEvents.OnNewGame -= NewGame;
 			InGameUIEvents.OnReset -= OnReset;
 			InGameUIEvents.OnCloseTitle -= OnCloseTitle;

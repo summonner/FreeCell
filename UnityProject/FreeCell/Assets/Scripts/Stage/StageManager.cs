@@ -77,6 +77,10 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnUseCloud( bool useCloud ) {
+			if ( stages == null ) {
+				return;
+			}
+
 			stages.OnUseCloud( useCloud );
 			popup.Refresh();
 		}

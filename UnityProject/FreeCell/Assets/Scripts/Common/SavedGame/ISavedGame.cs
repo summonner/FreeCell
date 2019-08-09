@@ -1,9 +1,9 @@
 using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Summoner.SavedGame {
 	public interface ISavedGame {
-		byte[] data { get; set; }
+		Task SaveAsync( byte[] data );
+		Task<byte[]> LoadAsync();
 	}
 }

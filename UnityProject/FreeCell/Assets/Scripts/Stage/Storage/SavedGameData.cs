@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Summoner.SavedGame;
 using Summoner.Util;
@@ -7,21 +8,29 @@ using Summoner.Util;
 namespace Summoner.FreeCell {
 	public class SavedGameData : IStorageData {
 		private const byte version = 0;
+		private const string saveFilename = "freecell.saved";
 		private readonly PlayerPrefsData localData;
 		private ISavedGame remoteSave;
 
 		public SavedGameData() {
 			this.localData = new PlayerPrefsData();
-			this.remoteSave = FetchRemoteSave();
-			if ( remoteSave != null ) {
-				DeserializeAndMerge( remoteSave.data );
-			}
+			FetchRemoteSave( () => { InGameEvents.Ready( this ); } );
 		}
 
-		private static ISavedGame FetchRemoteSave() {
+		private async void FetchRemoteSave( System.Action onFinish ) {
+			this.remoteSave = await FetchRemoteSaveAsync();
+			await DownloadAsync();
+			onFinish?.Invoke();
+		}
+
+		private static async Task<ISavedGame> FetchRemoteSaveAsync() {
 			var useCloud = PlayerPrefsValue.ReadOnlyBool( "cloudSave", false ).value;
 			if ( useCloud == true ) {
-				return new SaveFile( "freecell.saved" );
+#if UNITY_EDITOR
+				return await Task.FromResult( new SaveFile( saveFilename ) );
+#elif UNITY_ANDROID
+				return await GooglePlayCloudSave.Create( saveFilename );
+#endif
 			}
 			else {
 				return null;
@@ -34,17 +43,28 @@ namespace Summoner.FreeCell {
 
 		public void Save( int pageIndex, int values ) {
 			localData.Save( pageIndex, values );
-			if ( remoteSave != null ) {
-				remoteSave.data = Serialize();
-			}
+			Upload();
 		}
 
 		public void UseCloud( bool useCloud ) {
-			this.remoteSave = FetchRemoteSave();
-			if ( remoteSave != null ) {
-				DeserializeAndMerge( remoteSave.data );
-				remoteSave.data = Serialize();
+			FetchRemoteSave( Upload );
+		}
+
+		private async Task DownloadAsync() {
+			if ( remoteSave == null ) {
+				return;
 			}
+
+			var serialized = await remoteSave.LoadAsync();
+			DeserializeAndMerge( serialized );
+		}
+
+		private async void Upload() {
+			if ( remoteSave == null ) {
+				return;
+			}
+
+			await remoteSave.SaveAsync( Serialize() );
 		}
 
 		private byte[] Serialize() {

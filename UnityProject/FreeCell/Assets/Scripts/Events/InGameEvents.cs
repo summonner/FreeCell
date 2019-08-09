@@ -3,6 +3,21 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
 	public static class InGameEvents {
+		private static IList<System.Type> requireReady = new List<System.Type>() {
+			typeof( StagePopup ),
+			typeof( SavedGameData ),
+		};
+
+		public static void Ready( object instigator ) {
+			var instigatorType = instigator.GetType();
+			Debug.Assert( requireReady.Contains( instigatorType ) );
+			requireReady.Remove( instigatorType );
+		}
+
+		public static bool IsReadyToStart() {
+			return requireReady.Count == 0;
+		}
+
 		public delegate void SetEvent( Card subject, PileId to );
 		public static event SetEvent OnInitBoard = delegate { };
 		public static void InitBoard( Card subject, PileId to ) {
