@@ -24,3 +24,5 @@ MonoBehaviour:
     type: 1
   - key: statusBar
     type: 1
+  - key: cloudSave
+    type: 1

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
 
-	public class PlayerPrefsData : IStorageData {
+	public class PlayerPrefsData {
 		public int Load( int pageIndex ) {
 #if !UNITY_EDITOR
 				var defaultSaved = 0;

@@ -26,6 +26,10 @@ namespace Summoner.UI.Config {
 			button.isOn = saved.value ^ inverted;
 		}
 
+		void Reset() {
+			button = GetComponent<Toggle>();
+		}
+
 		public void Set( bool enable ) {
 			if ( saved == null ) {
 				Load();

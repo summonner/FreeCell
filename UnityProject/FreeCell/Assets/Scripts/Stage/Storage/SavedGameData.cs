@@ -1,23 +1,30 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using Summoner.SavedGame;
+using Summoner.Util;
 
 namespace Summoner.FreeCell {
-	public class CloudData : IStorageData {
+	public class SavedGameData : IStorageData {
 		private const byte version = 0;
-		private readonly IStorageData localData;
-		private static readonly string tempFile = Application.dataPath + "/freecell.saved";
+		private readonly PlayerPrefsData localData;
+		private ISavedGame remoteSave;
 
-		public CloudData() {
+		public SavedGameData() {
 			this.localData = new PlayerPrefsData();
-
-			if ( File.Exists( tempFile ) == false ) {
-				return;
+			this.remoteSave = FetchRemoteSave();
+			if ( remoteSave != null ) {
+				DeserializeAndMerge( remoteSave.data );
 			}
+		}
 
-			var serialized = File.ReadAllBytes( tempFile );
-			if ( serialized.IsNullOrEmpty() == false ) {
-				Deserialize( serialized );
+		private static ISavedGame FetchRemoteSave() {
+			var useCloud = PlayerPrefsValue.ReadOnlyBool( "cloudSave", false ).value;
+			if ( useCloud == true ) {
+				return new SaveFile( "freecell.saved" );
+			}
+			else {
+				return null;
 			}
 		}
 
@@ -27,8 +34,17 @@ namespace Summoner.FreeCell {
 
 		public void Save( int pageIndex, int values ) {
 			localData.Save( pageIndex, values );
-			var serialized = Serialize();
-			File.WriteAllBytes( tempFile, serialized );
+			if ( remoteSave != null ) {
+				remoteSave.data = Serialize();
+			}
+		}
+
+		public void UseCloud( bool useCloud ) {
+			this.remoteSave = FetchRemoteSave();
+			if ( remoteSave != null ) {
+				DeserializeAndMerge( remoteSave.data );
+				remoteSave.data = Serialize();
+			}
 		}
 
 		private byte[] Serialize() {
@@ -49,7 +65,11 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private void Deserialize( byte[] serialized ) {
+		private void DeserializeAndMerge( byte[] serialized ) {
+			if ( serialized.IsNullOrEmpty() == true ) {
+				return;
+			}
+
 			using ( var parser = Parser.Generate( serialized ) ) {
 				foreach ( var page in parser.pages ) {
 					var pageIndex = page.Key;

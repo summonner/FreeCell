@@ -5,5 +5,6 @@ namespace Summoner.FreeCell {
 	public interface IStorageData {
 		int Load( int pageIndex );
 		void Save( int pageIndex, int values );
+		void UseCloud( bool useCloud );
 	}
 }

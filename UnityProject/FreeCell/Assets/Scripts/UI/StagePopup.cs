@@ -70,6 +70,11 @@ namespace Summoner.FreeCell {
 			blocker.raycastTarget = false;
 		}
 
+		public void Refresh() {
+			grid.SetLayoutVertical();
+			PresentCleared();
+		}
+
 		private class Stage : StageButton.IContents {
 			private readonly StagePopup outer;
 			public StageNumber stageNumber { get; private set; }

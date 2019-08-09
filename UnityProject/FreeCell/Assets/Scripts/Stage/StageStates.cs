@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Summoner.Util.Singleton;
 using System.Collections.Specialized;
+using Summoner.Util.Singleton;
+
 
 namespace Summoner.FreeCell {
 	public interface IStageStatesReader {
@@ -12,8 +13,9 @@ namespace Summoner.FreeCell {
 	}
 
 	public class StageStates : Singleton<StageStates>, IStageStatesReader {
-		public int numCleared { get; private set; }
 		private readonly IStorageData storage;
+		public int numCleared { get; private set; }
+		private IDictionary<int, BitArray> map = null;
 
 		public static IStageStatesReader Reader {
 			get {
@@ -25,11 +27,10 @@ namespace Summoner.FreeCell {
 		public const int defaultSaved = 0;
 #endif
 		private const int pageSize = 32;
-		private IDictionary<int, BitArray> map = null;
 		public static readonly int numPages = Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
 
 		public StageStates() 
-			: this( new CloudData() )
+			: this( new SavedGameData() )
 		{ }
 
 		public StageStates( IStorageData storage ) {
@@ -38,6 +39,10 @@ namespace Summoner.FreeCell {
 			}
 
 			this.storage = storage;
+			Initialize();
+		}
+
+		private void Initialize() {
 			this.map = new SortedDictionary<int, BitArray>();
 
 			foreach ( var i in new RangeInt( 0, numPages ) ) {
@@ -134,6 +139,11 @@ namespace Summoner.FreeCell {
 			}
 
 			return -1;
+		}
+
+		public void OnUseCloud( bool useCloud ) {
+			storage.UseCloud( useCloud );
+			Initialize();
 		}
 
 		private struct BitArray {

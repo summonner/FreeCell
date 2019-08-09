@@ -75,5 +75,10 @@ namespace Summoner.FreeCell {
 #endif
 			InGameEvents.NewGame( newStage );
 		}
+
+		public void OnUseCloud( bool useCloud ) {
+			stages.OnUseCloud( useCloud );
+			popup.Refresh();
+		}
 	}
 }

@@ -79,6 +79,10 @@ namespace Summoner.FreeCell.Test {
 			public void Save( int pageIndex, int values ) {
 				map[pageIndex] = values;
 			}
+
+			public void UseCloud( bool useCloud ) {
+				// do nothing
+			}
 		}
 	}
 }
