@@ -1,8 +1,8 @@
 using UnityEngine;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Summoner.Util.Singleton;
-
 
 namespace Summoner.FreeCell {
 	public interface IStageStatesReader {
@@ -39,12 +39,13 @@ namespace Summoner.FreeCell {
 			}
 
 			this.storage = storage;
-			Initialize();
+			this.map = new SortedDictionary<int, BitArray>();
 		}
 
-		private void Initialize() {
-			this.map = new SortedDictionary<int, BitArray>();
+		public async Task Refresh() {
+			await storage.Reimport();
 
+			map.Clear();
 			foreach ( var i in new RangeInt( 0, numPages ) ) {
 				var saved = storage.Load( i );
 				if ( saved != 0 ) {
@@ -139,11 +140,6 @@ namespace Summoner.FreeCell {
 			}
 
 			return -1;
-		}
-
-		public void OnUseCloud( bool useCloud ) {
-			storage.UseCloud( useCloud );
-			Initialize();
 		}
 
 		private struct BitArray {

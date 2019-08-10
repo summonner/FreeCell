@@ -20,7 +20,8 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Reset() {
-			// do nothing
+			lastClicked = Card.Blank;
+			traverser = null;
 		}
 
 		private Card lastClicked = Card.Blank;

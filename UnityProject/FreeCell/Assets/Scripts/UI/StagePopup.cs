@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using Summoner.UI;
-using Summoner.UI.Popups;
 
 namespace Summoner.FreeCell {
 	public class StagePopup : SlidePopup {
@@ -36,7 +35,7 @@ namespace Summoner.FreeCell {
 		}
 
 		private void PresentCleared() {
-			presentCleared.Invoke( stages.numCleared, StageInfo.numStages );
+			presentCleared.Invoke( stages.numCleared, stages.Count );
 		}
 
 		public void OnInitButton( int index, GameObject target ) {

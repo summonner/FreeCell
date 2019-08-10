@@ -2,7 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Summoner.SavedGame {
+namespace Summoner.Platform.Offline {
 	public class SaveFile : ISavedGame {
 		private static string savePath {
 			get {
@@ -15,9 +15,14 @@ namespace Summoner.SavedGame {
 		}
 
 		private readonly string filePath;
+		private readonly int millisecondsDelay;
 
-		public SaveFile( string filename ) {
+		public SaveFile( string filename )
+			: this( filename, 0 ) { }
+
+		public SaveFile( string filename, int loadingDelayMilliseconds ) {
 			this.filePath = savePath;
+			this.millisecondsDelay = loadingDelayMilliseconds;
 			if ( filename.StartsWith( "/" ) == false ) {
 				this.filePath += "/";
 			}
@@ -31,11 +36,13 @@ namespace Summoner.SavedGame {
 		}
 
 		public async Task<byte[]> LoadAsync() {
+			await Task.Delay( millisecondsDelay );
+
 			if ( File.Exists( filePath ) == false ) {
 				return null;
 			}
 
-			return await Task.FromResult( File.ReadAllBytes( filePath ) );
+			return File.ReadAllBytes( filePath );
 		}
 	}
 }

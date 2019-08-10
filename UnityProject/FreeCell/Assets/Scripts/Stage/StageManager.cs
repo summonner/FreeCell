@@ -1,7 +1,6 @@
 using UnityEngine;
-using System.Collections;
+using System.Threading.Tasks;
 using Summoner.UI;
-using Summoner.Util;
 
 namespace Summoner.FreeCell {
 	public class StageManager : MonoBehaviour {
@@ -28,6 +27,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.OnNewGame += PresentStageInfos;
 			InGameUIEvents.OnCloseTitle += PlayLastGame;
 			InGameUIEvents.OnQuickGame += PlayQuickGame;
+			RefreshStages().WrapError();
 		}
 
 		void OnDestroy() {
@@ -76,12 +76,12 @@ namespace Summoner.FreeCell {
 			InGameEvents.NewGame( newStage );
 		}
 
-		public void OnUseCloud( bool useCloud ) {
+		public async Task RefreshStages() {
 			if ( stages == null ) {
 				return;
 			}
 
-			stages.OnUseCloud( useCloud );
+			await stages.Refresh();
 			popup.Refresh();
 		}
 	}

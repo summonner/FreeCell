@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
+using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
 	[RequireComponent( typeof(StageManager) )]
-	public class Game : MonoBehaviour {
+	public class Game : SingletonBehaviour<Game> {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardObjectHolder cards;
 		[SerializeField] private BoardLayout layout;
@@ -12,7 +12,6 @@ namespace Summoner.FreeCell {
 		[SerializeField] private DemoPlayer demo;
 		[SerializeField] private UnityEngine.UI.Button title;
 		private IBoardPreset preset;
-
 		private Board board;
 
 		IEnumerator Start() {
@@ -20,13 +19,13 @@ namespace Summoner.FreeCell {
 			InGameUIEvents.OnReset += OnReset;
 			InGameUIEvents.OnCloseTitle += OnCloseTitle;
 
-			title.interactable = false;
+			title.gameObject.SetActive( false );
 			yield return new WaitUntil( InGameEvents.IsReadyToStart );
 
 			board = new Board( layout );
 			cards.Init( board, sheet );
 			uiEvents.QuickGame();
-			title.interactable = true;
+			title.gameObject.SetActive( true );
 		}
 
 		void OnDestroy() {

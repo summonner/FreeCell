@@ -2,7 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Summoner.SavedGame;
+using Summoner.Platform;
 using Summoner.Util;
 
 namespace Summoner.FreeCell {
@@ -14,23 +14,12 @@ namespace Summoner.FreeCell {
 
 		public SavedGameData() {
 			this.localData = new PlayerPrefsData();
-			FetchRemoteSave( () => { InGameEvents.Ready( this ); } );
-		}
-
-		private async void FetchRemoteSave( System.Action onFinish ) {
-			this.remoteSave = await FetchRemoteSaveAsync();
-			await DownloadAsync();
-			onFinish?.Invoke();
 		}
 
 		private static async Task<ISavedGame> FetchRemoteSaveAsync() {
 			var useCloud = PlayerPrefsValue.ReadOnlyBool( "cloudSave", false ).value;
 			if ( useCloud == true ) {
-#if UNITY_EDITOR
-				return await Task.FromResult( new SaveFile( saveFilename ) );
-#elif UNITY_ANDROID
-				return await GooglePlayCloudSave.Create( saveFilename );
-#endif
+				return await Platform.Instance.FetchSavedGameAsync( saveFilename );
 			}
 			else {
 				return null;
@@ -46,8 +35,10 @@ namespace Summoner.FreeCell {
 			Upload();
 		}
 
-		public void UseCloud( bool useCloud ) {
-			FetchRemoteSave( Upload );
+		public async Task Reimport() {
+			remoteSave = await FetchRemoteSaveAsync();
+			await DownloadAsync();
+			Upload();
 		}
 
 		private async Task DownloadAsync() {

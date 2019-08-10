@@ -145,6 +145,10 @@ namespace Summoner.UI {
 		}
 
 		public override void SetLayoutVertical() {
+			if ( properties == null ) {
+				return;
+			}
+
 			var viewRange = CalculateViewRange();
 			UpdateChildIndex( viewRange );
 

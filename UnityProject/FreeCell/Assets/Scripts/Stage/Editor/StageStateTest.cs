@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell.Test {
@@ -80,8 +80,9 @@ namespace Summoner.FreeCell.Test {
 				map[pageIndex] = values;
 			}
 
-			public void UseCloud( bool useCloud ) {
+			public Task Reimport() {
 				// do nothing
+				return null;
 			}
 		}
 	}

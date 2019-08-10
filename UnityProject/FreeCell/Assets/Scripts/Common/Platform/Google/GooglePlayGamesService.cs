@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 #if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+using Summoner.Platform.Google;
 
 namespace Summoner.Platform {
 	public class GooglePlayGamesService : IPlatform {
@@ -29,6 +30,16 @@ namespace Summoner.Platform {
 			TaskCompletionSource<bool> callback = new TaskCompletionSource<bool>();
 			Social.localUser.Authenticate( callback.SetResult );
 			return await callback.Task;
+		}
+
+		public bool isAuthenticated => Social.localUser.authenticated;
+
+		public void SignOut() {
+			PlayGamesPlatform.Instance.SignOut();
+		}
+
+		public Task<ISavedGame> FetchSavedGameAsync( string filename ) {
+			return GooglePlayCloudSave.Create( filename );
 		}
 	}
 }

@@ -6,7 +6,7 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using GooglePlayGames.BasicApi.SavedGame;
 
-namespace Summoner.SavedGame {
+namespace Summoner.Platform.Google {
 	public class GooglePlayCloudSave : ISavedGame {
 		private readonly ISavedGameMetadata savedGame;
 		private static ISavedGameClient savedGameClient => PlayGamesPlatform.Instance.SavedGame;
@@ -59,7 +59,7 @@ namespace Summoner.SavedGame {
 					tcs.TrySetResult( result );
 				}
 				else {
-					tcs.TrySetResult( result );
+					tcs.TrySetResult( null );
 				}
 			}
 

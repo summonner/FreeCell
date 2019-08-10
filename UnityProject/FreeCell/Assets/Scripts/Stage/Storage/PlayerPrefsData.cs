@@ -5,10 +5,12 @@ namespace Summoner.FreeCell {
 
 	public class PlayerPrefsData {
 		public int Load( int pageIndex ) {
-#if !UNITY_EDITOR
-				var defaultSaved = 0;
+#if UNITY_EDITOR
+			var defaultSaved = StageStates.defaultSaved;
+#else
+			var defaultSaved = 0;
 #endif
-			return PlayerPrefs.GetInt( ToKey( pageIndex ), StageStates.defaultSaved );
+			return PlayerPrefs.GetInt( ToKey( pageIndex ), defaultSaved );
 		}
 
 		public void Save( int pageIndex, int values ) {

@@ -41,7 +41,6 @@ namespace Summoner.FreeCell.Test {
 		}
 
 		private class TestStageRange : System.IDisposable {
-			private readonly StageInfo controller = new StageInfo();
 			public TestStageRange()
 				: this( 1, 1000000 ) { }
 

@@ -142,7 +142,6 @@ namespace Summoner.FreeCell {
 			private readonly GameObject gameObject;
 			public ActivatePopup( SlidePopup popup ) {
 				this.gameObject = popup.gameObject;
-				gameObject.SetActive( true );
 			}
 
 			public Vector3 OnDrag( PointerEventData eventData ) {

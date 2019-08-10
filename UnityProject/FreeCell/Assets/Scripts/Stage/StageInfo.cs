@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace Summoner.FreeCell {
-	public class StageInfo {
+	public static class StageInfo {
 		public static RangeInt range { get; private set; }
 		public static readonly IList<int> unwinnables = new[] {
 			11982,													// until    32,000

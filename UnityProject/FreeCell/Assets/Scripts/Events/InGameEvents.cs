@@ -5,7 +5,6 @@ namespace Summoner.FreeCell {
 	public static class InGameEvents {
 		private static IList<System.Type> requireReady = new List<System.Type>() {
 			typeof( StagePopup ),
-			typeof( SavedGameData ),
 		};
 
 		public static void Ready( object instigator ) {
