@@ -24,7 +24,7 @@ namespace Summoner.FreeCell {
 			popup.Init( stages );
 			selector = new StageSelector( stages );
 
-			InGameEvents.OnNewGame += PresentStageInfos;
+			InGameEvents.OnNewGame += OnNewGame;
 			InGameUIEvents.OnCloseTitle += PlayLastGame;
 			InGameUIEvents.OnQuickGame += PlayQuickGame;
 			RefreshStages().WrapError();
@@ -33,7 +33,7 @@ namespace Summoner.FreeCell {
 		void OnDestroy() {
 			stages.Dispose();
 
-			InGameEvents.OnNewGame -= PresentStageInfos;
+			InGameEvents.OnNewGame -= OnNewGame;
 			InGameUIEvents.OnCloseTitle -= PlayLastGame;
 			InGameUIEvents.OnQuickGame -= PlayQuickGame;
 		}
@@ -47,11 +47,15 @@ namespace Summoner.FreeCell {
 			return true;
 		}
 
-		private void PresentStageInfos( StageNumber stageNumber ) {
+		private void OnNewGame( StageNumber stageNumber ) {
 			if ( currentStage != null ) {
 				currentStage.value = stageNumber;
 			}
 
+			PresentStageInfos( stageNumber );
+		}
+
+		private void PresentStageInfos( StageNumber stageNumber ) {
 			presentCleared.Invoke( stages.IsCleared( stageNumber ) );
 			presentStageNumber.Invoke( stageNumber );
 			popup.SetScroll( stageNumber );
@@ -83,6 +87,10 @@ namespace Summoner.FreeCell {
 
 			await stages.Refresh();
 			popup.Refresh();
+
+			if ( currentStage != null ) {
+				PresentStageInfos( currentStage );
+			}
 		}
 	}
 }

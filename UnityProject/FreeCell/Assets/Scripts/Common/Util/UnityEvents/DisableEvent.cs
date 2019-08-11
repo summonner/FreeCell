@@ -1,7 +1,7 @@
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-namespace Summoner.Util.UnityEvents {
+namespace Summoner {
 	public class DisableEvent<T> : System.IDisposable {
 		private readonly UnityEvent<T> evt = null;
 		private readonly int index = -1;

@@ -3,7 +3,6 @@ using UnityEditor.Events;
 #endif
 using UnityEngine;
 using UnityEngine.UI;
-using Summoner.Util.UnityEvents;
 
 namespace Summoner.Sound {
 	public class VolumeControlUI : MonoBehaviour {

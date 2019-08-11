@@ -3,28 +3,14 @@ using UnityEngine.UI;
 using System.Threading.Tasks;
 using Summoner.Util;
 using Summoner.Platform;
+using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
-	public class CloudSaveButton : MonoBehaviour {
+	public class CloudSaveController : SingletonBehaviour<CloudSaveController> {
 		[SerializeField] private Toggle button;
 		[SerializeField] private StageManager stageManager;
 		[SerializeField] private LoadingPopup syncingPopup;
 		private ISavedValue<bool> useCloud = PlayerPrefsValue.Bool( "cloudSave", false );
-
-		private bool invertedValue {
-			get {
-				return !useCloud.value;
-			}
-
-			set {
-				var inverted = !value;
-				if ( useCloud.value == inverted ) {
-					return;
-				}
-
-				useCloud.value = inverted;
-			}
-		}
 
 		private IPlatform platform {
 			get {
@@ -43,26 +29,33 @@ namespace Summoner.FreeCell {
 			button?.onValueChanged.AddListenerIfNotExist( OnButtonClicked );
 		}
 #endif
-
-		void Awake() {
-			button.isOn = invertedValue;
+		async void Awake() {
+			await UseCloud( useCloud.value );
+			InGameEvents.Ready( this );
 		}
 
 		public async void OnButtonClicked( bool useOffline ) {
-			using ( syncingPopup.Show() ) {
-				if ( useOffline == true ) {
-					platform.SignOut();
-				}
-				else {
-					var isSuccess = await Authenticate();
-					if ( isSuccess == false ) {
-						button.isOn = true;
-						return;
-					}
-				}
+			await UseCloud( !useOffline );
+		}
 
-				invertedValue = useOffline;
-				await stageManager.RefreshStages();
+		private async Task UseCloud( bool enable ) {
+			using ( new DisableEvent<bool>( button?.onValueChanged, OnButtonClicked ) ) {
+				using ( syncingPopup.Show() ) {
+					if ( enable == true ) {
+						var isSuccess = await Authenticate();
+						if ( isSuccess == false ) {
+							button.isOn = true;
+							return;
+						}
+					}
+					else {
+						platform.SignOut();
+					}
+
+					button.isOn = !enable;
+					useCloud.value = enable;
+					await stageManager.RefreshStages();
+				}
 			}
 		}
 
