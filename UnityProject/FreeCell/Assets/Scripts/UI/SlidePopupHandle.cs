@@ -20,7 +20,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnPointerClick( PointerEventData eventData ) {
-			if ( eventData.dragging == true ) {
+			if ( eventData.dragging || cannotOpen ) {
 				return;
 			}
 
