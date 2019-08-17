@@ -72,9 +72,8 @@ namespace Summoner.FreeCell {
 			Play( 0, rootPosition, isClose, animDuration );
 
 			for ( var i=1; i < popups.Length; ++i ) {
-				var hide = false;
-				var destination = GetDestination( i, out hide );
-				Play( i, destination, hide, animDuration );
+				var destination = GetDestination( i );
+				Play( i, destination, false, animDuration );
 			}
 		}
 
@@ -91,8 +90,7 @@ namespace Summoner.FreeCell {
 			popups[index].MoveTo( animDuration, destination, hide );
 		}
 
-		private float GetDestination( int index, out bool hide ) {
-			hide = false;
+		private float GetDestination( int index ) {
 			if ( current == index ) {	// open
 				return 0;
 			}
@@ -100,7 +98,6 @@ namespace Summoner.FreeCell {
 				return (index - 1) * spacing;
 			}
 			else {
-				hide = true;			// close
 				return (index - 1) * spacing - height;
 			}
 		}
