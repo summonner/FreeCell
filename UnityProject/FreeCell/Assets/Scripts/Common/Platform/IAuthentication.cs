@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Summoner.Platform {
 	public interface IAuthentication {
-		Task<bool> AuthenticateAsync();
+		Task<bool> AuthenticateAsync( bool silent );
 		bool isAuthenticated { get; }
 		void SignOut();
 	}

@@ -12,6 +12,7 @@ namespace Summoner.UI.Popups {
 		}
 
 		private readonly Stack<IPopup> stack = new Stack<IPopup>( 2 );
+		public UnityEvent BackButtonFallback;
 
 		public void Open( IPopup target ) {
 			Debug.Assert( target != null );
@@ -38,6 +39,7 @@ namespace Summoner.UI.Popups {
 
 		public void CloseLastPopup() {
 			if ( stack.Count <= 0 ) {
+				BackButtonFallback.Invoke();
 				return;
 			}
 

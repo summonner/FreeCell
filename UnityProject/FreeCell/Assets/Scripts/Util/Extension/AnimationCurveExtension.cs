@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace Summoner.Util.Extension {
+namespace Summoner {
 	public static class AnimationCurveExtension {
 		public static IEnumerable<float> EvaluateWithTime( this AnimationCurve curve ) {
 			return Evaluator.Forward( curve, 1f );

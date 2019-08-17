@@ -26,9 +26,9 @@ namespace Summoner.Platform {
 			return (option & flags) == flags;
 		}
 
-		public async Task<bool> AuthenticateAsync() {
+		public async Task<bool> AuthenticateAsync( bool silent ) {
 			TaskCompletionSource<bool> callback = new TaskCompletionSource<bool>();
-			Social.localUser.Authenticate( callback.SetResult );
+			PlayGamesPlatform.Instance.Authenticate( callback.SetResult, silent );
 			return await callback.Task;
 		}
 

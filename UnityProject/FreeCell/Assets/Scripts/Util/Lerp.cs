@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Summoner.Util {
+namespace Summoner {
 	public static class Lerp {
 		public static IEnumerable<float> Duration( float seconds ) {
 			var elapsed = 0f;

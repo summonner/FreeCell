@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using Summoner.UI;
 using Summoner.Util;
 using Summoner.Platform;
 using Summoner.Util.Singleton;
@@ -10,6 +11,7 @@ namespace Summoner.FreeCell {
 		[SerializeField] private Toggle button;
 		[SerializeField] private StageManager stageManager;
 		[SerializeField] private LoadingPopup syncingPopup;
+		private readonly string loginFailedMessage = "<size=50>Login Failed.</size>";
 		private ISavedValue<bool> useCloud = PlayerPrefsValue.Bool( "cloudSave", false );
 
 		private IPlatform platform {
@@ -30,21 +32,20 @@ namespace Summoner.FreeCell {
 		}
 #endif
 		async void Awake() {
-			await UseCloud( useCloud.value );
-			InGameEvents.Ready( this );
+			await UseCloud( useCloud.value, true );
 		}
 
 		public async void OnButtonClicked( bool useOffline ) {
-			await UseCloud( !useOffline );
+			await UseCloud( !useOffline, false );
 		}
 
-		private async Task UseCloud( bool enable ) {
+		private async Task UseCloud( bool enable, bool silent ) {
 			using ( new DisableEvent<bool>( button?.onValueChanged, OnButtonClicked ) ) {
-				using ( syncingPopup.Show() ) {
+				using ( silent ? null : syncingPopup.Show() ) {
 					if ( enable == true ) {
-						var isSuccess = await Authenticate();
+						var isSuccess = await Authenticate( silent );
 						if ( isSuccess == false ) {
-							button.isOn = true;
+							OnAuthenticateFailed( silent );
 							return;
 						}
 					}
@@ -59,12 +60,20 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		private async Task<bool> Authenticate() {
+		private void OnAuthenticateFailed( bool silent ) {
+			if ( silent == false ) {
+				ToastMessage.Show( loginFailedMessage );
+			}
+
+			button.isOn = true;
+		}
+
+		private async Task<bool> Authenticate( bool silent ) {
 			if ( platform.isAuthenticated == true ) {
 				return true;
 			}
 
-			return await platform.AuthenticateAsync();
+			return await platform.AuthenticateAsync( silent );
 		}
 	}
 }

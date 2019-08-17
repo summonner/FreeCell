@@ -18,7 +18,7 @@ namespace Summoner.Platform {
 
 		public bool isAuthenticated { get; private set; }
 
-		public async Task<bool> AuthenticateAsync() {
+		public async Task<bool> AuthenticateAsync( bool silent ) {
 			await Task.Delay( millisecondsDelay );
 			isAuthenticated = allowAuthentication;
 			return await Task.FromResult( isAuthenticated );

@@ -117,12 +117,6 @@ namespace Summoner.FreeCell {
 			}
 		}
 
-		void Update() {
-			if ( Input.GetKeyDown( KeyCode.Escape ) == true ) {
-				CloseLastPopup();
-			}
-		}
-
 		public IEnumerable<IDraggableObject> OnBeginDrag( int key ) {
 			if ( key == 0 ) {
 				var root = popups[0];
