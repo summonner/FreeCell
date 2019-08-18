@@ -61,7 +61,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public void OnBeginDrag( PointerEventData eventData ) {
-			PlayerInputEvents.BeginDrag( position );
+			PlayerInputEvents.BeginDrag( eventData.pointerId, position );
 		}
 
 		public void OnDrag( PointerEventData eventData ) {
@@ -71,16 +71,16 @@ namespace Summoner.FreeCell {
 			}
 
 			var displacement = eventData.pointerCurrentRaycast.worldPosition - eventData.pointerPressRaycast.worldPosition;
-			PlayerInputEvents.Drag( position, displacement );
+			PlayerInputEvents.Drag( eventData.pointerId, displacement );
 		}
 
 		public void OnEndDrag( PointerEventData eventData ) {
 			var receivers = floater.CheckOverlapped();
 			if ( receivers.IsNullOrEmpty() == false ) {
-				PlayerInputEvents.Drop( position, receivers );
+				PlayerInputEvents.Drop( eventData.pointerId, position, receivers );
 			}
 
-			PlayerInputEvents.EndDrag( position );
+			PlayerInputEvents.EndDrag( eventData.pointerId );
 		}
 
 		public void BeginFloat() {

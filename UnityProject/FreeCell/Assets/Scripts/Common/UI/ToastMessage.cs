@@ -5,9 +5,9 @@ using Summoner.Util.Singleton;
 
 namespace Summoner.UI {
 	public class ToastMessage : SingletonBehaviour<ToastMessage> {
-		[SerializeField] private CanvasGroup group;
+		[SerializeField] private CanvasGroup group = null;
 		[SerializeField] private AnimationCurve fadeTime = new AnimationCurve( new Keyframe( 0f, 1f ), new Keyframe( 2f, 1f ), new Keyframe( 3f, 0f, -3f, 3f ) );
-		[SerializeField] private PresentString present;
+		[SerializeField] private PresentString present = null;
 
 		public static void Show( string text ) {
 			if ( instance == null ) {

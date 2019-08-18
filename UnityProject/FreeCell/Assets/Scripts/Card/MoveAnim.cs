@@ -16,7 +16,7 @@ namespace Summoner.FreeCell {
 			floater = GetComponentInChildren<FloatEffect>();
 		}
 
-		public void SetDestinationImmediate( Vector3 worldPosition, float effectVolume ) {
+		public void SetDestinationAndPlay( Vector3 worldPosition, float effectVolume ) {
 			SetDestination( target.position, worldPosition, effectVolume)();
 		}
 
@@ -32,6 +32,7 @@ namespace Summoner.FreeCell {
 					StopCoroutine( anim );
 				}
 
+				displacement = Vector3.zero;
 				anim = StartCoroutine( Play( worldPosition, effectVolume ) );
 			};
 		}
@@ -55,6 +56,7 @@ namespace Summoner.FreeCell {
 
 			anim = null;
 			isPlaying = false;
+			displacement = Vector3.zero;
 		}
 	}
 }

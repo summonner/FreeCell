@@ -23,50 +23,48 @@ namespace Summoner.FreeCell {
 			// do nothing
 		}
 
-		private PositionOnBoard selected;
-		private IEnumerable<Card> selectedCards = null;
-		void IDragAndDropListener.OnBeginDrag( PositionOnBoard position ) {
+		private IDictionary<int, IEnumerable<Card>> draggings = new Dictionary<int, IEnumerable<Card>>( 1 );
+		void IDragAndDropListener.OnBeginDrag( int pointerId, PositionOnBoard position ) {
+			if ( draggings.Count > 0 ) {
+				return;
+			}
+
+			if ( draggings.ContainsKey( pointerId ) == true ) {
+				return;
+			}
+
 			var pile = board[position.pile];
 			if ( pile.CanMove( position.row ) == false ) {
 				return;
 			}
 
-			selected = position;
-			selectedCards = pile.Skip( position.row );
+			var selectedCards = pile.Skip( position.row );
+			draggings.Add( pointerId, selectedCards );
 			InGameEvents.BeginFloatCards( selectedCards );
 		}
 
-		void IDragAndDropListener.OnDrag( PositionOnBoard position, Vector3 displacement ) {
+		void IDragAndDropListener.OnDrag( int pointerId, Vector3 displacement ) {
+			var selectedCards = GetSelectedCards( pointerId );
 			if ( selectedCards == null ) {
-				return;
-			}
-
-			if ( selected != position ) {
 				return;
 			}
 
 			InGameEvents.FloatCards( selectedCards, displacement );
 		}
 
-		void IDragAndDropListener.OnEndDrag( PositionOnBoard position ) {
+		void IDragAndDropListener.OnEndDrag( int pointerId ) {
+			var selectedCards = GetSelectedCards( pointerId );
 			if ( selectedCards == null ) {
 				return;
 			}
-
-			if ( selected != position ) {
-				return;
-			}
-
+			
 			InGameEvents.EndFloatCards( selectedCards );
-			selectedCards = null;
+			draggings.Remove( pointerId );
 		}
 
-		void IDragAndDropListener.OnDrop( PositionOnBoard position, IEnumerable<PileId> receivers ) {
+		void IDragAndDropListener.OnDrop( int pointerId, PositionOnBoard position, IEnumerable<PileId> receivers ) {
+			var selectedCards = GetSelectedCards( pointerId );
 			if ( selectedCards == null ) {
-				return;
-			}
-
-			if ( selected != position ) {
 				return;
 			}
 
@@ -75,8 +73,17 @@ namespace Summoner.FreeCell {
 			}
 			
 			if ( mover.ExecuteAndResult( receivers ) == true ) {
-				selectedCards = null;
+				draggings.Remove( pointerId );
 			}
+		}
+
+		private IEnumerable<Card> GetSelectedCards( int pointerId ) {
+			IEnumerable<Card> selectedCards = null;
+			if ( draggings.TryGetValue( pointerId, out selectedCards ) == false ) {
+				return null;
+			}
+
+			return selectedCards;
 		}
 	}
 }

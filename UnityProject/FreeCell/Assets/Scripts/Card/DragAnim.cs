@@ -24,10 +24,15 @@ namespace Summoner.FreeCell {
 		}
 
 		public void Move( Vector3 displacement ) {
+			if ( floater.enabled == false ) {
+				Begin();
+			}
+
 			if ( moveAnim.isPlaying == true ) {
 				moveAnim.displacement = displacement;
 			}
 			else {
+				moveAnim.displacement = Vector3.zero;
 				floater.position = startPosition + displacement;
 			}
 		}
@@ -35,7 +40,7 @@ namespace Summoner.FreeCell {
 		public void End( float effectVolume ) {
 			floater.End();
 			moveAnim.displacement = Vector3.zero;
-			moveAnim.SetDestinationImmediate( startPosition, effectVolume );
+			moveAnim.SetDestinationAndPlay( startPosition, effectVolume );
 		}
 	}
 }

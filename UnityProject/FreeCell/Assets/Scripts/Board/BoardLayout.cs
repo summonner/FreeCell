@@ -30,12 +30,21 @@ namespace Summoner.FreeCell {
 		}
 #endif
 		public Vector3 GetWorldPosition( PositionOnBoard position ) {
-			var piles = GetPile( position.type );
-			var pile = piles.ElementAt( position.column );
+			var pile = GetPile( position.pile );
 			return pile.GetWorldPosition( position.row );
 		}
 
-		private BoardComponent[] GetPile( PileId.Type type ) {
+		public Vector3 GetSpacing( PileId pileId ) {
+			var pile = GetPile( pileId );
+			return pile.spacing;
+		}
+
+		private BoardComponent GetPile( PileId pile ) {
+			var piles = GetPiles( pile.type );
+			return piles[pile.index];
+		}
+
+		private BoardComponent[] GetPiles( PileId.Type type ) {
 			switch ( type ) {
 				case PileId.Type.Free:
 					return freeCells;
@@ -49,7 +58,7 @@ namespace Summoner.FreeCell {
 		}
 
 		int IBoardLayout.GetNumber( PileId.Type type ) {
-			var piles = GetPile( type );
+			var piles = GetPiles( type );
 			if ( piles == null ) {
 				return 0;
 			}

@@ -11,33 +11,35 @@ namespace Summoner.FreeCell {
 			OnClick( selected );
 		}
 
-		public delegate void BeginDragEvent( PositionOnBoard selected );
+		public delegate void BeginDragEvent( int pointerId, PositionOnBoard selected );
 		public static event BeginDragEvent OnBeginDrag = delegate { };
-		public static void BeginDrag( PositionOnBoard selected ) {
-			OnBeginDrag( selected );
+		public static void BeginDrag( int pointerId, PositionOnBoard selected ) {
+			OnBeginDrag( pointerId, selected );
 		}
 
-		public delegate void DraggingEvent( PositionOnBoard selected, Vector3 displacement );
+		public delegate void DraggingEvent( int pointerId, Vector3 displacement );
 		public static event DraggingEvent OnDrag = delegate { };
-		public static void Drag( PositionOnBoard selected, Vector3 displacement ) {
-			OnDrag( selected, displacement );
+		public static void Drag( int pointerId, Vector3 displacement ) {
+			OnDrag( pointerId, displacement );
 		}
 
-		public static event BeginDragEvent OnEndDrag = delegate { };
-		public static void EndDrag( PositionOnBoard selected ) {
-			OnEndDrag( selected );
+		public delegate void EndDragEvent( int pointerId );
+		public static event EndDragEvent OnEndDrag = delegate { };
+		public static void EndDrag( int pointerId ) {
+			OnEndDrag( pointerId );
 		}
 
-		public delegate void DropEvent( PositionOnBoard selected, IEnumerable<PileId> destination );
+		public delegate void DropEvent( int pointerId, PositionOnBoard selected, IEnumerable<PileId> destination );
 		public static event DropEvent OnDrop = delegate { };
-		public static void Drop( PositionOnBoard selected, IEnumerable<PileId> destination ) {
-			OnDrop( selected, destination );
+		public static void Drop( int pointerId, PositionOnBoard selected, IEnumerable<PileId> destination ) {
+			OnDrop( pointerId, selected, destination );
 		}
 
 		public static void SimulateDragAndDrop( PositionOnBoard selected, IEnumerable<PileId> destinations ) {
-			BeginDrag( selected );
-			Drop( selected, destinations );
-			EndDrag( selected );
+			var temporaryPointerId = 1234;
+			BeginDrag( temporaryPointerId, selected );
+			Drop( temporaryPointerId, selected, destinations );
+			EndDrag( temporaryPointerId );
 		}
 
 		public static void Flush() {

@@ -5,9 +5,9 @@ using Summoner.Util.Event;
 namespace Summoner.FreeCell {
 	[SubscriberOf( typeof( PlayerInputEvents ) )]
 	public interface IDragAndDropListener {
-		void OnBeginDrag( PositionOnBoard selected );
-		void OnDrag( PositionOnBoard selected, Vector3 displacement );
-		void OnEndDrag( PositionOnBoard selected );
-		void OnDrop( PositionOnBoard selected, IEnumerable<PileId> destination );
+		void OnBeginDrag( int pointerId, PositionOnBoard selected );
+		void OnDrag( int pointerId, Vector3 displacement );
+		void OnEndDrag( int pointerId );
+		void OnDrop( int pointerId, PositionOnBoard selected, IEnumerable<PileId> destination );
 	}
 }
