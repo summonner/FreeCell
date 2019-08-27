@@ -40,19 +40,6 @@ namespace Summoner.FreeCell.Test {
 			}
 		}
 
-		private class TestStageRange : System.IDisposable {
-			public TestStageRange()
-				: this( 1, 1000000 ) { }
-
-			public TestStageRange( int min, int max ) {
-				StageInfo.SetRange( min, max );
-			}
-
-			public void Dispose() {
-				StageInfo.SetRange( 1, 32000 );
-			}
-		}
-
 		[TestCaseSource( "testCases" )]
 		[TestCaseSource( "nearUnwinnables" )]
 		public void FromIndex( int index, int value ) {

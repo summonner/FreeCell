@@ -18,6 +18,10 @@ namespace Summoner.FreeCell {
 		}
 
 		static StageInfo() {
+			SetRangeAsDefault();
+		}
+
+		public static void SetRangeAsDefault() {
 			SetRange( 1, 32000 );
 		}
 

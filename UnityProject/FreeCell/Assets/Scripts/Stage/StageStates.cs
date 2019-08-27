@@ -27,7 +27,7 @@ namespace Summoner.FreeCell {
 		public const int defaultSaved = 0;
 #endif
 		private const int pageSize = 32;
-		public static readonly int numPages = Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
+		public static int numPages => Mathf.CeilToInt( StageInfo.numStages / (float)pageSize );
 
 		public StageStates() 
 			: this( new SavedGameData() )
@@ -120,7 +120,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public int IndexOfNotCleared( int notClearedIndex ) {
-			foreach ( var data in map ) {
+			foreach ( var data in wholePages ) {
 				var numNotCleared = pageSize - data.Value.Count;
 				if ( notClearedIndex >= numNotCleared ) {
 					notClearedIndex -= numNotCleared;
@@ -134,12 +134,30 @@ namespace Summoner.FreeCell {
 
 					notClearedIndex -= 1;
 					if ( notClearedIndex < 0 ) {
-						return data.Key * pageSize + i;
+						var stageIndex = data.Key * pageSize + i;
+						if ( stageIndex >= Count ) {
+							return -1;
+						}
+						return stageIndex;
 					}
 				}
 			}
 
 			return -1;
+		}
+
+		private IEnumerable<KeyValuePair<int, BitArray>> wholePages {
+			get {
+				foreach ( var i in new RangeInt( 0, numPages ) ) {
+					BitArray page;
+					if ( map.TryGetValue( i, out page ) == true ) {
+						yield return new KeyValuePair<int, BitArray>( i, page );
+					}
+					else {
+						yield return new KeyValuePair<int, BitArray>( i, new BitArray( 0 ) );
+					}
+				}
+			}
 		}
 
 		private struct BitArray {
