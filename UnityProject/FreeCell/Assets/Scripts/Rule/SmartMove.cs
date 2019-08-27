@@ -13,10 +13,12 @@ namespace Summoner.FreeCell {
 			this.mover = new CardMover( board );
 
 			PlayerInputEvents.OnClick += MoveSmart;
+			InGameEvents.OnUndoCards += OnUndo;
 		}
 
 		public void Dispose() {
 			PlayerInputEvents.OnClick -= MoveSmart;
+			InGameEvents.OnUndoCards -= OnUndo;
 		}
 
 		public void Reset() {
@@ -42,6 +44,10 @@ namespace Summoner.FreeCell {
 			mover.Execute( destinations );
 		}
 
+		private void OnUndo( ICollection<Card> subjects, PileId from, PileId to ) {
+			Reset();
+		}
+
 		private class PileTraverser {
 			private readonly IList<PileId> homes;
 			private readonly IList<PileId> piles;
@@ -50,33 +56,12 @@ namespace Summoner.FreeCell {
 				homes = board[PileType.Home].Select( (pile) => ( pile.id ) ).ToList().AsReadOnly();
 
 				piles = (from pile in board[PileType.Table, PileType.Free]
-						orderby (selected.type == PileType.Table && pile.id != selected),
+						orderby (selected.type == PileType.Table && pile.id != selected),	// false is first
 								pile.id.type,
 								pile.Count == 0,
 								pile.id.index
 						select pile.id)
 						.ToList().AsReadOnly();
-			}
-
-			private int Sort( IPile left, IPile right ) {
-				if ( left.id.type != right.id.type ) {
-					return left.id.type - right.id.type;
-				}
-
-				if ( left.Count == 0 && right.Count != 0 ) {
-					return 1;
-				}
-				else if ( left.Count != 0 && right.Count == 0 ) {
-					return -1;
-				}
-
-				return left.id.index - right.id.index;
-			}
-
-			private static void MoveSelectedToLast( List<IPile> piles, PileId selected ) {
-				var selectedPile = piles.First( ( pile ) => (pile.id == selected) );
-				piles.Remove( selectedPile );
-				piles.Add( selectedPile );
 			}
 
 			public IEnumerable<PileId> Traverse( PileId selected ) {
