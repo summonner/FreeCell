@@ -16,10 +16,10 @@ namespace Summoner.FreeCell {
 			this.localData = new PlayerPrefsData();
 		}
 
-		private static async Task<ISavedGame> FetchRemoteSaveAsync() {
+		private static ISavedGame GetRemoteSave() {
 			var useCloud = PlayerPrefsValue.ReadOnlyBool( "cloudSave", false ).value;
 			if ( useCloud == true ) {
-				return await Platform.Instance.FetchSavedGameAsync( saveFilename );
+				return Platform.Instance.GetSavedGame( saveFilename );
 			}
 			else {
 				return null;
@@ -36,7 +36,7 @@ namespace Summoner.FreeCell {
 		}
 
 		public async Task Reimport() {
-			remoteSave = await FetchRemoteSaveAsync();
+			remoteSave = GetRemoteSave();
 			await DownloadAsync();
 			Upload();
 		}

@@ -10,6 +10,7 @@ namespace Summoner.Platform {
 		[System.Flags]
 		public enum Option {
 			SavedGame = 0x1,
+			Debug =		0x2,
 		}
 
 		public GooglePlayGamesService( Option options ) {
@@ -19,6 +20,7 @@ namespace Summoner.Platform {
 			}
 
 			PlayGamesPlatform.InitializeInstance( config.Build() );
+			PlayGamesPlatform.DebugLogEnabled = HasFlags( options, Option.Debug );
 			PlayGamesPlatform.Activate();
 		}
 
@@ -38,7 +40,7 @@ namespace Summoner.Platform {
 			PlayGamesPlatform.Instance.SignOut();
 		}
 
-		public Task<ISavedGame> FetchSavedGameAsync( string filename ) {
+		public ISavedGame GetSavedGame( string filename ) {
 			return GooglePlayCloudSave.Create( filename );
 		}
 	}

@@ -24,7 +24,9 @@ namespace Summoner.FreeCell {
 #if UNITY_EDITOR
 			return new OfflineProxy( 1f, true );
 #elif UNITY_ANDROID
-			return new GooglePlayGamesService( GooglePlayGamesService.Option.SavedGame );
+			return new GooglePlayGamesService( GooglePlayGamesService.Option.SavedGame
+										//	 | GooglePlayGamesService.Option.Debug
+											 );
 #endif
 		}
 	}

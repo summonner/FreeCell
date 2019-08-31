@@ -28,12 +28,12 @@ namespace Summoner.Platform {
 			isAuthenticated = false;
 		}
 
-		public Task<ISavedGame> FetchSavedGameAsync( string filename ) {
+		public ISavedGame GetSavedGame( string filename ) {
 			if ( isAuthenticated == false ) {
-				return Task.FromResult<ISavedGame>( null );
+				return null;
 			}
 
-			return Task.FromResult<ISavedGame>( new SaveFile( filename, millisecondsDelay ) );
+			return new SaveFile( filename, millisecondsDelay );
 		}
 	}
 }
