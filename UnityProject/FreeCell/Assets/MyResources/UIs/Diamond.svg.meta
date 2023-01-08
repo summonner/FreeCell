@@ -1,13 +1,24 @@
 fileFormatVersion: 2
 guid: 653fd91963cc01544b4bddffe1d39bb0
 ScriptedImporter:
-  fileIDToRecycleName:
-    100000: gameObject/Diamond
-    400000: gameObject/Diamond/Transform
-    21200000: gameObject/Diamond/SpriteRenderer
-    21300000: sprite
-    100100000: gameObject
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: gameObject/Diamond
+  - first:
+      4: 400000
+    second: gameObject/Diamond/Transform
+  - first:
+      212: 21200000
+    second: gameObject/Diamond/SpriteRenderer
+  - first:
+      213: 21300000
+    second: sprite
+  - first:
+      1001: 100100000
+    second: gameObject
   externalObjects: {}
+  serializedVersion: 2
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -19,6 +30,7 @@ ScriptedImporter:
   alignment: 0
   customPivot: {x: 0, y: 0}
   generatePhysicsShape: 0
+  viewportOptions: 0
   preserveViewport: 0
   advancedMode: 0
   predefinedResolutionIndex: 1
@@ -37,6 +49,8 @@ ScriptedImporter:
   wrapMode: 1
   filterMode: 1
   sampleCount: 4
+  preserveSVGImageAspect: 0
+  useSVGPixelsPerUnit: 0
   spriteData:
     TessellationDetail: 0
     SpriteRect:

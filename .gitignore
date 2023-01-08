@@ -41,3 +41,8 @@ Resource/States.uml
 UnityProject/FreeCell/Assets/freecell.saved*
 *.keystore
 UnityProject/FreeCell/Assets/Scripts/Editor/Signing.cs*
+UnityProject/FreeCell/Logs/
+UnityProject/FreeCell/UserSettings/
+UnityProject/FreeCell/.vsconfig
+UnityProject/FreeCell/FreeCell_BackUpThisFolder_ButDontShipItWithYourGame/
+UnityProject/FreeCell/FreeCell_mapping.txt

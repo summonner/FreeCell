@@ -3,7 +3,6 @@ using System.Collections;
 using Summoner.Util.Singleton;
 
 namespace Summoner.FreeCell {
-	[RequireComponent( typeof(StageManager) )]
 	public class Game : SingletonBehaviour<Game> {
 		[SerializeField] private CardSpriteSheet sheet;
 		[SerializeField] private CardObjectHolder cards;
@@ -18,6 +17,7 @@ namespace Summoner.FreeCell {
 			InGameEvents.OnNewGame += NewGame;
 			InGameUIEvents.OnReset += OnReset;
 			InGameUIEvents.OnCloseTitle += OnCloseTitle;
+			Application.targetFrameRate = 60;
 
 			title.gameObject.SetActive( false );
 			yield return new WaitUntil( InGameEvents.IsReadyToStart );

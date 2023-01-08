@@ -1,5 +1,5 @@
-# FreeCell
+# FreeCell for Completionist
 
-Unity 2018.2.13f1
+Unity 2022.1.23f1
 
 https://play.google.com/store/apps/details?id=com.Summoner.Dark.FreeCell

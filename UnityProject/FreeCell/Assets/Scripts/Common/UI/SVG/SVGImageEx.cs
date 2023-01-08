@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Summoner.UI {
 	[AddComponentMenu( "UI/SVG Image Ex" )]
-	public class SVGImageEx : global::SVGImage {
-
+	public class SVGImageEx : Unity.VectorGraphics.SVGImage {
+		
 		public override void SetNativeSize() {
 			base.SetNativeSize();
 			if ( sprite == null ) {
